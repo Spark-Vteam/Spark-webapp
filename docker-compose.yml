@@ -1,7 +1,7 @@
 version: '2.4'
 
 services:
-  react_native_app:
+  react_native:
     build:
       context: .
       args:
@@ -15,10 +15,10 @@ services:
       - '19002:19002'
       - '19000:19000'
     volumes:
-      - ./react_native_app:/opt/react_native_app/app:delegated
-      - ./react_native_app/package.json:/opt/react_native_app/package.json
-      - ./react_native_app/package-lock.json:/opt/react_native_app/package-lock.json
-      - notused:/opt/react_native_app/app/node_modules
+      - ./react_native:/opt/react_native/app:delegated
+      - ./react_native/package.json:/opt/react_native/package.json
+      - ./react_native/package-lock.json:/opt/react_native/package-lock.json
+      - notused:/opt/react_native/app/node_modules
     healthcheck:
       disable: true
 
