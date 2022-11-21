@@ -20,6 +20,7 @@ export default function App() {
         onPress={fetchData}
         title="Fetch some goddamn data testing change"
       />
+      <Text>Testing push</Text>
       { data }
     </View>
   );
