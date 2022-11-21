@@ -18,7 +18,7 @@ export default function App() {
       <Button
         color='#4F4C4A'
         onPress={fetchData}
-        title="Fetch some goddamn data"
+        title="Fetch some goddamn data testing change"
       />
       { data }
     </View>
