@@ -1,33 +1,28 @@
-# Getting Started with Spawk webapp
+# Trying out react-native in Docker-container
 
-## Available Scripts
+## Setup
 
-### Docker
+The react-native app needs to know your private local IP address to be able to fetch data from the express server that is running on localhost.
+
+Open up your wifi network properties.
+![Properties of your wifi network](/react-native/react_native/assets/2.png)
+
+Scroll down and copy your IP address (IPv4).
+![List of properties](/react-native/react_native/assets/3.png)
+
+Create two files .env
+- in folder root folder Spark-Webapp/.
+- in folder folder Spark-Webapp/react_native.
+
+Add your IP address as a variable in both .env files:
+`IP="xxx.xxx.x.xx"`
+
+## Docker
 Start up Docker desktop.
 In the project directory, you can then run:
 
 ### `docker-compose up`
+Docker will start up containers with the express server and the react-native app.
 
-Runs the app in the development mode inside a docker container.\
-Open [http://localhost:19006/](http://localhost:19006/) to view it in your browser.
-Open up Inspector (F12) and toggle device toolbar (on mac: cmd+shift+m, on pc: crl+shift+m) to get mobile view.
-
-The page will reload when you make changes.
-
-### react_native
-
-In the react_native directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Scan QR-code in expo go app to view it in your phone.
-
-The page will reload when you make changes.
-
-### `npm run web`
-
-Runs the app in the development mode.\
-Open [http://localhost:19006/](http://localhost:19006/) to view it in your browser.
-
-The page will reload when you make changes.
+### `docker-compose down`
+Docker will stop the containers.
