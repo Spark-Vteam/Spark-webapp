@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Button } from 'react-native';
+import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { Base, Typography } from './styles/index';
 import { IP } from '@env'
@@ -11,10 +11,22 @@ export default function App() {
 
   async function fetchData() {
     try {
-      const response = await fetch(`http://${IP}:3000/test`);
+      const response = await fetch(`http://${IP}:4000/bike`);
       const result = await response.json();
-      console.log(result);
-      setData(result.testing);
+      // console.log(result);
+      let list = "";
+
+      for (let i = 0; i < 10; i++) {
+        list += `
+bike ${i + 1}:
+    position: ${result[i].Position}
+    battery: ${result[i].Battery}
+    status: ${result[i].Status}
+    speed: ${result[i].Speed}
+          `
+      }
+
+      setData(list);
 
     } catch (e) {
       console.log(e);
@@ -23,15 +35,15 @@ export default function App() {
   }
 
   return (
-    <View style={Base.base}>
+    <ScrollView style={Base.base}>
       <Button
         color='#4F4C4A'
         onPress={fetchData}
         title="Fetch dataTest"
         />
       <Text>IP is {IP}</Text>
-      <Text>Data:</Text>
+      <Text>First 10 bikes in array:</Text>
       <Text>{data}</Text>
-    </View>
+    </ScrollView>
   );
 }
