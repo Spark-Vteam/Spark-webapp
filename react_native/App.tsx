@@ -2,6 +2,7 @@ import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { Base, Typography } from './styles/index';
 import { IP } from '@env'
+import TestComponent from './components/TestComponent';
 
 
 export default function App() {
@@ -13,16 +14,17 @@ export default function App() {
     try {
       const response = await fetch(`http://${IP}:4000/bike`);
       const result = await response.json();
-      // console.log(result);
+      const bikes = result[0];
+      // console.log(bikes);
       let list = "";
 
       for (let i = 0; i < 10; i++) {
         list += `
 bike ${i + 1}:
-    position: ${result[i].Position}
-    battery: ${result[i].Battery}
-    status: ${result[i].Status}
-    speed: ${result[i].Speed}
+    position: ${bikes[i].Position}
+    battery: ${bikes[i].Battery}
+    status: ${bikes[i].Status}
+    speed: ${bikes[i].Speed}
           `
       }
 
