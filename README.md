@@ -19,6 +19,7 @@ In the project directory, you can then run:
 
 ### `docker-compose up`
 Docker will start up containers with the express server and the react-native app.
+Open App in Expo Go by scanning the QR code or manually enter URL `<your IP>`:19000.
 
 ### `docker-compose down`
 Docker will stop the containers.
