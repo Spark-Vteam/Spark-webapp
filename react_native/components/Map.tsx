@@ -26,7 +26,7 @@ export default class Map extends Component {
         };
     }
 
-    // This is the equivalent of onEffect(),
+    // 'componentDidMount' is the equivalent of onEffect,
     // except it will only run once (no dependencies)
 
     async componentDidMount() {
