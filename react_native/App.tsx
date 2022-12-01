@@ -1,51 +1,21 @@
+import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Base, Typography } from './styles/index';
 import { IP } from '@env'
-import TestComponent from './components/TestComponent';
+import Test from './components/Test';
+import Map from './components/Map';
+import mapsModel from './models/mapModel';
 
 
-export default function App() {
+export default class App extends Component {
 
-  const [data, setData] = useState("Data not fetched yet");
+  render() {
 
-
-  async function fetchData() {
-    try {
-      const response = await fetch(`http://${IP}:4000/bike`);
-      const result = await response.json();
-      const bikes = result[0];
-      // console.log(bikes);
-      let list = "";
-
-      for (let i = 0; i < 10; i++) {
-        list += `
-bike ${i + 1}:
-    position: ${bikes[i].Position}
-    battery: ${bikes[i].Battery}
-    status: ${bikes[i].Status}
-    speed: ${bikes[i].Speed}
-          `
-      }
-
-      setData(list);
-
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    return (
+      <View style={Base.base}>
+        <Map />
+    </View>
+    );
   }
-
-  return (
-    <ScrollView style={Base.base}>
-      <Button
-        color='#4F4C4A'
-        onPress={fetchData}
-        title="Fetch dataTest"
-        />
-      <Text>IP is {IP}</Text>
-      <Text>First 10 bikes in array:</Text>
-      <Text>{data}</Text>
-    </ScrollView>
-  );
 }
