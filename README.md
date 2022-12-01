@@ -1,18 +1,14 @@
-# Trying out react-native in Docker-container
+# Spark-webapp
 
 ## Setup
 
 The react-native app needs to know your private local IP address to be able to fetch data from the express server that is running on localhost.
 
-Open up your wifi network properties.
-![Properties of your wifi network](/react-native/react_native/assets/2.png)
-
-Scroll down and copy your IP address (IPv4).
-![List of properties](/react-native/react_native/assets/3.png)
+Type in `netstat -r` in terminal and find IP address under "Interface" in IPv4 Route Table.
 
 Create two files .env
-- in folder root folder Spark-Webapp/.
-- in folder folder Spark-Webapp/react_native.
+- in folder root folder Spark-Webapp (to be able to start up dockerized react-native through expo LAN)
+- in folder Spark-Webapp/react_native (to be able to fetch data from backend on localhost)
 
 Add your IP address as a variable in both .env files:
 `IP="xxx.xxx.x.xx"`
