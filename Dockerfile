@@ -1,11 +1,14 @@
 FROM node:16-buster-slim
+# FROM ubuntu:20.04
 
-COPY ./react_native /react-native/
-WORKDIR /react-native
+COPY ./react_native /react_native/
+# COPY ./react_native/package*.json /react_native/
+WORKDIR /react_native
+
 
 EXPOSE 19000
 EXPOSE 19001
 EXPOSE 19002
 
-RUN npm install && npm install -g expo-cli
+RUN npm i && npm i -g expo-cli
 CMD [ "npx", "expo", "start" ]
