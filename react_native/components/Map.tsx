@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity, Button, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, Button, StyleSheet, Image } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
-import { Base, Typography } from '../styles/index';
+import { Base, Typography, Images } from '../styles/index';
 import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-import mapsModel from '../models/mapModel';
 import Bike from '../interfaces/bike';
+import mapsModel from '../models/mapModel';
 
+import TestMarker from './CustomMarker/TestMarker';
 
 
 export default class Map extends Component {
@@ -28,7 +29,6 @@ export default class Map extends Component {
 
     // 'componentDidMount' is the equivalent of onEffect,
     // except it will only run once (no dependencies)
-
     async componentDidMount() {
 
         // GET USERS LOCATION AND SET AS LOCATIONMARKER
@@ -40,6 +40,13 @@ export default class Map extends Component {
         }
         const currentLocation = await Location.getCurrentPositionAsync({});
 
+        // this.setState({
+        //     locationmarker: <TestMarker
+        //         coordinates={{
+        //         latitude: currentLocation.coords.latitude,
+        //         longitude: currentLocation.coords.longitude
+        //     }} />
+        // });
         this.setState({
             locationmarker: <Marker
             coordinate={{
@@ -49,7 +56,12 @@ export default class Map extends Component {
             title="You"
             identifier="here"
             pinColor="blue"
-            />
+            >
+                <Image
+                    style={Images.pin}
+                    source={require("../assets/favicon.png") }
+                />
+            </Marker>
         });
 
         // GET BIKE LOCATIONS AND SET AS BIKESMARKERS
@@ -58,6 +70,13 @@ export default class Map extends Component {
 
         this.setState({
             bikeMarkers: bikes.map((bikeItem:Bike, index:number) => {  //
+                // return <TestMarker
+                //     key={index}
+                //     coordinates={{
+                //         latitude: parseFloat(bikeItem.Position.split(',')[0]),
+                //         longitude: parseFloat(bikeItem.Position.split(',')[1])
+                //     }}
+                // />
                 return <Marker
                     coordinate={{
                         latitude: parseFloat(bikeItem.Position.split(',')[0]),
@@ -65,6 +84,7 @@ export default class Map extends Component {
                     }}
                     title="Bike"
                     key={index}
+                    icon={require("../assets/favicon.png")}
                     // identifier="here"
                     pinColor="red"
                 />
@@ -76,7 +96,6 @@ export default class Map extends Component {
 
         return (
             <View style={styles.mapContainer}>
-
                 <MapView
                     loadingEnabled={true}
                     loadingIndicatorColor='#63AF69'
@@ -85,21 +104,6 @@ export default class Map extends Component {
                     onPress={() => {
                         console.log("touched map")
                     }}
-                // onMapLoaded={() => {
-                //     if (Platform.OS === 'ios') {
-                //         mapRef?.current?.fitToElements(true);
-                //     } else {
-                //         if (fitCoordinates) {
-                //             mapRef?.current?.fitToCoordinates(fitCoordinates), {
-                //                 animated: true
-                //             }
-                //         } else {
-                //             mapRef?.current?.fitToSuppliedMarkers(listOfMarkId), {
-                //                 animated: true
-                //             }
-                //         }
-                //     }
-                // }}
                 >
                     {this.state.locationmarker}
                     {this.state.bikeMarkers}
