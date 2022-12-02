@@ -6,8 +6,14 @@ import { IP } from '@env';
 import mapsModel from '../models/mapModel';
 
 
+// Testing props
+// export default class Test extends React.Component<{ animal: String }> {
+//     render() {
+//         return <Text>{this.props.animal}</Text>
+//     }
+// }
 
-
+// Testing componentDidMount
 // export default class Test extends React.Component {
 
 //     state: {
@@ -35,59 +41,59 @@ import mapsModel from '../models/mapModel';
 // }
 
 
+// Testing fetching
+// export default class Test extends Component {
 
-export default class Test extends Component {
+//     state: {
+//         data: string,
+//     }
 
-    state: {
-        data: string,
-    }
+//     constructor(props: any) {
+//         super(props);
+//         this.state = {
+//             data: "Data not fetched yet"
+//         };
+//     }
 
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            data: "Data not fetched yet"
-        };
-    }
+//     fetchData = async () => {
+//         try {
+//             const response = await fetch(`http://${IP}:4000/bike`);
+//             const result = await response.json();
+//             const bikes = result[0];
+//             // console.log(bikes);
+//             let list = "";
 
-    fetchData = async () => {
-        try {
-            const response = await fetch(`http://${IP}:4000/bike`);
-            const result = await response.json();
-            const bikes = result[0];
-            // console.log(bikes);
-            let list = "";
+//             for (let i = 0; i < 10; i++) {
+//                 list += `
+// bike ${i + 1}:
+//     position: ${bikes[i].Position}
+//     battery: ${bikes[i].Battery}
+//     status: ${bikes[i].Status}
+//     speed: ${bikes[i].Speed}
+//           `
+//             }
 
-            for (let i = 0; i < 10; i++) {
-                list += `
-bike ${i + 1}:
-    position: ${bikes[i].Position}
-    battery: ${bikes[i].Battery}
-    status: ${bikes[i].Status}
-    speed: ${bikes[i].Speed}
-          `
-            }
+//             this.setState({ data: list });
 
-            this.setState({ data: list });
+//         } catch (e) {
+//             // console.log(e);
+//             return false;
+//         }
+//     };
 
-        } catch (e) {
-            // console.log(e);
-            return false;
-        }
-    };
+//     render() {
 
-    render() {
-
-        return (
-            <View style={Base.base}>
-                <Button
-                    color='#4F4C4A'
-                    onPress={this.fetchData}
-                    title="Fetch dataTest"
-                />
-                <Text>IP is {IP}</Text>
-                <Text>First 10 bikes in array:</Text>
-                <Text>{this.state.data}</Text>
-            </View>
-        );
-    }
-}
+//         return (
+//             <View style={Base.base}>
+//                 <Button
+//                     color='#4F4C4A'
+//                     onPress={this.fetchData}
+//                     title="Fetch dataTest"
+//                 />
+//                 <Text>IP is {IP}</Text>
+//                 <Text>First 10 bikes in array:</Text>
+//                 <Text>{this.state.data}</Text>
+//             </View>
+//         );
+//     }
+// }
