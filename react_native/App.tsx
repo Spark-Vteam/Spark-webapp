@@ -6,6 +6,7 @@ import { IP } from '@env'
 // import Test from './components/Test';
 import Map from './components/Map';
 import mapsModel from './models/mapModel';
+import TestMap from './components/TestMap';
 
 
 export default class App extends Component {
@@ -14,8 +15,9 @@ export default class App extends Component {
 
     return (
       <SafeAreaView style={Base.base}>
-        <Map />
+        {/* <Map /> */}
         {/* <Test animal={"monkey"} /> */}
+        <TestMap />
     </SafeAreaView>
     );
   }

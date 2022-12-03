@@ -70,24 +70,24 @@ export default class Map extends Component {
 
         this.setState({
             bikeMarkers: bikes.map((bikeItem:Bike, index:number) => {  //
-                // return <TestMarker
-                //     key={index}
-                //     coordinates={{
-                //         latitude: parseFloat(bikeItem.Position.split(',')[0]),
-                //         longitude: parseFloat(bikeItem.Position.split(',')[1])
-                //     }}
-                // />
-                return <Marker
-                    coordinate={{
+                return <TestMarker
+                    key={index}
+                    coordinates={{
                         latitude: parseFloat(bikeItem.Position.split(',')[0]),
                         longitude: parseFloat(bikeItem.Position.split(',')[1])
                     }}
-                    title="Bike"
-                    key={index}
-                    icon={require("../assets/favicon.png")}
-                    // identifier="here"
-                    pinColor="red"
                 />
+                // return <Marker
+                //     coordinate={{
+                //         latitude: parseFloat(bikeItem.Position.split(',')[0]),
+                //         longitude: parseFloat(bikeItem.Position.split(',')[1])
+                //     }}
+                //     title="Bike"
+                //     key={index}
+                //     icon={require("../assets/testpin.png")}
+                //     // identifier="here"
+                //     pinColor="red"
+                // />
             })
         })
     }
