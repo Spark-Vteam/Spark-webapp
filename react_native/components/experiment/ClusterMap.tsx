@@ -23,7 +23,7 @@
 //     ));
 // }
 
-// export default function TestMap() {
+// export default function ClusterMap() {
 //     return (
 //         <View style={styles.container}>
 //             <MapView style={styles.map} initialRegion={initialRegion}>

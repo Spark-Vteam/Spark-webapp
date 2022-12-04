@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { Base, Typography } from './styles/index';
 import { IP } from '@env'
 // import Test from './components/Test';
-import Map from './components/Map';
+// import TestMap from './components/experiment/Map';
 import mapsModel from './models/mapModel';
-import TestMap from './components/TestMap';
+import Map from './components/Map';
 
 
 export default class App extends Component {
@@ -15,9 +15,8 @@ export default class App extends Component {
 
     return (
       <SafeAreaView style={Base.base}>
-        {/* <Map /> */}
         {/* <Test animal={"monkey"} /> */}
-        <TestMap />
+        <Map />
     </SafeAreaView>
     );
   }

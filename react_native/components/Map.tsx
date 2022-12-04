@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Text, View, TouchableOpacity, Button, StyleSheet, Image } from 'react-native';
-import { useState, useEffect, useRef } from 'react';
-import { Base, Typography, Images } from '../styles/index';
+import React from "react";
+// import MapView from "react-native-map-clustering";
+// import { Marker } from "react-native-maps";
 import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
+import { Text, View, TouchableOpacity, Button, StyleSheet, Image } from 'react-native';
 import * as Location from 'expo-location';
 
 import Bike from '../interfaces/bike';
 import mapsModel from '../models/mapModel';
 
-import TestMarker from './CustomMarker/TestMarker';
+import CustomMarker from './CustomMarker';
 
-
-export default class Map extends Component {
+export default class Map extends React.Component {
 
     state: {
         locationmarker: null,
@@ -40,87 +38,76 @@ export default class Map extends Component {
         }
         const currentLocation = await Location.getCurrentPositionAsync({});
 
-        // this.setState({
-        //     locationmarker: <TestMarker
-        //         coordinates={{
-        //         latitude: currentLocation.coords.latitude,
-        //         longitude: currentLocation.coords.longitude
-        //     }} />
-        // });
         this.setState({
             locationmarker: <Marker
-            coordinate={{
-                latitude: currentLocation.coords.latitude,
-                longitude: currentLocation.coords.longitude
-            }}
-            title="You"
-            identifier="here"
-            pinColor="blue"
-            >
-                <Image
-                    style={Images.pin}
-                    source={require("../assets/favicon.png") }
-                />
-            </Marker>
+                coordinate={{
+                    latitude: currentLocation.coords.latitude,
+                    longitude: currentLocation.coords.longitude
+                }}
+                title="You"
+                identifier="here"
+                pinColor="blue"
+            />
         });
 
         // GET BIKE LOCATIONS AND SET AS BIKESMARKERS
         // ============================================
         const bikes = await mapsModel.getBikes();
 
+        let list = [];
+
+        for (let i = 0; i < 1000; i++) {
+            list.push(bikes[i]);
+        }
+
         this.setState({
-            bikeMarkers: bikes.map((bikeItem:Bike, index:number) => {  //
-                return <TestMarker
+            bikeMarkers: bikes.map((bikeItem: Bike, index: number) => {
+                return <CustomMarker
                     key={index}
                     coordinates={{
                         latitude: parseFloat(bikeItem.Position.split(',')[0]),
                         longitude: parseFloat(bikeItem.Position.split(',')[1])
                     }}
+                    img={require("../assets/pin.png")}
                 />
-                // return <Marker
-                //     coordinate={{
-                //         latitude: parseFloat(bikeItem.Position.split(',')[0]),
-                //         longitude: parseFloat(bikeItem.Position.split(',')[1])
-                //     }}
-                //     title="Bike"
-                //     key={index}
-                //     icon={require("../assets/testpin.png")}
-                //     // identifier="here"
-                //     pinColor="red"
-                // />
             })
         })
     }
 
     render() {
+        // Initial region is set to Lund for testing. Replace later
+        // to set initial region to where user is.
+        const initialRegion = {
+            latitude: 55.7047,
+            longitude: 13.1910,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01
+        };
 
-        return (
-            <View style={styles.mapContainer}>
-                <MapView
-                    loadingEnabled={true}
-                    loadingIndicatorColor='#63AF69'
-                    style={styles.map}
-                    // initialRegion={initRegion}
-                    onPress={() => {
-                        console.log("touched map")
-                    }}
-                >
-                    {this.state.locationmarker}
-                    {this.state.bikeMarkers}
-                </MapView>
-            </View>
-        );
+        return <View style={styles.container}>
+            <MapView style={styles.map}
+                initialRegion={initialRegion}
+                // Parameters below can be used for clustered MapView
+                // from react-native-map-clustering
+                // ---------------------
+                // tracksViewChanges={false}
+                // maxZoom={20}
+                // spiralEnabled={false}
+                // clusteringEnabled={false}
+            >
+                {this.state.locationmarker}
+                {this.state.bikeMarkers}
+            </MapView>
+        </View>
     }
 }
 
 const styles = StyleSheet.create({
-    mapContainer: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
+    container: {
+        flex: 1
     },
     map: {
-        ...StyleSheet.absoluteFillObject,
-    },
+        width: "100%",
+        height: "100%"
+    }
 });
-

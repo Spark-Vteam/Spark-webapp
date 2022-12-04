@@ -1,9 +1,9 @@
 import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
 import React, { Component } from 'react';
 import { useState } from 'react';
-import { Base, Typography } from '../styles/index';
+import { Base, Typography } from '../../styles/index';
 import { IP } from '@env';
-import mapsModel from '../models/mapModel';
+import mapsModel from '../../models/mapModel';
 
 
 // Testing props
