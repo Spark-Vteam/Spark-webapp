@@ -1,7 +1,7 @@
 import React from "react";
-// import MapView from "react-native-map-clustering";
-// import { Marker } from "react-native-maps";
-import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
+import MapView from "react-native-map-clustering";
+import { Marker } from "react-native-maps";
+// import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
 import { Text, View, TouchableOpacity, Button, StyleSheet, Image } from 'react-native';
 import * as Location from 'expo-location';
 
@@ -51,7 +51,7 @@ export default class Map extends React.Component {
             }
             // Invariant Violation error (when using wrong data format) is not caught by
             // catch-statement. Therefore the if statement above is used.
-            console.error("Invalid coordinates at" + JSON.stringify(listItem));
+            console.warn("Invalid coordinates at" + JSON.stringify(listItem));
             return null
         })
     };

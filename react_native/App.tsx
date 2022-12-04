@@ -5,6 +5,7 @@ import { Base, Typography } from './styles/index';
 import { IP } from '@env';
 import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/Map';
+import ClusterMap from './components/experiment/ClusterMap';
 import mapsModel from './models/mapModel';
 import Map from './components/Map';
 
@@ -35,10 +36,8 @@ export default class App extends Component {
     console.log(typeof (this.setName));
     return (
       <SafeAreaView style={Base.base}>
-        {/* <Test setName={this.setName} /> */}
-        {/* <Text>{ this.state.name }</Text> */}
-        {/* <Text>{ this.state.name2 }</Text> */}
-        <Map />
+        <ClusterMap />
+        {/* <Map /> */}
     </SafeAreaView>
     );
   }
