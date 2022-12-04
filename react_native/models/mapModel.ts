@@ -3,9 +3,11 @@ import { IP } from '@env'
 
 const mapsModel = {
     getStations: async function getStations() {
-        const response = await fetch(`http://${IP}:${config.port}/bike`);
+        const response = await fetch(`http://${IP}:${config.port}/station`);
 
-        const stations = await response.json();
+        const result = await response.json();
+
+        const stations = result[0];
 
         return stations;
     },

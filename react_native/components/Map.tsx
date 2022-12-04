@@ -14,22 +14,54 @@ export default class Map extends React.Component {
 
     state: {
         locationmarker: null,
-        bikeMarkers: null
+        bikeMarkers: null,
+        stationMarkers: null
     }
 
     constructor(props: any) {
         super(props);
         this.state = {
             locationmarker: null,
-            bikeMarkers: null
+            bikeMarkers: null,
+            stationMarkers: null
         };
     }
+
+    /**
+     * Method to create markers (for example bikes and stations)
+     * @param {Array<Bikes>} listOfObjects array with bikes or stations
+     * @param {number} img for example require("../assets/pin.png")
+     * @return {any}
+     */
+    createMarkers = (listOfObjects: Array<Bike>, img: number): any => {
+        return listOfObjects.map((listItem: Bike, index: number) => {
+            if (typeof(listItem.Position.split(',')[0]) == 'string' &&
+                listItem.Position.split(',')[0].length > 0 &&
+                typeof (listItem.Position.split(',')[1]) == 'string' &&
+                listItem.Position.split(',')[1].length > 0)
+            {
+                return <CustomMarker
+                    key={index}
+                    coordinates={{
+                        latitude: parseFloat(listItem.Position.split(',')[0]),
+                        longitude: parseFloat(listItem.Position.split(',')[1])
+                    }}
+                    img={img}
+                    />
+            }
+            // Invariant Violation error (when using wrong data format) is not caught by
+            // catch-statement. Therefore the if statement above is used.
+            console.error("Invalid coordinates at" + JSON.stringify(listItem));
+            return null
+        })
+    };
+
 
     // 'componentDidMount' is the equivalent of onEffect,
     // except it will only run once (no dependencies)
     async componentDidMount() {
 
-        // GET USERS LOCATION AND SET AS LOCATIONMARKER
+        // GET USERS LOCATION AND SET LOCATIONMARKER
         // ============================================
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
@@ -50,27 +82,13 @@ export default class Map extends React.Component {
             />
         });
 
-        // GET BIKE LOCATIONS AND SET AS BIKESMARKERS
+        // GET BIKE AND STATIONS AND SET MARKERS
         // ============================================
         const bikes = await mapsModel.getBikes();
-
-        let list = [];
-
-        for (let i = 0; i < 1000; i++) {
-            list.push(bikes[i]);
-        }
-
+        const stations = await mapsModel.getStations();
         this.setState({
-            bikeMarkers: bikes.map((bikeItem: Bike, index: number) => {
-                return <CustomMarker
-                    key={index}
-                    coordinates={{
-                        latitude: parseFloat(bikeItem.Position.split(',')[0]),
-                        longitude: parseFloat(bikeItem.Position.split(',')[1])
-                    }}
-                    img={require("../assets/pin.png")}
-                />
-            })
+            bikeMarkers: this.createMarkers(bikes, require("../assets/Active.png")),
+            stationMarkers: this.createMarkers(stations, require("../assets/ChargingStation.png"))
         })
     }
 
@@ -97,6 +115,7 @@ export default class Map extends React.Component {
             >
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
+                {this.state.stationMarkers}
             </MapView>
         </View>
     }

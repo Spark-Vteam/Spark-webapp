@@ -5,6 +5,60 @@ import { Base, Typography } from '../../styles/index';
 import { IP } from '@env';
 import mapsModel from '../../models/mapModel';
 
+// Testing setting state in parent
+export default class Test extends React.Component<{ setName: Function }> {
+
+    // IN PARENT:
+    // make a callfunction to change state
+    // setName = (newName: string) => {
+    //     this.setState({name: newName})
+    // }
+
+    // and pass it as props
+    // <Test setName={this.setName} />
+
+    // THE WHOLE PARENT CODE:
+    // state: {
+    //     name: string,
+    //     name2: string
+    // }
+
+    // constructor(props: any) {
+    //     super(props);
+    //     this.state = {
+    //         name: "Erik",
+    //         name2: "Sanji"
+    //     };
+    // }
+
+    // setName = (newName: string) => {
+    //     this.setState({
+    //         name: newName
+    //     })
+    // }
+
+
+    // render() {
+    //     console.log(typeof (this.setName));
+    //     return (
+    //         <SafeAreaView style={Base.base}>
+                    // <Test setName={this.setName} />
+                    // <Text>{ this.state.name }</Text>
+                    // <Text>{ this.state.name2 }</Text>
+    //         </SafeAreaView>
+    //     );
+    // }
+
+    // HERE:
+    componentDidMount() {
+        this.props.setName("Alexia")
+    }
+
+    render() {
+        return <Text>{ "Changed state in parent!" }</Text>
+    }
+}
+
 
 // Testing props
 // export default class Test extends React.Component<{ animal: String }> {
