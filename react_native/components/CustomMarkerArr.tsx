@@ -10,7 +10,8 @@ import CustomMarker from './CustomMarker';
 export default class CustomMarkerArr extends React.Component
     <{
         listOfObjects: Array<Bike> | Array<Station>,
-        img: number
+        img: number,
+        type: string
     }> {
 
 
