@@ -16,13 +16,13 @@ export default class CustomMarkerArr extends React.Component
 
 
     /**
-     * Method to create array of custom markers (for example bikes and stations)
+     * Class method to create array of custom markers (for example bikes and stations)
      * @param {Array<Bikes>} listOfObjects array with bikes or stations
      * @param {number} img for example <require("../assets/pin.png")>
-     * @return {ReactNode}
+     * @return {ReactNode | null} returns an array with markers or null if not valid coordinates
      */
     createMarkers = (
-        listOfObjects: Array<Bike> | Array<Station>, img: number, type: string): ReactNode => {
+        listOfObjects: Array<Bike> | Array<Station>, img: number, type: string): ReactNode | null => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];

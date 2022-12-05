@@ -13,6 +13,7 @@ import UserMarker from "./UserMarker";
 
 export default class Map extends React.Component {
 
+    // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
         bikes: null | Array<Object>,
@@ -20,6 +21,7 @@ export default class Map extends React.Component {
         stationMarkers: null | Array<ReactNode>
     }
 
+    // -- ... and initialize them in in the constructor
     constructor(props: Object) {
         super(props);
         this.state = {
@@ -30,19 +32,20 @@ export default class Map extends React.Component {
         };
     }
 
-    // 'componentDidMount' is the equivalent of onEffect,
-    // except it will only run once (no dependencies)
+    // -- 'componentDidMount' is the equivalent of onEffect,
+    // -- except it will only run once (no dependencies)
     async componentDidMount() {
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ============================================
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-            // hantera på något sätt
+            // handle somehow
             return;
         }
         const currentLocation = await Location.getCurrentPositionAsync({});
 
+        // -- We set one or more state variables with this.setState
         this.setState({
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
@@ -66,7 +69,10 @@ export default class Map extends React.Component {
         });
     }
 
+    // -- Class component has a render() function in which we can
+    // -- add more code and then specify output of component in return
     render() {
+
         // Initial region is set to Lund for testing. Replace later
         // to set initial region to where user is.
         const initialRegion = {

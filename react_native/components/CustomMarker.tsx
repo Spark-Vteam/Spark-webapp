@@ -5,9 +5,13 @@ import { LatLng, Marker } from 'react-native-maps';
 import { Base, Typography, Images } from '../styles/index';
 
 
-// Create a custom Marker using
-// cooridates and image from props.
-export default class CustomMarker extends PureComponent<{ coordinates: LatLng, img: number, obj: any, type: string }>{
+// Creates a custom Marker using cooridates and image from props.
+export default class CustomMarker extends PureComponent
+    <{
+        coordinates: LatLng,
+        img: number, obj: any,
+        type: string
+    }>{
 
     render() {
         const { coordinates, img, obj, type } = this.props;
