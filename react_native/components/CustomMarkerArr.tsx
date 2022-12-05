@@ -1,8 +1,5 @@
 import React, { ReactNode } from "react";
 import { Image, View } from 'react-native';
-import { LatLng, Marker } from 'react-native-maps';
-
-import { Base, Typography, Images } from '../styles/index';
 
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
@@ -24,8 +21,7 @@ export default class CustomMarkerArr extends React.Component
      * @return {ReactNode}
      */
     createMarkers = (
-        listOfObjects: Array<Bike> | Array<Station>, img: number): ReactNode => {
-
+        listOfObjects: Array<Bike> | Array<Station>, img: number, type: string): ReactNode => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];
@@ -42,6 +38,8 @@ export default class CustomMarkerArr extends React.Component
                         longitude: parseFloat(long)
                     }}
                     img={img}
+                    obj={listItem}
+                    type={type}
                 />
             }
             // Invariant Violation error (when using wrong data format) is not caught by
@@ -52,9 +50,9 @@ export default class CustomMarkerArr extends React.Component
     };
 
     render() {
-        const { listOfObjects, img } = this.props;
+        const { listOfObjects, img, type } = this.props;
 
-        const listMarkers = this.createMarkers(listOfObjects, img);
+        const listMarkers = this.createMarkers(listOfObjects, img, type);
 
         return (
             <View>

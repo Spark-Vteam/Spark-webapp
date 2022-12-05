@@ -52,13 +52,16 @@ export default class Map extends React.Component {
         const bikes: Array<Bike> = await mapsModel.getBikes();
         const stations: Array<Station> = await mapsModel.getStations();
         this.setState({
+            bikes: bikes,
             bikeMarkers: <CustomMarkerArr
                 listOfObjects={bikes}
                 img={require("../assets/Active.png")}
+                type={"bike"}
             />,
             stationMarkers: <CustomMarkerArr
                 listOfObjects={stations}
                 img={require("../assets/ChargingStation.png")}
+                type={"station"}
             />
         });
     }
