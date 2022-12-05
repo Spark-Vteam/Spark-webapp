@@ -8,13 +8,14 @@ import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
 import { Base, Typography, MapStyle, Images } from '../styles/index';
 
-
-import CustomMarker from './CustomMarker';
+import CustomMarkerArr from "./CustomMarkerArr";
+import UserMarker from "./UserMarker";
 
 export default class Map extends React.Component {
 
     state: {
         locationmarker: null | ReactNode,
+        bikes: null | Array<Object>,
         bikeMarkers: null | Array<ReactNode>,
         stationMarkers: null | Array<ReactNode>
     }
@@ -23,49 +24,17 @@ export default class Map extends React.Component {
         super(props);
         this.state = {
             locationmarker: null,
+            bikes: null,
             bikeMarkers: null,
             stationMarkers: null
         };
     }
 
-    /**
-     * Method to create markers (for example bikes and stations)
-     * @param {Array<Bikes>} listOfObjects array with bikes or stations
-     * @param {number} img for example <require("../assets/pin.png")>
-     * @return {any}
-     */
-    createMarkers = (listOfObjects: Array<Bike> | Array<Station>, img: number): ReactNode => {
-        return listOfObjects.map((listItem: Bike | Station, index: number) => {
-
-            const lat = listItem.Position.split(',')[0];
-            const long = listItem.Position.split(',')[1];
-
-            if (typeof(lat) == 'string' &&
-                lat.length > 0 &&
-                typeof (long) == 'string' &&
-                long.length > 0)
-            {
-                return <CustomMarker
-                    key={index}
-                    coordinates={{
-                        latitude: parseFloat(lat),
-                        longitude: parseFloat(long)
-                    }}
-                    img={img}
-                    />
-            }
-            // Invariant Violation error (when using wrong data format) is not caught by
-            // catch-statement. Therefore the if statement above is used.
-            console.warn("Invalid coordinates at" + JSON.stringify(listItem));
-            return null
-        })
-    };
-
     // 'componentDidMount' is the equivalent of onEffect,
     // except it will only run once (no dependencies)
     async componentDidMount() {
 
-        // GET USERS LOCATION AND SET LOCATIONMARKER    // todo: flytta ut till egen komponent?
+        // GET USERS LOCATION AND SET LOCATIONMARKER
         // ============================================
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
@@ -75,15 +44,7 @@ export default class Map extends React.Component {
         const currentLocation = await Location.getCurrentPositionAsync({});
 
         this.setState({
-            locationmarker:
-            <Marker coordinate={{
-                    latitude: currentLocation.coords.latitude,
-                    longitude: currentLocation.coords.longitude
-                }}>
-                    <Image
-                        style={Images.pinSquareSmall}
-                        source={require("../assets/User.png")} />
-            </Marker>
+            locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
         // GET BIKE AND STATIONS AND SET MARKERS
@@ -91,8 +52,17 @@ export default class Map extends React.Component {
         const bikes: Array<Bike> = await mapsModel.getBikes();
         const stations: Array<Station> = await mapsModel.getStations();
         this.setState({
-            bikeMarkers: this.createMarkers(bikes, require("../assets/Active.png")),
-            stationMarkers: this.createMarkers(stations, require("../assets/ChargingStation.png"))
+            bikes: bikes,
+            bikeMarkers: <CustomMarkerArr
+                listOfObjects={bikes}
+                img={require("../assets/Active.png")}
+                type={"bike"}
+            />,
+            stationMarkers: <CustomMarkerArr
+                listOfObjects={stations}
+                img={require("../assets/ChargingStation.png")}
+                type={"station"}
+            />
         });
     }
 
