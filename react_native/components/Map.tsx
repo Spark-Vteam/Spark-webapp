@@ -32,6 +32,14 @@ export default class Map extends React.Component {
         };
     }
 
+    displayBike = (id: number) => {
+        console.log(`Display bike nr${id}`);
+    }
+
+    displayStation = (id: number) => {
+        console.log(`Display station nr${id}`);
+    }
+
     // -- 'componentDidMount' is the equivalent of onEffect,
     // -- except it will only run once (no dependencies)
     async componentDidMount() {
@@ -53,21 +61,34 @@ export default class Map extends React.Component {
         // GET BIKE AND STATIONS AND SET MARKERS
         // ============================================
         const bikes: Array<Bike> = await mapsModel.getBikes();
+        const availableBikes = bikes.filter((e) => {
+            return e.Status == 10;
+        })
         const stations: Array<Station> = await mapsModel.getStations();
+
+        // To not overload mobile phone (switch later to 'scan area')
+        const shortAvailableBikes = availableBikes.slice(0, 200);
+        const shortStations = stations.slice(0, 100);
+
         this.setState({
             bikes: bikes,
             bikeMarkers: <CustomMarkerArr
-                listOfObjects={bikes}
+                listOfObjects={shortAvailableBikes}
                 img={require("../assets/Active.png")}
-                type={"bike"}
-            />,
-            stationMarkers: <CustomMarkerArr
-                listOfObjects={stations}
+                onpress = {this.displayBike}
+                />,
+                stationMarkers: <CustomMarkerArr
+                listOfObjects={shortStations}
                 img={require("../assets/ChargingStation.png")}
-                type={"station"}
+                onpress = {this.displayStation}
             />
         });
     }
+
+
+
+
+
 
     // -- Class component has a render() function in which we can
     // -- add more code and then specify output of component in return

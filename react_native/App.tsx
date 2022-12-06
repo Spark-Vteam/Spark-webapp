@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Button, ScrollView, SafeAreaView } from 'react-native';
-import { useState, useEffect } from 'react';
 // import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/Map';
 // import ClusterMap from './components/experiment/ClusterMap';
