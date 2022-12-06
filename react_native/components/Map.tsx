@@ -16,7 +16,7 @@ export default class Map extends React.Component {
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes: null | Array<Object>,
+        bikes: null | Array<Bike>,
         bikeMarkers: null | Array<ReactNode>,
         stationMarkers: null | Array<ReactNode>
     }
@@ -33,7 +33,11 @@ export default class Map extends React.Component {
     }
 
     displayBike = (id: number) => {
-        console.log(`Display bike nr${id}`);
+        if (this.state.bikes !== null) {
+            const bike = this.state.bikes.filter((e) => {
+                return e.id == id
+            })
+        }
     }
 
     displayStation = (id: number) => {
@@ -84,10 +88,6 @@ export default class Map extends React.Component {
             />
         });
     }
-
-
-
-
 
 
     // -- Class component has a render() function in which we can
