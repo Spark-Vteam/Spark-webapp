@@ -62,31 +62,31 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // GET BIKE AND STATIONS AND SET MARKERS
-        // ============================================
-        const bikes: Array<Bike> = await mapsModel.getBikes();
-        const availableBikes = bikes.filter((e) => {
-            return e.Status == 10;
-        })
-        const stations: Array<Station> = await mapsModel.getStations();
+        // // GET BIKE AND STATIONS AND SET MARKERS
+        // // ============================================
+        // const bikes: Array<Bike> = await mapsModel.getBikes();
+        // const availableBikes = bikes.filter((e) => {
+        //     return e.Status == 10;
+        // })
+        // const stations: Array<Station> = await mapsModel.getStations();
 
-        // To not overload mobile phone (switch later to 'scan area')
-        const shortAvailableBikes = availableBikes.slice(0, 200);
-        const shortStations = stations.slice(0, 100);
+        // // To not overload mobile phone (switch later to 'scan area')
+        // const shortAvailableBikes = availableBikes.slice(0, 200);
+        // const shortStations = stations.slice(0, 100);
 
-        this.setState({
-            bikes: bikes,
-            bikeMarkers: <CustomMarkerArr
-                listOfObjects={shortAvailableBikes}
-                img={require("../assets/Active.png")}
-                onpress = {this.displayBike}
-                />,
-                stationMarkers: <CustomMarkerArr
-                listOfObjects={shortStations}
-                img={require("../assets/ChargingStation.png")}
-                onpress = {this.displayStation}
-            />
-        });
+        // this.setState({
+        //     bikes: bikes,
+        //     bikeMarkers: <CustomMarkerArr
+        //         listOfObjects={shortAvailableBikes}
+        //         img={require("../assets/Active.png")}
+        //         onpress = {this.displayBike}
+        //         />,
+        //         stationMarkers: <CustomMarkerArr
+        //         listOfObjects={shortStations}
+        //         img={require("../assets/ChargingStation.png")}
+        //         onpress = {this.displayStation}
+        //     />
+        // });
     }
 
 
@@ -105,10 +105,13 @@ export default class Map extends React.Component {
 
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map} initialRegion={initialRegion}>
-                {this.state.locationmarker}
+                {/* {this.state.locationmarker}
                 {this.state.bikeMarkers}
-                {this.state.stationMarkers}
+                {this.state.stationMarkers} */}
             </MapView>
+            <View style={MapStyle.panel}>
+                <Text style={MapStyle.panelText}>Testar här</Text>
+            </View>
         </View>
     }
 }
