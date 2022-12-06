@@ -8,16 +8,27 @@ export const map = {
 }
 
 export const panel = {
+    borderRadius: 30,
     position: "absolute",
-    bottom: 0,
+    bottom: -20,
     alignSelf: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingVertical: 30,
+    paddingHorizontal: 40,
     width: "100%",
+    height: 230,
     backgroundColor: "#FFFFFF",
-    color: "#000000"
+}
+
+export const panelTitle = {
+    textAlign: "center",
+    fontWeight: 'bold'
 }
 
 export const panelText = {
+
+}
+
+export const panelTextMiddle = {
     textAlign: "center",
+    fontStyle: 'italic'
 }

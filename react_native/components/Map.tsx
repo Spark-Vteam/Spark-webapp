@@ -6,7 +6,7 @@ import * as Location from 'expo-location';
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
-import { Base, Typography, MapStyle, Images } from '../styles/index';
+import { Base, Typography, MapStyle, Images, ButtonStyle } from '../styles/index';
 
 import CustomMarkerArr from "./CustomMarkerArr";
 import UserMarker from "./UserMarker";
@@ -18,7 +18,8 @@ export default class Map extends React.Component {
         locationmarker: null | ReactNode,
         bikes: null | Array<Bike>,
         bikeMarkers: null | Array<ReactNode>,
-        stationMarkers: null | Array<ReactNode>
+        stationMarkers: null | Array<ReactNode>,
+        panel: null | ReactNode
     }
 
     // -- ... and initialize them in in the constructor
@@ -28,14 +29,33 @@ export default class Map extends React.Component {
             locationmarker: null,
             bikes: null,
             bikeMarkers: null,
-            stationMarkers: null
+            stationMarkers: null,
+            panel: null
         };
     }
 
     displayBike = (id: number) => {
         if (this.state.bikes !== null) {
-            const bike = this.state.bikes.filter((e) => {
+            const bikeFilter = this.state.bikes.filter((e) => {
                 return e.id == id
+            })
+            const bike = bikeFilter[0];
+            this.setState({
+                panel:
+                    <View style={MapStyle.panel}>
+                        <Text style={MapStyle.panelTitle}>Bike nr {bike.id}</Text>
+                        <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
+                        <TouchableOpacity
+                            style={ButtonStyle.button}
+                            onPress={() => {
+
+                            }}
+                        >
+                            <Text style={ButtonStyle.buttonText}>START RIDE</Text>
+                        </TouchableOpacity>
+                        <Text style={MapStyle.panelTextMiddle}>SEK2.80/min</Text>
+                        <Text style={MapStyle.panelTextMiddle}>20% discount if returned to a station</Text>
+                    </View>
             })
         }
     }
@@ -62,31 +82,31 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // // GET BIKE AND STATIONS AND SET MARKERS
-        // // ============================================
-        // const bikes: Array<Bike> = await mapsModel.getBikes();
-        // const availableBikes = bikes.filter((e) => {
-        //     return e.Status == 10;
-        // })
-        // const stations: Array<Station> = await mapsModel.getStations();
+        // GET BIKE AND STATIONS AND SET MARKERS
+        // ============================================
+        const bikes: Array<Bike> = await mapsModel.getBikes();
+        const availableBikes = bikes.filter((e) => {
+            return e.Status == 10;
+        })
+        const stations: Array<Station> = await mapsModel.getStations();
 
-        // // To not overload mobile phone (switch later to 'scan area')
-        // const shortAvailableBikes = availableBikes.slice(0, 200);
-        // const shortStations = stations.slice(0, 100);
+        // To not overload mobile phone (switch later to 'scan area')
+        const shortAvailableBikes = availableBikes.slice(0, 100);
+        const shortStations = stations.slice(0, 50);
 
-        // this.setState({
-        //     bikes: bikes,
-        //     bikeMarkers: <CustomMarkerArr
-        //         listOfObjects={shortAvailableBikes}
-        //         img={require("../assets/Active.png")}
-        //         onpress = {this.displayBike}
-        //         />,
-        //         stationMarkers: <CustomMarkerArr
-        //         listOfObjects={shortStations}
-        //         img={require("../assets/ChargingStation.png")}
-        //         onpress = {this.displayStation}
-        //     />
-        // });
+        this.setState({
+            bikes: bikes,
+            bikeMarkers: <CustomMarkerArr
+                listOfObjects={shortAvailableBikes}
+                img={require("../assets/Active.png")}
+                onpress = {this.displayBike}
+                />,
+                stationMarkers: <CustomMarkerArr
+                listOfObjects={shortStations}
+                img={require("../assets/ChargingStation.png")}
+                onpress = {this.displayStation}
+            />
+        });
     }
 
 
@@ -104,14 +124,19 @@ export default class Map extends React.Component {
         };
 
         return <View style={MapStyle.mapContainer}>
-            <MapView style={MapStyle.map} initialRegion={initialRegion}>
-                {/* {this.state.locationmarker}
+            <MapView style={MapStyle.map}
+                initialRegion={initialRegion}
+                onPress={() => {
+                    this.setState({
+                        panel: null
+                    })
+                }}
+            >
+                {this.state.locationmarker}
                 {this.state.bikeMarkers}
-                {this.state.stationMarkers} */}
+                {this.state.stationMarkers}
             </MapView>
-            <View style={MapStyle.panel}>
-                <Text style={MapStyle.panelText}>Testar här</Text>
-            </View>
+            { this.state.panel }
         </View>
     }
 }
