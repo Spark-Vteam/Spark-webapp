@@ -6,43 +6,78 @@ import * as Location from 'expo-location';
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
-import { Base, Typography, MapStyle, Images } from '../styles/index';
+import { Base, Typography, MapStyle, Images, ButtonStyle } from '../styles/index';
 
 import CustomMarkerArr from "./CustomMarkerArr";
 import UserMarker from "./UserMarker";
 
 export default class Map extends React.Component {
 
+    // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes: null | Array<Object>,
+        bikes: null | Array<Bike>,
         bikeMarkers: null | Array<ReactNode>,
-        stationMarkers: null | Array<ReactNode>
+        stationMarkers: null | Array<ReactNode>,
+        panel: null | ReactNode
     }
 
+    // -- ... and initialize them in in the constructor
     constructor(props: Object) {
         super(props);
         this.state = {
             locationmarker: null,
             bikes: null,
             bikeMarkers: null,
-            stationMarkers: null
+            stationMarkers: null,
+            panel: null
         };
     }
 
-    // 'componentDidMount' is the equivalent of onEffect,
-    // except it will only run once (no dependencies)
+    displayBike = (id: number) => {
+        if (this.state.bikes !== null) {
+            const bikeFilter = this.state.bikes.filter((e) => {
+                return e.id == id
+            })
+            const bike = bikeFilter[0];
+            this.setState({
+                panel:
+                    <View style={MapStyle.panel}>
+                        <Text style={MapStyle.panelTitle}>Bike nr {bike.id}</Text>
+                        <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
+                        <TouchableOpacity
+                            style={ButtonStyle.button}
+                            onPress={() => {
+
+                            }}
+                        >
+                            <Text style={ButtonStyle.buttonText}>START RIDE</Text>
+                        </TouchableOpacity>
+                        <Text style={MapStyle.panelTextMiddle}>SEK2.80/min</Text>
+                        <Text style={MapStyle.panelTextMiddle}>20% discount if returned to a station</Text>
+                    </View>
+            })
+        }
+    }
+
+    displayStation = (id: number) => {
+        console.log(`Display station nr${id}`);
+    }
+
+    // -- 'componentDidMount' is the equivalent of onEffect,
+    // -- except it will only run once (no dependencies)
     async componentDidMount() {
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ============================================
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-            // hantera på något sätt
+            // handle somehow
             return;
         }
         const currentLocation = await Location.getCurrentPositionAsync({});
 
+        // -- We set one or more state variables with this.setState
         this.setState({
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
@@ -50,23 +85,35 @@ export default class Map extends React.Component {
         // GET BIKE AND STATIONS AND SET MARKERS
         // ============================================
         const bikes: Array<Bike> = await mapsModel.getBikes();
+        const availableBikes = bikes.filter((e) => {
+            return e.Status == 10;
+        })
         const stations: Array<Station> = await mapsModel.getStations();
+
+        // To not overload mobile phone (switch later to 'scan area')
+        const shortAvailableBikes = availableBikes.slice(0, 100);
+        const shortStations = stations.slice(0, 50);
+
         this.setState({
             bikes: bikes,
             bikeMarkers: <CustomMarkerArr
-                listOfObjects={bikes}
+                listOfObjects={shortAvailableBikes}
                 img={require("../assets/Active.png")}
-                type={"bike"}
-            />,
-            stationMarkers: <CustomMarkerArr
-                listOfObjects={stations}
+                onpress = {this.displayBike}
+                />,
+                stationMarkers: <CustomMarkerArr
+                listOfObjects={shortStations}
                 img={require("../assets/ChargingStation.png")}
-                type={"station"}
+                onpress = {this.displayStation}
             />
         });
     }
 
+
+    // -- Class component has a render() function in which we can
+    // -- add more code and then specify output of component in return
     render() {
+
         // Initial region is set to Lund for testing. Replace later
         // to set initial region to where user is.
         const initialRegion = {
@@ -77,11 +124,19 @@ export default class Map extends React.Component {
         };
 
         return <View style={MapStyle.mapContainer}>
-            <MapView style={MapStyle.map} initialRegion={initialRegion}>
+            <MapView style={MapStyle.map}
+                initialRegion={initialRegion}
+                onPress={() => {
+                    this.setState({
+                        panel: null
+                    })
+                }}
+            >
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
             </MapView>
+            { this.state.panel }
         </View>
     }
 }

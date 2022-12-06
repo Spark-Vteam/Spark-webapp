@@ -11,18 +11,19 @@ export default class CustomMarkerArr extends React.Component
     <{
         listOfObjects: Array<Bike> | Array<Station>,
         img: number,
-        type: string
+        onpress:Function
     }> {
 
 
     /**
-     * Method to create array of custom markers (for example bikes and stations)
+     * Class method to create array of custom markers (for example bikes and stations)
      * @param {Array<Bikes>} listOfObjects array with bikes or stations
      * @param {number} img for example <require("../assets/pin.png")>
-     * @return {ReactNode}
+     * @param {string} type specify 'bike' or 'station' to get proper onPress in CustomMarker>
+     * @return {ReactNode | null} returns an array with markers or null if not valid coordinates
      */
     createMarkers = (
-        listOfObjects: Array<Bike> | Array<Station>, img: number, type: string): ReactNode => {
+        listOfObjects: Array<Bike> | Array<Station>, img: number, onpress: Function): ReactNode | null => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];
@@ -39,8 +40,8 @@ export default class CustomMarkerArr extends React.Component
                         longitude: parseFloat(long)
                     }}
                     img={img}
-                    obj={listItem}
-                    type={type}
+                    id={listItem.id}
+                    onpress={onpress}
                 />
             }
             // Invariant Violation error (when using wrong data format) is not caught by
@@ -51,9 +52,9 @@ export default class CustomMarkerArr extends React.Component
     };
 
     render() {
-        const { listOfObjects, img, type } = this.props;
+        const { listOfObjects, img, onpress } = this.props;
 
-        const listMarkers = this.createMarkers(listOfObjects, img, type);
+        const listMarkers = this.createMarkers(listOfObjects, img, onpress);
 
         return (
             <View>
