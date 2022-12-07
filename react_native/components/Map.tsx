@@ -16,7 +16,8 @@ export default class Map extends React.Component {
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes: null | Array<Bike>,
+        bikes?: null | Array<Bike>,
+        stations: null | Array<Station>,
         bikeMarkers: null | Array<ReactNode>,
         stationMarkers: null | Array<ReactNode>,
         panel: null | ReactNode
@@ -28,40 +29,62 @@ export default class Map extends React.Component {
         this.state = {
             locationmarker: null,
             bikes: null,
+            stations: null,
             bikeMarkers: null,
             stationMarkers: null,
             panel: null
         };
     }
 
-    displayBike = (id: number) => {
-        if (this.state.bikes !== null) {
-            const bikeFilter = this.state.bikes.filter((e) => {
+    displayStation = (id: number) => {
+        if (this.state.stations !== null && this.state.stations !== undefined) {
+            const station = this.state.stations.find((e) => {
                 return e.id == id
             })
-            const bike = bikeFilter[0];
-            this.setState({
-                panel:
-                    <View style={MapStyle.panel}>
-                        <Text style={MapStyle.panelTitle}>Bike nr {bike.id}</Text>
-                        <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
-                        <TouchableOpacity
-                            style={ButtonStyle.button}
-                            onPress={() => {
-
-                            }}
-                        >
-                            <Text style={ButtonStyle.buttonText}>START RIDE</Text>
-                        </TouchableOpacity>
-                        <Text style={MapStyle.panelTextMiddle}>SEK2.80/min</Text>
-                        <Text style={MapStyle.panelTextMiddle}>20% discount if returned to a station</Text>
-                    </View>
-            })
+            if (station !== undefined) {
+                this.setState({
+                    panel:
+                        <View style={MapStyle.panel as any}>
+                            <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
+                            <Text style={MapStyle.panelTextMiddle as any}>4 Available spots</Text>
+                            <Text style={MapStyle.panelTextMiddle as any}>3 bikes to rent</Text>
+                        </View>
+                })
+            }
         }
     }
 
-    displayStation = (id: number) => {
-        console.log(`Display station nr${id}`);
+    displayBike = (id: number) => {
+        if (this.state.bikes !== undefined && this.state.bikes !== null) {
+            const bike = this.state.bikes.find((e) => {
+                return e.id == id
+            })
+            if (bike !== undefined) {
+                this.setState({
+                    panel:
+                        <View style={MapStyle.panel as any}>
+                            <Text style={MapStyle.panelTitle as any}>Bike nr {bike.id}</Text>
+                            <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
+                            <TouchableOpacity
+                                style={ButtonStyle.button as any}
+                                onPress={() => {
+                                    // create rent that changes bikes status as well
+                                    // create draggable marker
+                                    this.setState({
+                                        bikeMarkers: null,
+                                        panel: null
+                                    });
+                                    // new search bikes so that markers get updated
+                                }}
+                            >
+                                <Text style={ButtonStyle.buttonText as any}>START RIDE</Text>
+                            </TouchableOpacity>
+                            <Text style={MapStyle.panelTextMiddle as any}>SEK2.80/min</Text>
+                            <Text style={MapStyle.panelTextMiddle as any}>20% discount if returned to a station</Text>
+                        </View>
+                })
+            }
+        }
     }
 
     // -- 'componentDidMount' is the equivalent of onEffect,
@@ -96,12 +119,13 @@ export default class Map extends React.Component {
 
         this.setState({
             bikes: bikes,
+            stations: stations,
             bikeMarkers: <CustomMarkerArr
                 listOfObjects={shortAvailableBikes}
                 img={require("../assets/Active.png")}
                 onpress = {this.displayBike}
                 />,
-                stationMarkers: <CustomMarkerArr
+            stationMarkers: <CustomMarkerArr
                 listOfObjects={shortStations}
                 img={require("../assets/ChargingStation.png")}
                 onpress = {this.displayStation}
