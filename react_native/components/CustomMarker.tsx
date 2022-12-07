@@ -22,7 +22,7 @@ export default class CustomMarker extends PureComponent
             <Marker
                 coordinate={coordinates}
                 tracksViewChanges={false}
-                onPress={() => onpress(id)}
+                onPress={() => onpress(id, coordinates)}
             >
                 <Image
                     style={Images.pin}

@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
+import MapView, { Marker, Geojson, Callout, LatLng } from 'react-native-maps';
 import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
 import * as Location from 'expo-location';
 
@@ -16,10 +16,11 @@ export default class Map extends React.Component {
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes?: null | Array<Bike>,
+        bikes: null | Array<Bike>,
         stations: null | Array<Station>,
-        bikeMarkers: null | Array<ReactNode>,
-        stationMarkers: null | Array<ReactNode>,
+        bikeMarkers: null | ReactNode,
+        stationMarkers: null | ReactNode,
+        rentedMarker: null | ReactNode
         panel: null | ReactNode
     }
 
@@ -32,9 +33,57 @@ export default class Map extends React.Component {
             stations: null,
             bikeMarkers: null,
             stationMarkers: null,
+            rentedMarker: null,
             panel: null
         };
     }
+
+
+    createRentedMarker = (bikeId: number, coordinates: LatLng) => {
+        this.setState({
+            rentedMarker: <Marker
+                coordinate={coordinates}
+                draggable
+                onPress={(e) => {
+                    // get info on rent + bike by id,
+                    // fetch and show rent StartTimeStamp (+ price "so far"?)
+                    // also bike id and battery left
+                    this.setState({
+                        panel:
+                            <View style={MapStyle.panel as any}>
+                                <TouchableOpacity
+                                    style={ButtonStyle.button as any}
+                                    onPress={() => {
+                                        // here do a new scan for bikes instead
+                                        // of bringing them all back
+                                        this.setState({
+                                            rentedMarker: null,
+                                            panel: null,
+                                            bikeMarkers: <CustomMarkerArr // <---
+                                                listOfObjects={this.state.bikes}
+                                                img={require("../assets/Available.png")}
+                                                onpress={this.displayBike}
+                                            />
+                                        });
+                                    }}
+                                >
+                                    <Text style={ButtonStyle.buttonText as any}>STOP RIDE</Text>
+                                </TouchableOpacity>
+                            </View>
+                    })
+                }}
+                onDragEnd={(e) => {
+                    console.log('dragEnd', e.nativeEvent.coordinate)
+                }}
+            >
+                <Image
+                    style={Images.pin}
+                    source={require("../assets/Active.png")}
+                />
+            </Marker>
+        })
+    }
+
 
     displayStation = (id: number) => {
         if (this.state.stations !== null && this.state.stations !== undefined) {
@@ -47,14 +96,17 @@ export default class Map extends React.Component {
                         <View style={MapStyle.panel as any}>
                             <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
                             <Text style={MapStyle.panelTextMiddle as any}>4 Available spots</Text>
-                            <Text style={MapStyle.panelTextMiddle as any}>3 bikes to rent</Text>
+                            {
+                                this.state.rentedMarker === null &&
+                                <Text style={MapStyle.panelTextMiddle as any}>3 bikes to rent</Text>
+                            }
                         </View>
                 })
             }
         }
     }
 
-    displayBike = (id: number) => {
+    displayBike = (id: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
             const bike = this.state.bikes.find((e) => {
                 return e.id == id
@@ -69,7 +121,10 @@ export default class Map extends React.Component {
                                 style={ButtonStyle.button as any}
                                 onPress={() => {
                                     // create rent that changes bikes status as well
-                                    // create draggable marker
+                                    this.createRentedMarker(bike.id, coordinates);
+                                    // instead of setting bikeMarkers to null (like below):
+                                    // update state array 'lastScanBikes', find index by id,
+                                    // remove that e and create new bikeMarkers from that
                                     this.setState({
                                         bikeMarkers: null,
                                         panel: null
@@ -118,11 +173,11 @@ export default class Map extends React.Component {
         const shortStations = stations.slice(0, 50);
 
         this.setState({
-            bikes: bikes,
-            stations: stations,
+            bikes: shortAvailableBikes,
+            stations: shortStations,
             bikeMarkers: <CustomMarkerArr
                 listOfObjects={shortAvailableBikes}
-                img={require("../assets/Active.png")}
+                img={require("../assets/Available.png")}
                 onpress = {this.displayBike}
                 />,
             stationMarkers: <CustomMarkerArr
@@ -159,6 +214,7 @@ export default class Map extends React.Component {
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
+                {this.state.rentedMarker}
             </MapView>
             { this.state.panel }
         </View>
