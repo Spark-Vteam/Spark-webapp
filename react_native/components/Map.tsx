@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import MapView, { Marker, Geojson, Callout } from 'react-native-maps';
+import MapView, { Marker, Geojson, Callout, LatLng } from 'react-native-maps';
 import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
 import * as Location from 'expo-location';
 
@@ -8,18 +8,24 @@ import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
 import { Base, Typography, MapStyle, Images, ButtonStyle } from '../styles/index';
 
-import CustomMarkerArr from "./CustomMarkerArr";
-import UserMarker from "./UserMarker";
+import CustomMarkerArr from "./markers/CustomMarkerArr";
+import UserMarker from "./markers/UserMarker";
+import RentedMarker from "./markers/RentedMarker";
+
+import RentedPanel from "./panels/RentedPanel";
+import StationPanel from "./panels/StationPanel";
+import BikePanel from "./panels/BikePanel";
 
 export default class Map extends React.Component {
 
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes?: null | Array<Bike>,
+        bikes: null | Array<Bike>,
         stations: null | Array<Station>,
-        bikeMarkers: null | Array<ReactNode>,
-        stationMarkers: null | Array<ReactNode>,
+        bikeMarkers: null | ReactNode,
+        stationMarkers: null | ReactNode,
+        rentedMarker: null | ReactNode
         panel: null | ReactNode
     }
 
@@ -32,67 +38,93 @@ export default class Map extends React.Component {
             stations: null,
             bikeMarkers: null,
             stationMarkers: null,
+            rentedMarker: null,
             panel: null
         };
     }
 
-    displayStation = (id: number) => {
+    // RENTED BIKE MARKER
+    // ===================================
+    createRentedMarker = (bikeId: number, coordinates: LatLng) => {
+        this.setState({
+            rentedMarker: <RentedMarker
+                bikeId={bikeId}
+                coordinates={coordinates}
+                onpress={(this.pressedRentedMarker)}  // see method below
+            />
+        })
+    }
+
+    // RENTED BIKE PANEL
+    // ===================================
+    pressedRentedMarker = () => {
+        this.setState({
+            panel: <RentedPanel onpress={() => {
+                this.setState({
+                    rentedMarker: null,
+                    panel: null,
+                    bikeMarkers: <CustomMarkerArr  // change later to do a new scan instead
+                        listOfObjects={this.state.bikes}
+                        img={require("../assets/Available.png")}
+                        onpress={this.pressedBike}
+                    />
+                });
+            }} />
+        });
+    }
+
+
+    // STATION PANEL
+    // ===================================
+    pressedStation = (id: number) => {
         if (this.state.stations !== null && this.state.stations !== undefined) {
             const station = this.state.stations.find((e) => {
                 return e.id == id
             })
             if (station !== undefined) {
                 this.setState({
-                    panel:
-                        <View style={MapStyle.panel as any}>
-                            <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
-                            <Text style={MapStyle.panelTextMiddle as any}>4 Available spots</Text>
-                            <Text style={MapStyle.panelTextMiddle as any}>3 bikes to rent</Text>
-                        </View>
+                    panel: <StationPanel
+                            name={station.Name}
+                            activeRent={this.state.rentedMarker === null}
+                        />
                 })
             }
         }
     }
 
-    displayBike = (id: number) => {
+    // AVAILABLE BIKE PANEL
+    // ===================================
+    pressedBike = (id: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
             const bike = this.state.bikes.find((e) => {
                 return e.id == id
             })
             if (bike !== undefined) {
                 this.setState({
-                    panel:
-                        <View style={MapStyle.panel as any}>
-                            <Text style={MapStyle.panelTitle as any}>Bike nr {bike.id}</Text>
-                            <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
-                            <TouchableOpacity
-                                style={ButtonStyle.button as any}
-                                onPress={() => {
-                                    // create rent that changes bikes status as well
-                                    // create draggable marker
-                                    this.setState({
-                                        bikeMarkers: null,
-                                        panel: null
-                                    });
-                                    // new search bikes so that markers get updated
-                                }}
-                            >
-                                <Text style={ButtonStyle.buttonText as any}>START RIDE</Text>
-                            </TouchableOpacity>
-                            <Text style={MapStyle.panelTextMiddle as any}>SEK2.80/min</Text>
-                            <Text style={MapStyle.panelTextMiddle as any}>20% discount if returned to a station</Text>
-                        </View>
+                    panel: <BikePanel
+                            bike={bike}
+                            onpress={() => {
+                            // add endpoint to create rent in backend
+                            this.createRentedMarker(bike.id, coordinates);
+                            this.setState({
+                                bikeMarkers: null,
+                                panel: null
+                            });
+                        }}
+                        />
                 })
             }
         }
     }
 
+    // COMPONENT DID MOUNT
+    // ===================================
     // -- 'componentDidMount' is the equivalent of onEffect,
     // -- except it will only run once (no dependencies)
     async componentDidMount() {
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
-        // ============================================
+        // ===================================
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             // handle somehow
@@ -105,39 +137,40 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // GET BIKE AND STATIONS AND SET MARKERS
-        // ============================================
+        // GET BIKES AND STATIONS AND SET MARKERS
+        // ===================================
         const bikes: Array<Bike> = await mapsModel.getBikes();
         const availableBikes = bikes.filter((e) => {
             return e.Status == 10;
         })
         const stations: Array<Station> = await mapsModel.getStations();
 
-        // To not overload mobile phone (switch later to 'scan area')
+        // Slicing array to not overload mobile phone (switch later to 'scan area')
         const shortAvailableBikes = availableBikes.slice(0, 100);
         const shortStations = stations.slice(0, 50);
 
         this.setState({
-            bikes: bikes,
-            stations: stations,
+            bikes: shortAvailableBikes,
+            stations: shortStations,
             bikeMarkers: <CustomMarkerArr
                 listOfObjects={shortAvailableBikes}
-                img={require("../assets/Active.png")}
-                onpress = {this.displayBike}
+                img={require("../assets/Available.png")}
+                onpress={this.pressedBike}
                 />,
             stationMarkers: <CustomMarkerArr
                 listOfObjects={shortStations}
                 img={require("../assets/ChargingStation.png")}
-                onpress = {this.displayStation}
+                onpress={this.pressedStation}
             />
         });
     }
-
 
     // -- Class component has a render() function in which we can
     // -- add more code and then specify output of component in return
     render() {
 
+        // INITAL REGION FOR TESTING
+        // ===================================
         // Initial region is set to Lund for testing. Replace later
         // to set initial region to where user is.
         const initialRegion = {
@@ -159,6 +192,7 @@ export default class Map extends React.Component {
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
+                {this.state.rentedMarker}
             </MapView>
             { this.state.panel }
         </View>

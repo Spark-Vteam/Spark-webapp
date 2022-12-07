@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
-import { Base, Typography, Images } from '../styles/index';
+import { Base, Typography, Images } from '../../styles/index';
 
 // Create a unique user Marker using
 // cooridates from currectLocation.
@@ -18,7 +18,7 @@ export default class UserMarker extends React.Component<{ currentLocation: any }
             }}>
                 <Image
                     style={Images.pinSquareSmall}
-                    source={require("../assets/User.png")} />
+                    source={require("../../assets/User.png")} />
             </Marker>
         );
     }
