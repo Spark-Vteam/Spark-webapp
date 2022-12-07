@@ -2,9 +2,7 @@ import React, { PureComponent } from 'react';
 import { Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
-import { Base, Typography, Images } from '../styles/index';
-
-import Map from './Map';
+import { Base, Typography, Images } from '../../styles/index';
 
 
 // Creates a custom Marker using cooridates and image from props.

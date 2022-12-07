@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
 import { Image, View } from 'react-native';
 
-import Bike from '../interfaces/bike';
-import Station from '../interfaces/station';
+import Bike from '../../interfaces/bike';
+import Station from '../../interfaces/station';
 
 import CustomMarker from './CustomMarker';
 
