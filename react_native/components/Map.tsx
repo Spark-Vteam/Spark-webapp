@@ -27,6 +27,7 @@ export default class Map extends React.Component {
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode
         panel: null | ReactNode
+        scanButton: null | ReactNode
     }
 
     // -- ... and initialize them in in the constructor
@@ -39,7 +40,8 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
-            panel: null
+            panel: null,
+            scanButton: null
         };
     }
 
@@ -123,6 +125,12 @@ export default class Map extends React.Component {
     // -- except it will only run once (no dependencies)
     async componentDidMount() {
 
+        // SET SCAN BUTTON
+        // ===================================
+        this.setState({
+            // scanButton: <Text></Text>
+        })
+
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ===================================
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -183,10 +191,14 @@ export default class Map extends React.Component {
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 initialRegion={initialRegion}
-                onPress={() => {
-                    this.setState({
-                        panel: null
-                    })
+                onPress={(e) => {
+                    // check if user pressed outside a marker
+                    // in that case hide panel
+                    if (e.nativeEvent.action !== 'marker-press') {
+                        this.setState({
+                            panel: null
+                        })
+                    }
                 }}
             >
                 {this.state.locationmarker}

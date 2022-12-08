@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView } from 'react-native';
 // import Test from './components/experiment/Test';
-// import TestMap from './components/experiment/Map';
+import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
 
 import { Base } from './styles/index';
@@ -12,6 +12,7 @@ export default class App extends Component {
   render() {
     return (
       <SafeAreaView style={Base.base}>
+        {/* <TestMap /> */}
         {/* <ClusterMap /> */}
         {/* <Test /> */}
         <Map />
