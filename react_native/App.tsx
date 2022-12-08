@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView } from 'react-native';
 // import Test from './components/experiment/Test';
-import TestMap from './components/experiment/TestMap';
+// import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
 
 import { Base } from './styles/index';
