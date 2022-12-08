@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import { Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
-import { Base, Typography, Images } from '../../styles/index';
+import { Images } from '../../styles/index';
+
+
 
 
 // Creates a custom Marker using cooridates and image from props.
@@ -14,7 +16,11 @@ export default class CustomMarker extends PureComponent
         onpress: Function
     }>{
 
+
+
     render() {
+
+
         const { coordinates, img, id, onpress } = this.props;
         return (
             <Marker

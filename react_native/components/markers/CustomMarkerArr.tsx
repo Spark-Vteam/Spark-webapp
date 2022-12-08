@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Image, View } from 'react-native';
+import { View } from 'react-native';
 
 import Bike from '../../interfaces/bike';
 import Station from '../../interfaces/station';
@@ -11,7 +11,7 @@ export default class CustomMarkerArr extends React.Component
     <{
         listOfObjects: Array<Bike> | Array<Station>,
         img: number,
-        onpress:Function
+        onpress: (id: number)=>void
     }> {
 
 
@@ -52,7 +52,10 @@ export default class CustomMarkerArr extends React.Component
     };
 
     render() {
+
         const { listOfObjects, img, onpress } = this.props;
+
+
 
         const listMarkers = this.createMarkers(listOfObjects, img, onpress);
 

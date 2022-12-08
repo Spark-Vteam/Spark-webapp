@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
-import { Base, Typography, MapStyle, Images, ButtonStyle } from '../../styles/index';
+import { Images } from '../../styles/index';
 
 
 

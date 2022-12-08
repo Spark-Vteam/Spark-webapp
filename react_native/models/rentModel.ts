@@ -1,10 +1,10 @@
-import config from "../config/config.json";
-import { IP } from '@env'
+// import config from "../config/config.json";
+// import { IP } from '@env'
 
 const rentModel = {
     createRent: async function createRent() {
-        const response = await fetch(`http://${IP}:${config.port}/rent/user/1
-`);
+//         const response = await fetch(`http://${IP}:${config.port}/rent/user/1
+// `);
 
         // todo: när endpoint finns - lägg in create and cancel här
         // await fetch(`${config.base_url}/deliveries`, {
