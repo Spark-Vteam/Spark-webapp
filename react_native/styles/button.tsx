@@ -32,3 +32,21 @@ export const buttonText = {
     fontWeight: 'bold',
     color: '#FFFF'
 }
+
+export const scanButton = {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 100,
+
+    backgroundColor: '#0796D4',
+    borderRadius: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+}
+
+export const scanButtonText = {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#FFFF',
+    fontSize: 17
+}

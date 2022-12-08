@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import MapView, { LatLng } from 'react-native-maps';
-import { View } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
-import { MapStyle } from '../styles/index';
+import { MapStyle, ButtonStyle } from '../styles/index';
 
 import CustomMarkerArr from './markers/CustomMarkerArr';
 import UserMarker from './markers/UserMarker';
@@ -27,6 +27,7 @@ export default class Map extends React.Component {
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode
         panel: null | ReactNode
+        scanButton: null | ReactNode
     }
 
     // -- ... and initialize them in in the constructor
@@ -39,7 +40,8 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
-            panel: null
+            panel: null,
+            scanButton: null
         };
     }
 
@@ -62,15 +64,11 @@ export default class Map extends React.Component {
             panel: <RentedPanel onpress={() => {
                 this.setState({
                     rentedMarker: null,
-                    panel: null,
-                    bikeMarkers: <CustomMarkerArr  // change later to do a new scan instead
-                        listOfObjects={this.state.bikes}
-                        img={require('../assets/Available.png')}
-                        onpress={this.pressedBike}
-                    />
+                    panel: null
                 });
             }} />
         });
+        this.scanArea();
     }
 
 
@@ -85,7 +83,7 @@ export default class Map extends React.Component {
                 this.setState({
                     panel: <StationPanel
                             name={station.Name}
-                            activeRent={this.state.rentedMarker === null}
+                            activeRent={this.state.rentedMarker !== null}
                         />
                 })
             }
@@ -117,11 +115,80 @@ export default class Map extends React.Component {
         }
     }
 
+    scanArea = async () => {
+
+        // Todo: Implement scan instead of getting all bikes and stations
+
+        let bikes: Array<Bike> | null = null;
+
+        // GET BIKES IF NO CURRENT RENT AND SET MARKERS
+        // ===================================
+        if (this.state.rentedMarker === null) {
+            bikes = await mapsModel.getBikes();
+
+            if (bikes !== null) {
+                const availableBikes = bikes.filter((e) => {
+                    return e.Status == 10;
+                })
+
+                 // todo: delete once scan radius works
+                // Slicing array to not overload mobile phone (switch later to 'scan area')
+                bikes = availableBikes.slice(0, 100);
+            }
+        }
+
+        // GET STATIONS AND SET MARKERS
+        // ===================================
+        let stations: Array<Station> | null = await mapsModel.getStations();
+
+        if (stations !== null) { // todo: delete once scan radius works
+            // Slicing array to not overload mobile phone (switch later to 'scan area')
+            stations = stations.slice(0, 50);
+        }
+
+        if (bikes !== null) {
+            this.setState({
+                bikes: bikes,
+                bikeMarkers: <CustomMarkerArr
+                    listOfObjects={bikes}
+                    img={require('../assets/Available.png')}
+                    onpress={this.pressedBike}
+                />
+            });
+        }
+
+        if (stations !== null) {
+            this.setState({
+                stations: stations,
+                stationMarkers: <CustomMarkerArr
+                    listOfObjects={stations}
+                    img={require('../assets/ChargingStation.png')}
+                    onpress={this.pressedStation}
+                />
+            });
+        }
+
+
+    }
+
     // COMPONENT DID MOUNT
     // ===================================
     // -- 'componentDidMount' is the equivalent of onEffect,
     // -- except it will only run once (no dependencies)
     async componentDidMount() {
+
+        // SET SCAN BUTTON
+        // ===================================
+        this.setState({
+            scanButton: <TouchableOpacity
+                style={ButtonStyle.scanButton as any}
+                onPress={() => {
+                    this.scanArea();
+                }}
+            >
+                <Text style={ButtonStyle.scanButtonText as any}>Scan this area</Text>
+            </TouchableOpacity>
+        })
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ===================================
@@ -137,32 +204,7 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // GET BIKES AND STATIONS AND SET MARKERS
-        // ===================================
-        const bikes: Array<Bike> = await mapsModel.getBikes();
-        const availableBikes = bikes.filter((e) => {
-            return e.Status == 10;
-        })
-        const stations: Array<Station> = await mapsModel.getStations();
-
-        // Slicing array to not overload mobile phone (switch later to 'scan area')
-        const shortAvailableBikes = availableBikes.slice(0, 100);
-        const shortStations = stations.slice(0, 50);
-
-        this.setState({
-            bikes: shortAvailableBikes,
-            stations: shortStations,
-            bikeMarkers: <CustomMarkerArr
-                listOfObjects={shortAvailableBikes}
-                img={require('../assets/Available.png')}
-                onpress={this.pressedBike}
-                />,
-            stationMarkers: <CustomMarkerArr
-                listOfObjects={shortStations}
-                img={require('../assets/ChargingStation.png')}
-                onpress={this.pressedStation}
-            />
-        });
+        // this.scanArea();
     }
 
     // -- Class component has a render() function in which we can
@@ -183,10 +225,14 @@ export default class Map extends React.Component {
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 initialRegion={initialRegion}
-                onPress={() => {
-                    this.setState({
-                        panel: null
-                    })
+                onPress={(e) => {
+                    // check if user pressed outside a marker
+                    // in that case hide panel
+                    if (e.nativeEvent.action !== 'marker-press') {
+                        this.setState({
+                            panel: null
+                        })
+                    }
                 }}
             >
                 {this.state.locationmarker}
@@ -194,6 +240,7 @@ export default class Map extends React.Component {
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
             </MapView>
+            { this.state.scanButton }
             { this.state.panel }
         </View>
     }

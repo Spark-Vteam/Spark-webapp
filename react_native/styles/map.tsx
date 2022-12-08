@@ -1,5 +1,6 @@
 export const mapContainer = {
-    flex: 1
+    flex: 1,
+    zIndex: -1
 }
 
 export const map = {
