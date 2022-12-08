@@ -8,7 +8,6 @@ import Bike from '../../interfaces/bike';
 export default class BikePanel extends React.Component<{ bike: Bike, onpress: () => void }> {
     render() {
         const { bike, onpress } = this.props;
-        console.log("pressed bike");
         return (
             <View style={MapStyle.panel as any}>
                 <Text style={MapStyle.panelTitle as any}>Bike nr {bike.id}</Text>
