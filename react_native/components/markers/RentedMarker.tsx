@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 import { View, Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
@@ -6,14 +6,14 @@ import { Images } from '../../styles/index';
 
 
 
-export default class RentedMarker extends React.Component<{ bikeId: number, coordinates: LatLng, onpress: Function }> {
+export default class RentedMarker extends React.Component<{ bikeId: number, coordinates: LatLng, onpress: () => void }> {
 
 
-    createRentedMarker = (bikeId: number, coordinates: LatLng, onpress: Function): ReactNode | null => {
+    createRentedMarker = (bikeId: number, coordinates: LatLng, onpress: () => void): ReactNode | null => {
         return <Marker
                 coordinate={coordinates}
                 draggable
-                onPress={(e) => {
+                onPress={() => {
                     onpress();
                 }}
             onDragEnd={(e) => {
@@ -25,7 +25,7 @@ export default class RentedMarker extends React.Component<{ bikeId: number, coor
             >
                 <Image
                     style={Images.pin}
-                    source={require("../../assets/Active.png")}
+                    source={require('../../assets/Active.png')}
                 />
             </Marker>
     }

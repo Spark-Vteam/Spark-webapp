@@ -2,12 +2,12 @@ export const button = {
     width: 160,
     height: 40,
     // justifyContent: "center",
-    backgroundColor: "#209F5B",
+    backgroundColor: '#209F5B',
     borderRadius: 8,
     padding: 10,
     marginTop: 15,
     marginBottom: 15,
-    alignSelf: "center",
+    alignSelf: 'center',
     // marginLeft: 8,
     // marginRight: 8,
 
@@ -28,7 +28,7 @@ export const button = {
 }
 
 export const buttonText = {
-    textAlign: "center",
+    textAlign: 'center',
     fontWeight: 'bold',
-    color: "#FFFF"
+    color: '#FFFF'
 }

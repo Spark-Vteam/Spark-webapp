@@ -4,6 +4,7 @@ import { LatLng, Marker } from 'react-native-maps';
 
 import { Images } from '../../styles/index';
 
+import CustomMarkerOnPress from '../../interfaces/customMarkerOnPress';
 
 
 
@@ -13,13 +14,10 @@ export default class CustomMarker extends PureComponent
         coordinates: LatLng,
         id: number
         img: number
-        onpress: Function
+        onpress: CustomMarkerOnPress
     }>{
 
-
-
     render() {
-
 
         const { coordinates, img, id, onpress } = this.props;
         return (

@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 import MapView, { LatLng } from 'react-native-maps';
 import { View } from 'react-native';
 import * as Location from 'expo-location';
@@ -8,13 +8,13 @@ import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
 import { MapStyle } from '../styles/index';
 
-import CustomMarkerArr from "./markers/CustomMarkerArr";
-import UserMarker from "./markers/UserMarker";
-import RentedMarker from "./markers/RentedMarker";
+import CustomMarkerArr from './markers/CustomMarkerArr';
+import UserMarker from './markers/UserMarker';
+import RentedMarker from './markers/RentedMarker';
 
-import RentedPanel from "./panels/RentedPanel";
-import StationPanel from "./panels/StationPanel";
-import BikePanel from "./panels/BikePanel";
+import RentedPanel from './panels/RentedPanel';
+import StationPanel from './panels/StationPanel';
+import BikePanel from './panels/BikePanel';
 
 export default class Map extends React.Component {
 
@@ -65,7 +65,7 @@ export default class Map extends React.Component {
                     panel: null,
                     bikeMarkers: <CustomMarkerArr  // change later to do a new scan instead
                         listOfObjects={this.state.bikes}
-                        img={require("../assets/Available.png")}
+                        img={require('../assets/Available.png')}
                         onpress={this.pressedBike}
                     />
                 });
@@ -154,12 +154,12 @@ export default class Map extends React.Component {
             stations: shortStations,
             bikeMarkers: <CustomMarkerArr
                 listOfObjects={shortAvailableBikes}
-                img={require("../assets/Available.png")}
+                img={require('../assets/Available.png')}
                 onpress={this.pressedBike}
                 />,
             stationMarkers: <CustomMarkerArr
                 listOfObjects={shortStations}
-                img={require("../assets/ChargingStation.png")}
+                img={require('../assets/ChargingStation.png')}
                 onpress={this.pressedStation}
             />
         });
