@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 
 
 // Panel with button to stop the rent. OnPress function is injected.
-export default class RentedPanel extends React.Component<{ onpress: Function }> {
+export default class RentedPanel extends React.Component<{ onpress: ()=> void }> {
     render() {
         const { onpress } = this.props;
         return (

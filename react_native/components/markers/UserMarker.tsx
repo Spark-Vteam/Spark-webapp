@@ -18,7 +18,7 @@ export default class UserMarker extends React.Component<{ currentLocation: any }
             }}>
                 <Image
                     style={Images.pinSquareSmall}
-                    source={require("../../assets/User.png")} />
+                    source={require('../../assets/User.png')} />
             </Marker>
         );
     }

@@ -22,6 +22,10 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "react/react-in-jsx-scope": "off",
+        "spaced-comment": "error",
+        "quotes": ["error", "single"],
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "settings": {
         "react": {

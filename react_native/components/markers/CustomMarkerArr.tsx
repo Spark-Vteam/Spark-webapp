@@ -1,8 +1,10 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 import { View } from 'react-native';
+import { LatLng } from 'react-native-maps';
 
 import Bike from '../../interfaces/bike';
 import Station from '../../interfaces/station';
+import CustomMarkerOnPress from '../../interfaces/customMarkerOnPress';
 
 import CustomMarker from './CustomMarker';
 
@@ -11,7 +13,7 @@ export default class CustomMarkerArr extends React.Component
     <{
         listOfObjects: Array<Bike> | Array<Station>,
         img: number,
-        onpress: (id: number)=>void
+        onpress: CustomMarkerOnPress
     }> {
 
 
@@ -23,7 +25,7 @@ export default class CustomMarkerArr extends React.Component
      * @return {ReactNode | null} returns an array with markers or null if not valid coordinates
      */
     createMarkers = (
-        listOfObjects: Array<Bike> | Array<Station>, img: number, onpress: Function): ReactNode | null => {
+        listOfObjects: Array<Bike> | Array<Station>, img: number, onpress: (id: number, coordinates: LatLng) => void): ReactNode | null => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];
@@ -46,7 +48,7 @@ export default class CustomMarkerArr extends React.Component
             }
             // Invariant Violation error (when using wrong data format) is not caught by
             // catch-statement. Therefore the if statement above is used.
-            console.warn("Invalid coordinates at" + JSON.stringify(listItem));
+            console.warn('Invalid coordinates at' + JSON.stringify(listItem));
             return null
         })
     };

@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 
-import Bike from "../../interfaces/bike";
+import Bike from '../../interfaces/bike';
 
 // Panel with info about available bike. Button to start ride, OnPress function is injected.
-export default class BikePanel extends React.Component<{ bike: Bike, onpress: Function }> {
+export default class BikePanel extends React.Component<{ bike: Bike, onpress: () => void }> {
     render() {
         const { bike, onpress } = this.props;
         return (
