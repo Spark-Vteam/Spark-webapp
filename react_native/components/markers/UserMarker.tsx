@@ -1,8 +1,8 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Image } from 'react-native';
-import { LatLng, Marker } from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 
-import { Base, Typography, Images } from '../../styles/index';
+import { Images } from '../../styles/index';
 
 // Create a unique user Marker using
 // cooridates from currectLocation.

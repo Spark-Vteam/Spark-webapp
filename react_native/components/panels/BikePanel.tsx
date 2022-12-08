@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
-import { Base, Typography, MapStyle, Images, ButtonStyle } from '../../styles/index';
+import React from "react";
+import { Text, View, TouchableOpacity } from 'react-native';
+import { MapStyle, ButtonStyle } from '../../styles/index';
 
 import Bike from "../../interfaces/bike";
 

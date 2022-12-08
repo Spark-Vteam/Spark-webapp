@@ -1,12 +1,12 @@
-import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
-import React, { Component } from 'react';
-import { useState } from 'react';
-import { Base, Typography } from '../../styles/index';
-import { IP } from '@env';
-import mapsModel from '../../models/mapModel';
+// import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
+// import React, { Component } from 'react';
+// import { useState } from 'react';
+// import { Base, Typography } from '../../styles/index';
+// import { IP } from '@env';
+// import mapsModel from '../../models/mapModel';
 
 // Testing setting state in parent
-export default class Test extends React.Component<{ setName: Function }> {
+// export default class Test extends React.Component<{ setName: Function }> {
 
     // IN PARENT:
     // make a callfunction to change state
@@ -49,15 +49,15 @@ export default class Test extends React.Component<{ setName: Function }> {
     //     );
     // }
 
-    // HERE:
-    componentDidMount() {
-        this.props.setName("Alexia")
-    }
+    // // HERE:
+    // componentDidMount() {
+    //     this.props.setName("Alexia")
+    // }
 
-    render() {
-        return <Text>{ "Changed state in parent!" }</Text>
-    }
-}
+    // render() {
+    //     return <Text>{ "Changed state in parent!" }</Text>
+    // }
+// }
 
 
 // Testing props

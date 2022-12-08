@@ -1,12 +1,12 @@
 import React, { ReactNode } from "react";
-import MapView, { Marker, Geojson, Callout, LatLng } from 'react-native-maps';
-import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
+import MapView, { LatLng } from 'react-native-maps';
+import { View } from 'react-native';
 import * as Location from 'expo-location';
 
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
-import { Base, Typography, MapStyle, Images, ButtonStyle } from '../styles/index';
+import { MapStyle } from '../styles/index';
 
 import CustomMarkerArr from "./markers/CustomMarkerArr";
 import UserMarker from "./markers/UserMarker";
@@ -30,7 +30,7 @@ export default class Map extends React.Component {
     }
 
     // -- ... and initialize them in in the constructor
-    constructor(props: Object) {
+    constructor(props: Record<string, unknown>) {
         super(props);
         this.state = {
             locationmarker: null,

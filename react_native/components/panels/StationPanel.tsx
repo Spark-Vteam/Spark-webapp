@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
-import { Text, View, TouchableOpacity, Button, Image } from 'react-native';
-import { Base, Typography, MapStyle, Images, ButtonStyle } from '../../styles/index';
+import React from "react";
+import { Text, View } from 'react-native';
+import { MapStyle } from '../../styles/index';
 
 
 // Panel with info about station. If no active rent, show existing bikes on station.
