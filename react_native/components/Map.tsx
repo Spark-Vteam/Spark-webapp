@@ -231,16 +231,13 @@ export default class Map extends React.Component {
 
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
-
         const ongoingRent = await rentModel.getOngoingRent();
-
-        // todo: här ritas rentedMarker ut med start-koordinationer - egentligen behöver
-        // todo: vi hämta current koordinationer på Python scriptet
         if (ongoingRent) {
             const bikeId = ongoingRent.Bikes_id;
+            const bike = await mapsModel.getBike(bikeId);
             const coordinates = {
-                latitude: parseFloat(ongoingRent.Start.split(',')[0]),
-                longitude: parseFloat(ongoingRent.Start.split(',')[1])
+                latitude: parseFloat(bike.Position.split(',')[0]),
+                longitude: parseFloat(bike.Position.split(',')[1])
             }
             this.createRentedMarker(bikeId, coordinates);
         }
@@ -295,7 +292,7 @@ export default class Map extends React.Component {
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
                 <Polygon coordinates={[
-                    // todo: detta är bara ett testa.
+                    // todo: detta är bara ett test.
                     // todo: ersätt sen med att hämta från backend
                     { latitude: 55.70427, longitude: 13.20144 },
                     { latitude: 55.70522, longitude: 13.20112 },

@@ -1,5 +1,6 @@
 import config from '../config/config.json';
 import { IP } from '@env'
+import Bike from '../interfaces/bike';
 
 const mapsModel = {
     getStations: async function getStations() {
@@ -29,6 +30,17 @@ const mapsModel = {
         const bikes = result[0];
 
         return bikes;
+    },
+    getBike: async function getBikes(bikeId: number): Promise<Bike> {
+        const response = await fetch(`http://${IP}:${config.port}/bike/${bikeId}`);
+
+        const result = await response.json();
+
+        const bike = result[0][0];
+
+        console.log(bike);
+
+        return bike;
     },
 };
 
