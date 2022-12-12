@@ -11,6 +11,16 @@ const mapsModel = {
 
         return stations;
     },
+    getBikesInRadius: async function getBikesInRadius() {
+        // todo: send in latitudeDelta as a parameter (divide by 2?)
+        // const response = await fetch(`http://${IP}:${config.port}/bike`);
+
+        // const result = await response.json();
+
+        // const bikes = result[0];
+
+        // return bikes;
+    },
     getBikes: async function getBikes() {
         const response = await fetch(`http://${IP}:${config.port}/bike`);
 

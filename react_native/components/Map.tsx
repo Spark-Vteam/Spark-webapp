@@ -3,10 +3,13 @@ import MapView, { LatLng } from 'react-native-maps';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
+import { MapStyle, ButtonStyle } from '../styles/index';
+
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
+
 import mapsModel from '../models/mapModel';
-import { MapStyle, ButtonStyle } from '../styles/index';
+import rentModel from '../models/rentModel';
 
 import CustomMarkerArr from './markers/CustomMarkerArr';
 import UserMarker from './markers/UserMarker';
@@ -52,16 +55,19 @@ export default class Map extends React.Component {
             rentedMarker: <RentedMarker
                 bikeId={bikeId}
                 coordinates={coordinates}
-                onpress={(this.pressedRentedMarker)}  // see method below
+                onpress={() => this.pressedRentedMarker(bikeId)}  // see method below
             />
         })
+        // open panel with rent right after creating it
+        this.pressedRentedMarker(bikeId);
     }
 
     // RENTED BIKE PANEL
     // ===================================
-    pressedRentedMarker = () => {
+    pressedRentedMarker = (bikeId: number) => {
         this.setState({
-            panel: <RentedPanel onpress={() => {
+            panel: <RentedPanel onpress={async () => {
+                rentModel.stopRent(1, bikeId);
                 this.setState({
                     rentedMarker: null,
                     panel: null
@@ -92,21 +98,20 @@ export default class Map extends React.Component {
 
     // AVAILABLE BIKE PANEL
     // ===================================
-    pressedBike = (id: number, coordinates: LatLng) => {
+    pressedBike = (bikeId: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
             const bike = this.state.bikes.find((e) => {
-                return e.id == id
+                return e.id == bikeId
             })
             if (bike !== undefined) {
                 this.setState({
                     panel: <BikePanel
                             bike={bike}
-                            onpress={() => {
-                            // add endpoint to create rent in backend
-                            this.createRentedMarker(bike.id, coordinates);
+                            onpress={ async () => {
+                                await rentModel.startRent(1, bikeId);
+                            this.createRentedMarker(bikeId, coordinates);
                             this.setState({
-                                bikeMarkers: null,
-                                panel: null
+                                bikeMarkers: null
                             });
                         }}
                         />
