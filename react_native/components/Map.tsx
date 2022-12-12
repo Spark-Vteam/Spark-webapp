@@ -310,7 +310,7 @@ export default class Map extends React.Component {
 
                 ]}
                     strokeWidth={0}
-                    fillColor={"rgba(255, 0, 0, 0.5)"}
+                    fillColor={'rgba(255, 0, 0, 0.5)'}
                     tappable={true}
                     onPress={
                         () => {
