@@ -67,7 +67,7 @@ export default class Map extends React.Component {
     pressedRentedMarker = () => {
         this.setState({
             panel: <RentedPanel onpress={async () => {
-                rentModel.stopRent(1);
+                rentModel.stopRent();
                 this.setState({
                     rentedMarker: null,
                     panel: null
@@ -212,7 +212,7 @@ export default class Map extends React.Component {
         // GET USERS ONGOING RENT (IF ANY)
         // ===================================
 
-        const ongoingRent = await rentModel.getOngoingRent(1);
+        const ongoingRent = await rentModel.getOngoingRent();
 
         // todo: här ritas rentedMarker ut med start-koordinationer - egentligen behöver
         // todo: vi hämta current koordinationer på Python scriptet
