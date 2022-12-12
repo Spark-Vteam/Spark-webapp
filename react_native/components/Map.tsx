@@ -18,6 +18,8 @@ import RentedMarker from './markers/RentedMarker';
 import RentedPanel from './panels/RentedPanel';
 import StationPanel from './panels/StationPanel';
 import BikePanel from './panels/BikePanel';
+import PricePanel from './panels/PricePanel';
+
 
 export default class Map extends React.Component {
 
@@ -75,10 +77,16 @@ export default class Map extends React.Component {
     pressedRentedMarker = () => {
         this.setState({
             panel: <RentedPanel onpress={async () => {
-                rentModel.stopRent();
+                await rentModel.stopRent();
+                const allRents = await rentModel.getRentsOnUser();
+                let price = 0;
+                if (allRents) {
+                    const stoppedRent = allRents[allRents.length - 1];
+                    price = stoppedRent.Price;
+                }
                 this.setState({
                     rentedMarker: null,
-                    panel: null
+                    panel: <PricePanel price={price}/>
                 });
             }} />
         });
