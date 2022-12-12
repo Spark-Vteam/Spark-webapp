@@ -1,6 +1,8 @@
 import config from "../config/config.json";
 import { IP } from '@env'
 
+import Rent from "../interfaces/rent";
+
 const rentModel = {
     startRent: async function startRent(userId: number, bikeId: number) {
 
@@ -27,7 +29,8 @@ const rentModel = {
 
         return result;
     },
-    getRentsOnUser: async function getRentOnUser() {
+    getRentsOnUser: async function getRentOnUser(): Promise<Rent[] | null> {
+        // Is used by method getOngoingRent below
 
         const response = await fetch(`http://${IP}:${config.port}/rent/user/1`);
 
@@ -37,30 +40,40 @@ const rentModel = {
 
         return rents;
     },
-    stopRent: async function stopRent(userId: number, bikeId: number) {
+    getOngoingRent: async function getOngoingRent(userId: number) {
+        const allRentsOnUser = await this.getRentsOnUser();
 
-        const allRentsOnUser = await this.getRentsOnUser(userId);
+        if (allRentsOnUser) {
+            const findActiveRent = allRentsOnUser.find((e) => {
+                return e.Status === 10; // code for active
+            });
 
-        // console.log(allRentsOnUser);
+            return findActiveRent;   // can be null
+        }
 
-        const findRent = allRentsOnUser.find((e) => {
-            return e.Bikes_id === bikeId;
-        });
+        return null;
+    },
+    stopRent: async function stopRent(userId: number) {
 
-        // todo: ha findRent.id i body istället för i param?
-        const response = await fetch(`http://${IP}:${config.port}/rent/${findRent.id}`, {
-            // body: JSON.stringify(body),
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'PUT'
-        })
+        const ongoingRent = await this.getOngoingRent(userId);
 
-        // todo: hantera om response.status !== 200 , typ nåt systemfel
-        const result = response.status;
+        if (ongoingRent) {
+            // todo: ha findRent.id i body istället för i param?
+            const response = await fetch(`http://${IP}:${config.port}/rent/${ongoingRent.id}`, {
+                // body: JSON.stringify(body),
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'PUT'
+            })
 
-        return result;
+            // todo: hantera om response.status !== 200 , typ nåt systemfel
+            const result = response.status;
 
+            return result;
+        }
+
+        return "No active rents";
     }
 };
 

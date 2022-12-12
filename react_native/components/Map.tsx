@@ -24,8 +24,8 @@ export default class Map extends React.Component {
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes: null | Array<Bike>,
-        stations: null | Array<Station>,
+        bikes: null | Bike[],
+        stations: null | Station[],
         bikeMarkers: null | ReactNode,
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode
@@ -67,7 +67,7 @@ export default class Map extends React.Component {
     pressedRentedMarker = (bikeId: number) => {
         this.setState({
             panel: <RentedPanel onpress={async () => {
-                rentModel.stopRent(1, bikeId);
+                rentModel.stopRent(1);
                 this.setState({
                     rentedMarker: null,
                     panel: null
@@ -124,7 +124,7 @@ export default class Map extends React.Component {
 
         // Todo: Implement scan instead of getting all bikes and stations
 
-        let bikes: Array<Bike> | null = null;
+        let bikes: Bike[] | null = null;
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -144,7 +144,7 @@ export default class Map extends React.Component {
 
         // GET STATIONS AND SET MARKERS
         // ===================================
-        let stations: Array<Station> | null = await mapsModel.getStations();
+        let stations: Station[] | null = await mapsModel.getStations();
 
         if (stations !== null) { // todo: delete once scan radius works
             // Slicing array to not overload mobile phone (switch later to 'scan area')
@@ -209,7 +209,21 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // this.scanArea();
+        // GET USERS ONGOING RENT (IF ANY)
+        // ===================================
+
+        const ongoingRent = await rentModel.getOngoingRent(1);
+
+        // todo: här ritas rentedMarker ut med start-koordinationer - egentligen behöver
+        // todo: vi hämta current koordinationer på Python scriptet
+        if (ongoingRent) {
+            const bikeId = ongoingRent.Bikes_id;
+            const coordinates = {
+                latitude: parseFloat(ongoingRent.Start.split(',')[0]),
+                longitude: parseFloat(ongoingRent.Start.split(',')[1])
+            }
+            this.createRentedMarker(bikeId, coordinates);
+        }
     }
 
     // -- Class component has a render() function in which we can
