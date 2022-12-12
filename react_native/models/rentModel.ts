@@ -1,7 +1,7 @@
-import config from "../config/config.json";
+import config from '../config/config.json';
 import { IP } from '@env'
 
-import Rent from "../interfaces/rent";
+import Rent from '../interfaces/rent';
 
 const rentModel = {
     startRent: async function startRent(userId: number, bikeId: number) {
@@ -40,7 +40,7 @@ const rentModel = {
 
         return rents;
     },
-    getOngoingRent: async function getOngoingRent(userId: number) {
+    getOngoingRent: async function getOngoingRent() {
         const allRentsOnUser = await this.getRentsOnUser();
 
         if (allRentsOnUser) {
@@ -53,9 +53,9 @@ const rentModel = {
 
         return null;
     },
-    stopRent: async function stopRent(userId: number) {
+    stopRent: async function stopRent() {
 
-        const ongoingRent = await this.getOngoingRent(userId);
+        const ongoingRent = await this.getOngoingRent();
 
         if (ongoingRent) {
             // todo: ha findRent.id i body istället för i param?
@@ -73,7 +73,7 @@ const rentModel = {
             return result;
         }
 
-        return "No active rents";
+        return 'No active rents';
     }
 };
 

@@ -55,16 +55,16 @@ export default class Map extends React.Component {
             rentedMarker: <RentedMarker
                 bikeId={bikeId}
                 coordinates={coordinates}
-                onpress={() => this.pressedRentedMarker(bikeId)}  // see method below
+                onpress={this.pressedRentedMarker}  // see method below
             />
         })
         // open panel with rent right after creating it
-        this.pressedRentedMarker(bikeId);
+        this.pressedRentedMarker();
     }
 
     // RENTED BIKE PANEL
     // ===================================
-    pressedRentedMarker = (bikeId: number) => {
+    pressedRentedMarker = () => {
         this.setState({
             panel: <RentedPanel onpress={async () => {
                 rentModel.stopRent(1);
