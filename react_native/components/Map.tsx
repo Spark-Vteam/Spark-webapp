@@ -28,9 +28,13 @@ export default class Map extends React.Component {
         stations: null | Station[],
         bikeMarkers: null | ReactNode,
         stationMarkers: null | ReactNode,
-        rentedMarker: null | ReactNode
-        panel: null | ReactNode
-        scanButton: null | ReactNode
+        rentedMarker: null | ReactNode,
+
+        panel: null | ReactNode,
+
+        scanButton: null | ReactNode,
+        centerPoint: null | LatLng,
+        radius: number
     }
 
     // -- ... and initialize them in in the constructor
@@ -43,8 +47,12 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
+
             panel: null,
-            scanButton: null
+
+            scanButton: null,
+            centerPoint: null,
+            radius: 0.01 * 111 * 1000 / 2 // see below under onRegionChangeComplete
         };
     }
 
@@ -123,6 +131,7 @@ export default class Map extends React.Component {
     scanArea = async () => {
 
         // Todo: Implement scan instead of getting all bikes and stations
+        // use this.state.radius och this.state.centerPoint
 
         let bikes: Bike[] | null = null;
 
@@ -209,7 +218,18 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // GET USERS ONGOING RENT (IF ANY)
+        // INITAL CENTERPOINT FOR TESTING
+        // ===================================
+        // Initial centerpoint. Replace later
+        // to set centerpoint to where user is.
+        this.setState({
+            centerPoint: {
+                latitude: 55.7047,
+                longitude: 13.1910
+            }
+        });
+
+        // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
 
         const ongoingRent = await rentModel.getOngoingRent();
@@ -244,6 +264,22 @@ export default class Map extends React.Component {
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 initialRegion={initialRegion}
+                onRegionChange={(e) => {
+                    // GET RADIUS AND CENTER POINT
+                    // OF RENDERED MAP TO USE WHEN SCANNING
+                    // ======================
+                    const latDelta = e.latitudeDelta;
+                    const lat = e.latitude;
+                    const long = e.longitude;
+
+                    this.setState({
+                        // 1 degree = 111 km
+                        // 1 km = 1000 m
+                        // radius = 1/2 diameter
+                        radius: latDelta * 111 * 1000 / 2,
+                        centerPoint: { lat, long }
+                    });
+                }}
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
