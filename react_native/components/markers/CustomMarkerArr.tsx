@@ -11,7 +11,7 @@ import CustomMarker from './CustomMarker';
 
 export default class CustomMarkerArr extends React.Component
     <{
-        listOfObjects: Array<Bike> | Array<Station>,
+        listOfObjects: Bike[] | Station[],
         img: number,
         onpress: CustomMarkerOnPress
     }> {
@@ -19,13 +19,13 @@ export default class CustomMarkerArr extends React.Component
 
     /**
      * Class method to create array of custom markers (for example bikes and stations)
-     * @param {Array<Bikes>} listOfObjects array with bikes or stations
+     * @param {Bikes[]} listOfObjects array with bikes or stations
      * @param {number} img for example <require("../assets/pin.png")>
      * @param {string} type specify 'bike' or 'station' to get proper onPress in CustomMarker>
      * @return {ReactNode | null} returns an array with markers or null if not valid coordinates
      */
     createMarkers = (
-        listOfObjects: Array<Bike> | Array<Station>, img: number, onpress: (id: number, coordinates: LatLng) => void): ReactNode | null => {
+        listOfObjects: Bike[] | Station[], img: number, onpress: (id: number, coordinates: LatLng) => void): ReactNode | null => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];

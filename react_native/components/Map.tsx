@@ -1,12 +1,15 @@
 import React, { ReactNode } from 'react';
-import MapView, { LatLng } from 'react-native-maps';
+import MapView, { LatLng, Polygon } from 'react-native-maps';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
+import { MapStyle, ButtonStyle } from '../styles/index';
+
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
+
 import mapsModel from '../models/mapModel';
-import { MapStyle, ButtonStyle } from '../styles/index';
+import rentModel from '../models/rentModel';
 
 import CustomMarkerArr from './markers/CustomMarkerArr';
 import UserMarker from './markers/UserMarker';
@@ -21,13 +24,17 @@ export default class Map extends React.Component {
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        bikes: null | Array<Bike>,
-        stations: null | Array<Station>,
+        bikes: null | Bike[],
+        stations: null | Station[],
         bikeMarkers: null | ReactNode,
         stationMarkers: null | ReactNode,
-        rentedMarker: null | ReactNode
-        panel: null | ReactNode
-        scanButton: null | ReactNode
+        rentedMarker: null | ReactNode,
+
+        panel: null | ReactNode,
+
+        scanButton: null | ReactNode,
+        centerPoint: null | LatLng,
+        radius: number
     }
 
     // -- ... and initialize them in in the constructor
@@ -40,8 +47,12 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
+
             panel: null,
-            scanButton: null
+
+            scanButton: null,
+            centerPoint: null,
+            radius: 0.01 * 111 * 1000 / 2 // see below under onRegionChangeComplete
         };
     }
 
@@ -52,16 +63,19 @@ export default class Map extends React.Component {
             rentedMarker: <RentedMarker
                 bikeId={bikeId}
                 coordinates={coordinates}
-                onpress={(this.pressedRentedMarker)}  // see method below
+                onpress={this.pressedRentedMarker}  // see method below
             />
         })
+        // open panel with rent right after creating it
+        this.pressedRentedMarker();
     }
 
     // RENTED BIKE PANEL
     // ===================================
     pressedRentedMarker = () => {
         this.setState({
-            panel: <RentedPanel onpress={() => {
+            panel: <RentedPanel onpress={async () => {
+                rentModel.stopRent();
                 this.setState({
                     rentedMarker: null,
                     panel: null
@@ -92,21 +106,20 @@ export default class Map extends React.Component {
 
     // AVAILABLE BIKE PANEL
     // ===================================
-    pressedBike = (id: number, coordinates: LatLng) => {
+    pressedBike = (bikeId: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
             const bike = this.state.bikes.find((e) => {
-                return e.id == id
+                return e.id == bikeId
             })
             if (bike !== undefined) {
                 this.setState({
                     panel: <BikePanel
                             bike={bike}
-                            onpress={() => {
-                            // add endpoint to create rent in backend
-                            this.createRentedMarker(bike.id, coordinates);
+                            onpress={ async () => {
+                                await rentModel.startRent(1, bikeId);
+                            this.createRentedMarker(bikeId, coordinates);
                             this.setState({
-                                bikeMarkers: null,
-                                panel: null
+                                bikeMarkers: null
                             });
                         }}
                         />
@@ -118,8 +131,9 @@ export default class Map extends React.Component {
     scanArea = async () => {
 
         // Todo: Implement scan instead of getting all bikes and stations
+        // use this.state.radius och this.state.centerPoint
 
-        let bikes: Array<Bike> | null = null;
+        let bikes: Bike[] | null = null;
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -139,7 +153,7 @@ export default class Map extends React.Component {
 
         // GET STATIONS AND SET MARKERS
         // ===================================
-        let stations: Array<Station> | null = await mapsModel.getStations();
+        let stations: Station[] | null = await mapsModel.getStations();
 
         if (stations !== null) { // todo: delete once scan radius works
             // Slicing array to not overload mobile phone (switch later to 'scan area')
@@ -204,7 +218,32 @@ export default class Map extends React.Component {
             locationmarker: <UserMarker currentLocation={currentLocation} />
         });
 
-        // this.scanArea();
+        // INITAL CENTERPOINT FOR TESTING
+        // ===================================
+        // Initial centerpoint. Replace later
+        // to set centerpoint to where user is.
+        this.setState({
+            centerPoint: {
+                latitude: 55.7047,
+                longitude: 13.1910
+            }
+        });
+
+        // GET USERS ONGOING RENT (IF THERE IS ANY)
+        // ===================================
+
+        const ongoingRent = await rentModel.getOngoingRent();
+
+        // todo: här ritas rentedMarker ut med start-koordinationer - egentligen behöver
+        // todo: vi hämta current koordinationer på Python scriptet
+        if (ongoingRent) {
+            const bikeId = ongoingRent.Bikes_id;
+            const coordinates = {
+                latitude: parseFloat(ongoingRent.Start.split(',')[0]),
+                longitude: parseFloat(ongoingRent.Start.split(',')[1])
+            }
+            this.createRentedMarker(bikeId, coordinates);
+        }
     }
 
     // -- Class component has a render() function in which we can
@@ -225,6 +264,22 @@ export default class Map extends React.Component {
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 initialRegion={initialRegion}
+                onRegionChange={(e) => {
+                    // GET RADIUS AND CENTER POINT
+                    // OF RENDERED MAP TO USE WHEN SCANNING
+                    // ======================
+                    const latDelta = e.latitudeDelta;
+                    const lat = e.latitude;
+                    const long = e.longitude;
+
+                    this.setState({
+                        // 1 degree = 111 km
+                        // 1 km = 1000 m
+                        // radius = 1/2 diameter
+                        radius: latDelta * 111 * 1000 / 2,
+                        centerPoint: { lat, long }
+                    });
+                }}
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
@@ -239,6 +294,35 @@ export default class Map extends React.Component {
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
+                <Polygon coordinates={[
+                    // todo: detta är bara ett testa.
+                    // todo: ersätt sen med att hämta från backend
+                    { latitude: 55.70427, longitude: 13.20144 },
+                    { latitude: 55.70522, longitude: 13.20112 },
+                    { latitude: 55.70562, longitude: 13.20046 },
+                    { latitude: 55.70587, longitude: 13.20114 },
+                    { latitude: 55.70595, longitude: 13.20465 },
+                    { latitude: 55.70342, longitude: 13.20514 },
+                    { latitude: 55.70251, longitude: 13.20368 },
+                    { latitude: 55.70133, longitude: 13.20132 },
+                    { latitude: 55.70145, longitude: 13.20056 },
+                    { latitude: 55.70263, longitude: 13.20126 },
+
+                ]}
+                    strokeWidth={0}
+                    fillColor={'rgba(255, 0, 0, 0.5)'}
+                    tappable={true}
+                    onPress={
+                        () => {
+                            this.setState({
+                                panel:
+                                    <View style={MapStyle.panel as any}>
+                                        <Text>Här får du inte köra.</Text>
+                                    </View>
+                            })
+                        }
+                    }
+                />
             </MapView>
             { this.state.scanButton }
             { this.state.panel }
