@@ -30,6 +30,7 @@ export default class GeofenceGroup extends React.Component<{
                     coordinates={coordinates}
                     key={index}
                     color={'rgba(255, 244, 0, 0.5)'}
+                    borderColor={'#746F00'}
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
@@ -43,6 +44,7 @@ export default class GeofenceGroup extends React.Component<{
                     coordinates={coordinates}
                     key={index}
                     color={'rgba(255, 140, 0, 0.5)'}
+                    borderColor={'#935000'}
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
@@ -56,6 +58,7 @@ export default class GeofenceGroup extends React.Component<{
                     coordinates={coordinates}
                     key={index}
                     color={'rgba(255, 0, 0, 0.5)'}
+                    borderColor={'#7E0000'}
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}

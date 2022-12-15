@@ -6,12 +6,13 @@ import { LatLng, Polygon } from 'react-native-maps';
 export default class Geofence extends React.Component
     <{
         coordinates: number[][], // array of arrays of numbers
-        color: string
+        color: string,
+        borderColor: string,
         onpress: () => void
     }>{
 
     render() {
-        const { coordinates, color, onpress } = this.props;
+        const { coordinates, color, borderColor, onpress } = this.props;
 
         const coordinatesCorrectFormat: LatLng[] = []
 
@@ -25,8 +26,8 @@ export default class Geofence extends React.Component
         return (
             <Polygon
                 coordinates={coordinatesCorrectFormat}
-                strokeWidth={0}
-                strokeColor={'rgba(255, 244, 0, 0.0)'}
+                strokeWidth={3}
+                strokeColor={borderColor}
                 fillColor={color}
                 tappable={true}
                 onPress={onpress}
