@@ -1,10 +1,5 @@
 import React, { ReactNode } from 'react';
-import { View, Text } from 'react-native';
-import { LatLng } from 'react-native-maps';
-
-import Bike from '../../interfaces/bike';
-import Station from '../../interfaces/station';
-import CustomMarkerOnPress from '../../interfaces/customMarkerOnPress';
+import { View } from 'react-native';
 
 import GeofenceType from '../../interfaces/geofence';
 import Geofence from './Geofence';
@@ -12,11 +7,9 @@ import Geofence from './Geofence';
 import GeofencePanel from '../panels/GeofencePanel';
 
 
-
-
 export default class GeofenceGroup extends React.Component<{
     geofences: GeofenceType[],
-    setPanel: (newpanel: any) => void
+    setPanel: (newpanel: ReactNode) => void
 }> {
 
     /**
@@ -25,7 +18,7 @@ export default class GeofenceGroup extends React.Component<{
      * @param {setPanel} setPanel function to set panel when pressing geofence
      * @return {ReactNode} returns an group of geofences
      */
-    createMarkers = (geofences: GeofenceType[], setPanel: (newPanel: any) => void)
+    createMarkers = (geofences: GeofenceType[], setPanel: (newPanel: ReactNode) => void)
         : ReactNode => {
         return geofences.map((e, index: number) => {
             const coordinates = JSON.parse(e.Coordinates);
@@ -40,7 +33,7 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={"Your max speed will be reduced here."}
+                            info={'Your max speed will be reduced here.'}
                         />)
                     }}
                 />
@@ -53,7 +46,7 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={"You are not allowed to park here."}
+                            info={'You are not allowed to park here.'}
                         />)
                     }}
                 />
@@ -66,7 +59,7 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={"No riding in this area. The bike will stop if you try to drive here."}
+                            info={'No riding in this area. Your bike will stop if you try to drive here.'}
                         />)
                     }}
                 />

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
+// import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native';
-import Test from './components/experiment/Test';
+// import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
 
@@ -12,7 +12,7 @@ import Map from './components/Map';
 export default class App extends Component {
 
   // FOR TESTING
-  //=========================
+  // =========================
 
   // state: {
   //   name: string,

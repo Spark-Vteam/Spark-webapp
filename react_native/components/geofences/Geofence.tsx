@@ -15,7 +15,7 @@ export default class Geofence extends React.Component
     render() {
         const { coordinates, color, onpress } = this.props;
 
-        let coordinatesCorrectFormat: LatLng[] = []
+        const coordinatesCorrectFormat: LatLng[] = []
 
         coordinates.forEach((e) => {
             coordinatesCorrectFormat.push({

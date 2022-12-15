@@ -12,7 +12,6 @@ import mapsModel from '../models/mapModel';
 import rentModel from '../models/rentModel';
 
 import GeofenceGroup from './geofences/GeofenceGroup';
-import Geofence from './geofences/Geofence';
 
 import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
@@ -64,7 +63,7 @@ export default class Map extends React.Component {
     }
 
 
-    setPanel = (newpanel: any) => {
+    setPanel = (newpanel: ReactNode) => {
         this.setState({
             panel: newpanel
         })
@@ -260,10 +259,6 @@ export default class Map extends React.Component {
             />
         })
 
-        // console.log(geofences[0])
-        // const test = JSON.parse(geofences[0].Coordinates);
-        // console.log(test);
-
 
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
@@ -327,35 +322,6 @@ export default class Map extends React.Component {
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
-                {/* <Polygon coordinates={[
-                    // todo: detta är bara ett test.
-                    // todo: ersätt sen med att hämta från backend
-                    { latitude: 55.70427, longitude: 13.20144 },
-                    { latitude: 55.70522, longitude: 13.20112 },
-                    { latitude: 55.70562, longitude: 13.20046 },
-                    { latitude: 55.70587, longitude: 13.20114 },
-                    { latitude: 55.70595, longitude: 13.20465 },
-                    { latitude: 55.70342, longitude: 13.20514 },
-                    { latitude: 55.70251, longitude: 13.20368 },
-                    { latitude: 55.70133, longitude: 13.20132 },
-                    { latitude: 55.70145, longitude: 13.20056 },
-                    { latitude: 55.70263, longitude: 13.20126 },
-
-                ]}
-                    strokeWidth={0}
-                    fillColor={'rgba(255, 0, 0, 0.5)'}
-                    tappable={true}
-                    onPress={
-                        () => {
-                            this.setState({
-                                panel:
-                                    <View style={MapStyle.panel as any}>
-                                        <Text>Här får du inte köra.</Text>
-                                    </View>
-                            })
-                        }
-                    }
-                /> */}
                 {this.state.geofences}
             </MapView>
             { this.state.scanButton }
