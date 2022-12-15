@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import MapView, { LatLng, Polygon } from 'react-native-maps';
+import MapView, { LatLng } from 'react-native-maps';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
@@ -11,7 +11,10 @@ import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
 import rentModel from '../models/rentModel';
 
-import CustomMarkerArr from './markers/CustomMarkerArr';
+import GeofenceGroup from './geofences/GeofenceGroup';
+import Geofence from './geofences/Geofence';
+
+import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
 
@@ -31,6 +34,7 @@ export default class Map extends React.Component {
         bikeMarkers: null | ReactNode,
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode,
+        geofences: null | ReactNode,
 
         panel: null | ReactNode,
 
@@ -49,6 +53,7 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
+            geofences: null,
 
             panel: null,
 
@@ -58,7 +63,15 @@ export default class Map extends React.Component {
         };
     }
 
-    // RENTED BIKE MARKER
+
+    setPanel = (newpanel: any) => {
+        this.setState({
+            panel: newpanel
+        })
+    }
+
+
+    // CREATE RENTED BIKE MARKER
     // ===================================
     createRentedMarker = (bikeId: number, coordinates: LatLng) => {
         this.setState({
@@ -72,7 +85,7 @@ export default class Map extends React.Component {
         this.pressedRentedMarker();
     }
 
-    // RENTED BIKE PANEL
+    // CREATE RENTED BIKE PANEL
     // ===================================
     pressedRentedMarker = () => {
         this.setState({
@@ -94,7 +107,7 @@ export default class Map extends React.Component {
     }
 
 
-    // STATION PANEL
+    // CREATE STATION PANEL
     // ===================================
     pressedStation = (id: number) => {
         if (this.state.stations !== null && this.state.stations !== undefined) {
@@ -112,7 +125,7 @@ export default class Map extends React.Component {
         }
     }
 
-    // AVAILABLE BIKE PANEL
+    // CREATE AVAILABLE BIKE PANEL
     // ===================================
     pressedBike = (bikeId: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
@@ -171,7 +184,7 @@ export default class Map extends React.Component {
         if (bikes !== null) {
             this.setState({
                 bikes: bikes,
-                bikeMarkers: <CustomMarkerArr
+                bikeMarkers: <CustomMarkerGroup
                     listOfObjects={bikes}
                     img={require('../assets/Available.png')}
                     onpress={this.pressedBike}
@@ -182,7 +195,7 @@ export default class Map extends React.Component {
         if (stations !== null) {
             this.setState({
                 stations: stations,
-                stationMarkers: <CustomMarkerArr
+                stationMarkers: <CustomMarkerGroup
                     listOfObjects={stations}
                     img={require('../assets/ChargingStation.png')}
                     onpress={this.pressedStation}
@@ -236,6 +249,21 @@ export default class Map extends React.Component {
                 longitude: 13.1910
             }
         });
+
+        // CREATE GEOFENCES
+        // ===================================
+        const geofences = await mapsModel.getGeofences();
+        this.setState({
+            geofences: <GeofenceGroup
+                geofences={geofences}
+                setPanel={this.setPanel}
+            />
+        })
+
+        // console.log(geofences[0])
+        // const test = JSON.parse(geofences[0].Coordinates);
+        // console.log(test);
+
 
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
@@ -299,7 +327,7 @@ export default class Map extends React.Component {
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
-                <Polygon coordinates={[
+                {/* <Polygon coordinates={[
                     // todo: detta är bara ett test.
                     // todo: ersätt sen med att hämta från backend
                     { latitude: 55.70427, longitude: 13.20144 },
@@ -327,7 +355,8 @@ export default class Map extends React.Component {
                             })
                         }
                     }
-                />
+                /> */}
+                {this.state.geofences}
             </MapView>
             { this.state.scanButton }
             { this.state.panel }

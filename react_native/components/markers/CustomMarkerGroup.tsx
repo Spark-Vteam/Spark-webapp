@@ -18,14 +18,17 @@ export default class CustomMarkerArr extends React.Component
 
 
     /**
-     * Class method to create array of custom markers (for example bikes and stations)
+     * Class method to create group of custom markers (for example bikes and stations)
      * @param {Bikes[]} listOfObjects array with bikes or stations
      * @param {number} img for example <require("../assets/pin.png")>
-     * @param {string} type specify 'bike' or 'station' to get proper onPress in CustomMarker>
-     * @return {ReactNode | null} returns an array with markers or null if not valid coordinates
+     * @param {string} onpress set function called when pressing marker on map>
+     * @return {ReactNode | null} returns an group of markers or null if not valid coordinates
      */
     createMarkers = (
-        listOfObjects: Bike[] | Station[], img: number, onpress: (id: number, coordinates: LatLng) => void): ReactNode | null => {
+        listOfObjects: Bike[] | Station[],
+        img: number,
+        onpress: (id: number, coordinates: LatLng) => void)
+        :ReactNode | null => {
         return listOfObjects.map((listItem: Bike | Station, index: number) => {
 
             const lat = listItem.Position.split(',')[0];

@@ -42,6 +42,18 @@ const mapsModel = {
 
         return bike;
     },
+    getGeofences: async function getGeofences() {
+        const response = await fetch(`http://${IP}:${config.port}/geofence`);
+
+        const result = await response.json();
+
+        // const test = await JSON.parse(result);
+
+        // console.log(test);
+        const geofences = result[0];
+        // return null;
+        return geofences;
+    },
 };
 
 export default mapsModel;
