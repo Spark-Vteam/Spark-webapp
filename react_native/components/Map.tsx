@@ -114,12 +114,10 @@ export default class Map extends React.Component {
                 return e.id == id
             })
             if (station !== undefined) {
-                this.setState({
-                    panel: <StationPanel
-                            name={station.Name}
-                            activeRent={this.state.rentedMarker !== null}
-                        />
-                })
+                this.setPanel(<StationPanel
+                    name={station.Name}
+                    activeRent={this.state.rentedMarker !== null}
+                />);
             }
         }
     }
@@ -132,22 +130,22 @@ export default class Map extends React.Component {
                 return e.id == bikeId
             })
             if (bike !== undefined) {
-                this.setState({
-                    panel: <BikePanel
-                            bike={bike}
-                            onpress={ async () => {
-                                await rentModel.startRent(1, bikeId);
-                            this.createRentedMarker(bikeId, coordinates);
-                            this.setState({
-                                bikeMarkers: null
-                            });
-                        }}
-                        />
-                })
+                this.setPanel(<BikePanel
+                    bike={bike}
+                    onpress={async () => {
+                        await rentModel.startRent(1, bikeId);
+                        this.createRentedMarker(bikeId, coordinates);
+                        this.setState({
+                            bikeMarkers: null
+                        });
+                    }}
+                />);
             }
         }
     }
 
+
+    // Scan the visible area for bikes and stations
     scanArea = async () => {
 
         // Todo: Implement scan instead of getting all bikes and stations
@@ -201,8 +199,6 @@ export default class Map extends React.Component {
                 />
             });
         }
-
-
     }
 
     // COMPONENT DID MOUNT
@@ -278,7 +274,7 @@ export default class Map extends React.Component {
     // -- add more code and then specify output of component in return
     render() {
 
-        // INITAL REGION FOR TESTING
+        // INITIAL REGION FOR TESTING
         // ===================================
         // Initial region is set to Lund for testing. Replace later
         // to set initial region to where user is.
