@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import MapView, { LatLng, Polygon } from 'react-native-maps';
+import MapView, { LatLng } from 'react-native-maps';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as Location from 'expo-location';
 
@@ -11,7 +11,9 @@ import Station from '../interfaces/station';
 import mapsModel from '../models/mapModel';
 import rentModel from '../models/rentModel';
 
-import CustomMarkerArr from './markers/CustomMarkerArr';
+import GeofenceGroup from './geofences/GeofenceGroup';
+
+import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
 
@@ -31,6 +33,7 @@ export default class Map extends React.Component {
         bikeMarkers: null | ReactNode,
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode,
+        geofences: null | ReactNode,
 
         panel: null | ReactNode,
 
@@ -49,6 +52,7 @@ export default class Map extends React.Component {
             bikeMarkers: null,
             stationMarkers: null,
             rentedMarker: null,
+            geofences: null,
 
             panel: null,
 
@@ -58,7 +62,15 @@ export default class Map extends React.Component {
         };
     }
 
-    // RENTED BIKE MARKER
+
+    setPanel = (newpanel: ReactNode) => {
+        this.setState({
+            panel: newpanel
+        })
+    }
+
+
+    // CREATE RENTED BIKE MARKER
     // ===================================
     createRentedMarker = (bikeId: number, coordinates: LatLng) => {
         this.setState({
@@ -72,7 +84,7 @@ export default class Map extends React.Component {
         this.pressedRentedMarker();
     }
 
-    // RENTED BIKE PANEL
+    // CREATE RENTED BIKE PANEL
     // ===================================
     pressedRentedMarker = () => {
         this.setState({
@@ -94,7 +106,7 @@ export default class Map extends React.Component {
     }
 
 
-    // STATION PANEL
+    // CREATE STATION PANEL
     // ===================================
     pressedStation = (id: number) => {
         if (this.state.stations !== null && this.state.stations !== undefined) {
@@ -102,17 +114,15 @@ export default class Map extends React.Component {
                 return e.id == id
             })
             if (station !== undefined) {
-                this.setState({
-                    panel: <StationPanel
-                            name={station.Name}
-                            activeRent={this.state.rentedMarker !== null}
-                        />
-                })
+                this.setPanel(<StationPanel
+                    name={station.Name}
+                    activeRent={this.state.rentedMarker !== null}
+                />);
             }
         }
     }
 
-    // AVAILABLE BIKE PANEL
+    // CREATE AVAILABLE BIKE PANEL
     // ===================================
     pressedBike = (bikeId: number, coordinates: LatLng) => {
         if (this.state.bikes !== undefined && this.state.bikes !== null) {
@@ -120,22 +130,22 @@ export default class Map extends React.Component {
                 return e.id == bikeId
             })
             if (bike !== undefined) {
-                this.setState({
-                    panel: <BikePanel
-                            bike={bike}
-                            onpress={ async () => {
-                                await rentModel.startRent(1, bikeId);
-                            this.createRentedMarker(bikeId, coordinates);
-                            this.setState({
-                                bikeMarkers: null
-                            });
-                        }}
-                        />
-                })
+                this.setPanel(<BikePanel
+                    bike={bike}
+                    onpress={async () => {
+                        await rentModel.startRent(1, bikeId);
+                        this.createRentedMarker(bikeId, coordinates);
+                        this.setState({
+                            bikeMarkers: null
+                        });
+                    }}
+                />);
             }
         }
     }
 
+
+    // Scan the visible area for bikes and stations
     scanArea = async () => {
 
         // Todo: Implement scan instead of getting all bikes and stations
@@ -171,7 +181,7 @@ export default class Map extends React.Component {
         if (bikes !== null) {
             this.setState({
                 bikes: bikes,
-                bikeMarkers: <CustomMarkerArr
+                bikeMarkers: <CustomMarkerGroup
                     listOfObjects={bikes}
                     img={require('../assets/Available.png')}
                     onpress={this.pressedBike}
@@ -182,15 +192,13 @@ export default class Map extends React.Component {
         if (stations !== null) {
             this.setState({
                 stations: stations,
-                stationMarkers: <CustomMarkerArr
+                stationMarkers: <CustomMarkerGroup
                     listOfObjects={stations}
                     img={require('../assets/ChargingStation.png')}
                     onpress={this.pressedStation}
                 />
             });
         }
-
-
     }
 
     // COMPONENT DID MOUNT
@@ -237,6 +245,17 @@ export default class Map extends React.Component {
             }
         });
 
+        // CREATE GEOFENCES
+        // ===================================
+        const geofences = await mapsModel.getGeofences();
+        this.setState({
+            geofences: <GeofenceGroup
+                geofences={geofences}
+                setPanel={this.setPanel}
+            />
+        })
+
+
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
         const ongoingRent = await rentModel.getOngoingRent();
@@ -255,7 +274,7 @@ export default class Map extends React.Component {
     // -- add more code and then specify output of component in return
     render() {
 
-        // INITAL REGION FOR TESTING
+        // INITIAL REGION FOR TESTING
         // ===================================
         // Initial region is set to Lund for testing. Replace later
         // to set initial region to where user is.
@@ -288,6 +307,7 @@ export default class Map extends React.Component {
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
+                    // e.nativeEvent.action === 'polygon-press' <-- funkar tyvärr inte
                     if (e.nativeEvent.action !== 'marker-press') {
                         this.setState({
                             panel: null
@@ -299,35 +319,7 @@ export default class Map extends React.Component {
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
-                <Polygon coordinates={[
-                    // todo: detta är bara ett test.
-                    // todo: ersätt sen med att hämta från backend
-                    { latitude: 55.70427, longitude: 13.20144 },
-                    { latitude: 55.70522, longitude: 13.20112 },
-                    { latitude: 55.70562, longitude: 13.20046 },
-                    { latitude: 55.70587, longitude: 13.20114 },
-                    { latitude: 55.70595, longitude: 13.20465 },
-                    { latitude: 55.70342, longitude: 13.20514 },
-                    { latitude: 55.70251, longitude: 13.20368 },
-                    { latitude: 55.70133, longitude: 13.20132 },
-                    { latitude: 55.70145, longitude: 13.20056 },
-                    { latitude: 55.70263, longitude: 13.20126 },
-
-                ]}
-                    strokeWidth={0}
-                    fillColor={'rgba(255, 0, 0, 0.5)'}
-                    tappable={true}
-                    onPress={
-                        () => {
-                            this.setState({
-                                panel:
-                                    <View style={MapStyle.panel as any}>
-                                        <Text>Här får du inte köra.</Text>
-                                    </View>
-                            })
-                        }
-                    }
-                />
+                {this.state.geofences}
             </MapView>
             { this.state.scanButton }
             { this.state.panel }
