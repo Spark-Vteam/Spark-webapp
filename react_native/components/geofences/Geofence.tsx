@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { LatLng, Polygon } from 'react-native-maps';
 
 
@@ -7,9 +7,7 @@ export default class Geofence extends React.Component
     <{
         coordinates: number[][], // array of arrays of numbers
         color: string
-        onpress: any
-        // info: string,
-        // onpress: () => void // får nog ändras sen
+        onpress: () => void
     }>{
 
     render() {
@@ -24,12 +22,11 @@ export default class Geofence extends React.Component
             })
         })
 
-        // console.log(coordinatesCorrectFormat);
-
         return (
             <Polygon
                 coordinates={coordinatesCorrectFormat}
                 strokeWidth={0}
+                strokeColor={'rgba(255, 244, 0, 0.0)'}
                 fillColor={color}
                 tappable={true}
                 onPress={onpress}

@@ -307,6 +307,7 @@ export default class Map extends React.Component {
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
+                    // e.nativeEvent.action === 'polygon-press' <-- funkar tyvärr inte
                     if (e.nativeEvent.action !== 'marker-press') {
                         this.setState({
                             panel: null
