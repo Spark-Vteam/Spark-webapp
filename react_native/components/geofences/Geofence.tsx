@@ -30,7 +30,15 @@ export default class Geofence extends React.Component
                 strokeColor={borderColor}
                 fillColor={color}
                 tappable={true}
-                onPress={onpress}
+                onPress={() => {
+                    // Setting timer to let e.nativeEvent.action
+                    // happen on MapView component first.
+                    // Otherwise panel will be set to null from there.
+                    setTimeout(function () {
+                        onpress();
+                    }, 50);
+
+                }}
             />
         );
     }
