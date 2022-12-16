@@ -29,8 +29,9 @@ export default class Map extends React.Component {
     state: {
         locationmarker: null | ReactNode,
         bikes: null | Bike[],
-        stations: null | Station[],
         bikeMarkers: null | ReactNode,
+        bikesCharging: null | Bike[],
+        stations: null | Station[],
         stationMarkers: null | ReactNode,
         rentedMarker: null | ReactNode,
         geofences: null | ReactNode,
@@ -48,8 +49,9 @@ export default class Map extends React.Component {
         this.state = {
             locationmarker: null,
             bikes: null,
-            stations: null,
             bikeMarkers: null,
+            bikesCharging: null,
+            stations: null,
             stationMarkers: null,
             rentedMarker: null,
             geofences: null,
@@ -62,6 +64,12 @@ export default class Map extends React.Component {
         };
     }
 
+
+    setRentedMarker = (newRentedMarker: ReactNode | null) => {
+        this.setState({
+            rentedMarker: newRentedMarker
+        })
+    }
 
     setPanel = (newpanel: ReactNode) => {
         this.setState({
@@ -113,9 +121,18 @@ export default class Map extends React.Component {
             const station = this.state.stations.find((e) => {
                 return e.id == id
             })
+
             if (station !== undefined) {
+                // const bikesOnStation = this.state.bikesCharging?.filter((e) => {
+                //     return e.Position === station.Position;
+                // })
+                // console.log("PRESSED STATIOOOON ----------------------------------------------");
+                // console.log(bikesOnStation);
+
                 this.setPanel(<StationPanel
                     name={station.Name}
+                    availableSpots={station.Available}
+                    occupiedSpots={station.Occupied}
                     activeRent={this.state.rentedMarker !== null}
                 />);
             }
@@ -151,21 +168,30 @@ export default class Map extends React.Component {
         // Todo: Implement scan instead of getting all bikes and stations
         // use this.state.radius och this.state.centerPoint
 
-        let bikes: Bike[] | null = null;
+        let bikesAvailable: Bike[] | null = null;
+        let bikesCharging: Bike[] | null = null;
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
+        // Makes so that one can only rent one at a time
         if (this.state.rentedMarker === null) {
-            bikes = await mapsModel.getBikes();
+            const bikesFromScan = await mapsModel.getBikes();    // todo: change to scan
 
-            if (bikes !== null) {
-                const availableBikes = bikes.filter((e) => {
-                    return e.Status == 10;
+            if (bikesFromScan !== null) {
+                const availableBikes = bikesFromScan.filter((e) => {
+                    return e.Status == 10;  // todo: lägg till && e.Battery > 50 eller nåt
                 })
 
+                const chargingBikes = bikesFromScan.filter((e) => {
+                    return e.Status == 40;  // todo: lägg till && e.Battery > 50 eller nåt
+                })
+
+                // console.log(chargingBikes);
+
                  // todo: delete once scan radius works
-                // Slicing array to not overload mobile phone (switch later to 'scan area')
-                bikes = availableBikes.slice(0, 100);
+                // Slicing array to not overload mobile phone (switch later when scan works)
+                bikesAvailable = availableBikes.slice(0, 100);
+                bikesCharging = chargingBikes.slice(0, 100);
             }
         }
 
@@ -178,16 +204,33 @@ export default class Map extends React.Component {
             stations = stations.slice(0, 50);
         }
 
-        if (bikes !== null) {
+        if (bikesAvailable !== null) {
             this.setState({
-                bikes: bikes,
+                bikes: bikesAvailable,
                 bikeMarkers: <CustomMarkerGroup
-                    listOfObjects={bikes}
+                    listOfObjects={bikesAvailable}
                     img={require('../assets/Available.png')}
                     onpress={this.pressedBike}
                 />
             });
         }
+
+
+        if (bikesCharging !== null) {
+            this.setState({
+                bikesCharging: bikesAvailable
+            });
+        }
+
+        // console.log("SCAN ----------------------------------------------");
+        // const testBike = bikesCharging[0];
+        // console.log(testBike.Position)
+        // const teststation = stations.find((e) => {
+        //     return e.Position == testBike.Position;
+        // })
+        // console.log(teststation);
+
+        // console.log(teststation);
 
         if (stations !== null) {
             this.setState({

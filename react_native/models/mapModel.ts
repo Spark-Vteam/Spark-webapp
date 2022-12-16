@@ -22,7 +22,7 @@ const mapsModel = {
 
         // return bikes;
     },
-    getBikes: async function getBikes() {
+    getBikes: async function getBikes(): Promise<Bike[] | null> {
         const response = await fetch(`http://${IP}:${config.port}/bike`);
 
         const result = await response.json();
