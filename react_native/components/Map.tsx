@@ -17,6 +17,7 @@ import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
 import CustomMarker from './markers/CustomMarker';
+import CustomMarkerSmall from './markers/CustomMarkerSmall';
 
 import RentedPanel from './panels/RentedPanel';
 import StationPanel from './panels/StationPanel';
@@ -42,6 +43,7 @@ export default class Map extends React.Component {
 
         destination: null | LatLng;
         destinationMarker: null | ReactNode;
+        preDestinationMarker: null | ReactNode;
 
         scanButton: null | ReactNode,
         centerPoint: null | LatLng,
@@ -65,6 +67,7 @@ export default class Map extends React.Component {
 
             destination: null,
             destinationMarker: null,
+            preDestinationMarker: null,
 
             scanButton: null,
             centerPoint: null,
@@ -93,6 +96,12 @@ export default class Map extends React.Component {
         // todo: if in simulation, get bike moving towards station
         this.setState({
             destination: coordinates,
+        });
+    }
+
+    setPreDestinationMarker = (newPreDestinationMarker: ReactNode) => {
+        this.setState({
+            preDestinationMarker: newPreDestinationMarker,
         });
     }
 
@@ -389,10 +398,28 @@ export default class Map extends React.Component {
                     // e.nativeEvent.action === 'polygon-press' <-- funkar tyvärr inte
                     if (e.nativeEvent.action !== 'marker-press') {
                         if (this.state.rentedMarker && this.state.panel == null) {
+                            this.setState({
+                                preDestinationMarker: <CustomMarkerSmall
+                                    coordinates={e.nativeEvent.coordinate}
+                                    img={require('../assets/PreDestination.png')}
+                                    onpress={() => {
+                                        this.setPanel(<DestinationPanel
+                                            coordinates={e.nativeEvent.coordinate}
+                                            setDestination={this.setDestination}
+                                            setDestinationMarker={this.setDestinationMarker}
+                                            setPreDestinationMarker={this.setPreDestinationMarker}
+                                            setPanel={this.setPanel}
+                                        />)
+                                    }}
+                                    trackViewChanges={false}
+                                />
+                            })
                             this.setPanel(<DestinationPanel
                                 coordinates={e.nativeEvent.coordinate}
                                 setDestination={this.setDestination}
                                 setDestinationMarker={this.setDestinationMarker}
+                                setPreDestinationMarker={this.setPreDestinationMarker}
+                                setPanel={this.setPanel}
                             />)
                         } else {
                             this.setState({
@@ -407,6 +434,7 @@ export default class Map extends React.Component {
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
                 {this.state.geofences}
+                {this.state.preDestinationMarker}
                 {this.state.destinationMarker}
             </MapView>
             { this.state.scanButton }

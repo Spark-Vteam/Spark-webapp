@@ -47,6 +47,7 @@ export default class CustomMarkerArr extends React.Component
                     key={index}
                     coordinates={coordinates}
                     img={img}
+                    trackViewChanges={false}
                     onpress={() => {
                         onpress(listItem.id, coordinates);
                     }}

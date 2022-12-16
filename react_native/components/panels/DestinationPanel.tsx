@@ -9,10 +9,16 @@ import CustomMarker from '../markers/CustomMarker';
 export default class DestinationPanel extends React.Component<{
     coordinates: LatLng,
     setDestination: (coordinates: LatLng) => void,
-    setDestinationMarker: (newDestinationMarker: ReactNode) => void
+    setDestinationMarker: (newDestinationMarker: ReactNode) => void,
+    setPreDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
+    setPanel: (newpanel: ReactNode) => void
 }> {
     render() {
-        const { coordinates, setDestination, setDestinationMarker } = this.props;
+        const { coordinates,
+            setDestination,
+            setDestinationMarker,
+            setPreDestinationMarker,
+            setPanel } = this.props;
         return (
             <View style={MapStyle.panel as any}>
                 {/* <Text style={MapStyle.panelTitle as any}>{ title }</Text> */}
@@ -22,11 +28,15 @@ export default class DestinationPanel extends React.Component<{
                         setDestination(coordinates);
                         setDestinationMarker(<CustomMarker
                             coordinates={coordinates}
-                            img={require('../../assets/Available.png')}
+                            img={require('../../assets/Destination.png')}
                             onpress={() => {
                                 console.log("pressed destination marker!!!");
+                                // todo: add panel to cancel destination
                             }}
+                            trackViewChanges={true}
                         />)
+                        setPanel(null);
+                        setPreDestinationMarker(null);
                     }}
                 >
                     <Text style={ButtonStyle.buttonText as any}>SET AS DESTINATION</Text>

@@ -5,8 +5,8 @@ import { LatLng, Marker } from 'react-native-maps';
 import { Images } from '../../styles/index';
 
 
-// Creates a custom Marker using cooridates and image from props.
-export default class CustomMarker extends PureComponent
+// Creates a custom smaller Marker using cooridates and image from props.
+export default class CustomMarkerSmall extends PureComponent
     <{
         coordinates: LatLng,
         img: number
@@ -24,7 +24,7 @@ export default class CustomMarker extends PureComponent
                 onPress={onpress}
             >
                 <Image
-                    style={Images.pin}
+                    style={Images.pinSmall}
                     source={img}
                 />
             </Marker>
