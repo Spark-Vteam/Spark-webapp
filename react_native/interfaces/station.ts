@@ -1,4 +1,4 @@
-export default interface Bike {
+export default interface Station {
     'Name': string,
     'City': string,
     'Position': string,
