@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 

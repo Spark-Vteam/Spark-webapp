@@ -5,6 +5,9 @@ import { LatLng } from 'react-native-maps';
 // import Bike from '../../interfaces/bike';
 // import BikePanel from './BikePanel';
 import Station from '../../interfaces/station';
+import Pline from '../polyline/Polyline';
+
+import mapsModel from '../../models/mapModel';
 
 
 // Panel with info about station. If no active rent, show existing bikes on station.
@@ -13,6 +16,8 @@ export default class StationPanel extends React.Component<{
     currentDestination: LatLng | null,
     setDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
     setDestination: (coordinates: LatLng | null) => void,
+    rentedPosition: LatLng | null,
+    setRoute: (newRoute: ReactNode) => void,
     setPanel: (newpanel: ReactNode) => void,
     activeRent: boolean,
 }> {
@@ -21,11 +26,18 @@ export default class StationPanel extends React.Component<{
             currentDestination,
             setDestination,
             setDestinationMarker,
+            rentedPosition,
+            setRoute,
             setPanel,
             activeRent } = this.props;
 
         const lat = parseFloat(station.Position.split(',')[0]);
         const long = parseFloat(station.Position.split(',')[1]);
+
+        const stationCoordinates = {
+            latitude: lat,
+            longitude: long
+        }
 
         return (
             <View style={MapStyle.panel as any}>
@@ -41,43 +53,28 @@ export default class StationPanel extends React.Component<{
                         <Text style={MapStyle.panelTextMiddle as any}>{3} bikes ready to rent</Text>
                 }
                 {
-                    activeRent === true &&
-                    currentDestination === null &&
-                    // SET AS DESTINATION BUTTON
-                    // ======================================
-                    <TouchableOpacity
-                        style={ButtonStyle.button as any}
-                            onPress={() => {
-                                setDestination({
-                                    latitude: lat,
-                                    longitude: long
-                                });
-                                setPanel(null);
-                                setDestinationMarker(null)
-                            }}
-                    >
-                        <Text style={ButtonStyle.buttonText as any}>SET AS DESTINATION</Text>
-                    </TouchableOpacity>
-                }
-                {
-                    activeRent === true &&
+                    ((activeRent === true &&
+                    currentDestination === null) ||
+                    (activeRent === true &&
                     currentDestination &&
                     currentDestination.latitude !== lat &&
-                    currentDestination.longitude !== long &&
+                    currentDestination.longitude !== long)) &&
+
                     // SET AS DESTINATION BUTTON
                     // ======================================
                     <TouchableOpacity
                         style={ButtonStyle.button as any}
-                            onPress={() => {
-                                setDestination({
-                                    latitude: lat,
-                                    longitude: long
-                                });
+                            onPress={async () => {
+                                const coordArrForPline = await mapsModel.getRoute(rentedPosition, stationCoordinates);
+                                setRoute(<Pline
+                                    coordinates={coordArrForPline}
+                                />)
+                                setDestination(stationCoordinates);
                                 setPanel(null);
                                 setDestinationMarker(null)
                             }}
                     >
-                        <Text style={ButtonStyle.buttonText as any}>SET AS DESTINATION</Text>
+                        <Text style={ButtonStyle.buttonText as any}>PLOT ROUTE</Text>
                     </TouchableOpacity>
                 }
                 {
@@ -88,14 +85,15 @@ export default class StationPanel extends React.Component<{
                     // CANCEL DESTINATION BUTTON
                     // ======================================
                     <TouchableOpacity
-                        style={ButtonStyle.longButton as any}
+                        style={ButtonStyle.button as any}
                             onPress={() => {
                                 setDestination(null);
                                 setPanel(null);
                                 setDestinationMarker(null)
+                                setRoute(null)
                             }}
                     >
-                        <Text style={ButtonStyle.buttonText as any}>CANCEL DESTINATION</Text>
+                        <Text style={ButtonStyle.buttonText as any}>CANCEL ROUTE</Text>
                     </TouchableOpacity>
                 }
             </View>

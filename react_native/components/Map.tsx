@@ -16,7 +16,6 @@ import GeofenceGroup from './geofences/GeofenceGroup';
 import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
-import CustomMarker from './markers/CustomMarker';
 import CustomMarkerSmall from './markers/CustomMarkerSmall';
 
 import RentedPanel from './panels/RentedPanel';
@@ -36,14 +35,17 @@ export default class Map extends React.Component {
         bikesCharging: null | Bike[],
         stations: null | Station[],
         stationMarkers: null | ReactNode,
-        rentedMarker: null | ReactNode,
         geofences: null | ReactNode,
+
+        rentedPos: null | LatLng,
+        rentedMarker: null | ReactNode,
 
         panel: null | ReactNode,
 
         destination: null | LatLng;
         destinationMarker: null | ReactNode;
         preDestinationMarker: null | ReactNode;
+        route: null | ReactNode;
 
         scanButton: null | ReactNode,
         centerPoint: null | LatLng,
@@ -60,6 +62,7 @@ export default class Map extends React.Component {
             bikesCharging: null,
             stations: null,
             stationMarkers: null,
+            rentedPos: null,
             rentedMarker: null,
             geofences: null,
 
@@ -68,6 +71,7 @@ export default class Map extends React.Component {
             destination: null,
             destinationMarker: null,
             preDestinationMarker: null,
+            route: null,
 
             scanButton: null,
             centerPoint: null,
@@ -75,11 +79,22 @@ export default class Map extends React.Component {
         };
     }
 
+    setRentedPos = (newRentedPos: LatLng | null) => {
+        this.setState({
+            rentedPos: newRentedPos
+        });
+    }
 
     setRentedMarker = (newRentedMarker: ReactNode | null) => {
         this.setState({
             rentedMarker: newRentedMarker
         });
+    }
+
+    setRoute = (newRoute: ReactNode | null) => {
+        this.setState({
+            route: newRoute
+        })
     }
 
     setPanel = (newpanel: ReactNode) => {
@@ -129,17 +144,18 @@ export default class Map extends React.Component {
         }
         this.setState({
             rentedMarker: null,
+            rentedPos: null,
+            route: null,
             panel: <PricePanel price={price} />
         });
     }
-
-
 
 
     // CREATE RENTED BIKE MARKER
     // ===================================
     createRentedMarker = (bikeId: number, coordinates: LatLng) => {
         this.setState({
+            rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 bikeId={bikeId}
                 coordinates={coordinates}
@@ -178,6 +194,8 @@ export default class Map extends React.Component {
 
                 this.setPanel(<StationPanel
                     station={station}
+                    rentedPosition={this.state.rentedPos}
+                    setRoute={this.setRoute}
                     currentDestination={this.state.destination}
                     setDestination={this.setDestination}
                     setDestinationMarker={this.setDestinationMarker}
@@ -270,14 +288,6 @@ export default class Map extends React.Component {
                 bikesCharging: bikesAvailable
             });
         }
-
-
-        // const testBike = bikesCharging[0];
-        // console.log(testBike.Position)
-        // const teststation = stations.find((e) => {
-        //     return e.Position == testBike.Position;
-        // })
-        // console.log(teststation);
 
         if (stations !== null) {
             this.setState({
@@ -398,6 +408,7 @@ export default class Map extends React.Component {
                     // check if user pressed outside a marker
                     // in that case hide panel
                     if (e.nativeEvent.action !== 'marker-press') {
+                        // console.log(e.nativeEvent.coordinate);
                         if (this.state.rentedMarker && this.state.panel == null) {
                             this.setState({
                                 preDestinationMarker: <CustomMarkerSmall
@@ -405,6 +416,8 @@ export default class Map extends React.Component {
                                 img={require('../assets/PreDestination.png')}
                                 onpress={() => {
                                     this.setPanel(<SetDestinationPanel
+                                        setRoute={this.setRoute}
+                                        rentedPosition={this.state.rentedPos}
                                         coordinates={e.nativeEvent.coordinate}
                                         setDestination={this.setDestination}
                                         setDestinationMarker={this.setDestinationMarker}
@@ -416,6 +429,8 @@ export default class Map extends React.Component {
                                     />
                                 })
                             this.setPanel(<SetDestinationPanel
+                                setRoute={this.setRoute}
+                                rentedPosition={this.state.rentedPos}
                                 coordinates={e.nativeEvent.coordinate}
                                 setDestination={this.setDestination}
                                 setDestinationMarker={this.setDestinationMarker}
@@ -430,6 +445,7 @@ export default class Map extends React.Component {
                     }
                 }}
             >
+                {this.state.route}
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}

@@ -1,6 +1,11 @@
 import config from '../config/config.json';
 import { IP } from '@env'
 import Bike from '../interfaces/bike';
+import { LatLng } from 'react-native-maps/lib/sharedTypes';
+
+// import polyDecoder from '@mapbox/polyline';
+// import * as polyDecoder from '@mapbox/polyline';
+
 
 const mapsModel = {
     getStations: async function getStations() {
@@ -38,8 +43,6 @@ const mapsModel = {
 
         const bike = result[0][0];
 
-        console.log(bike);
-
         return bike;
     },
     getGeofences: async function getGeofences() {
@@ -53,6 +56,37 @@ const mapsModel = {
         const geofences = result[0];
         // return null;
         return geofences;
+    },
+    getRoute: async function getGeofences(rentedPosition: LatLng | null, destination: LatLng) {
+
+        const startLat = rentedPosition?.latitude;
+        const startLong = rentedPosition?.longitude;
+        const destinationLat = destination.latitude;
+        const destinationLong = destination.longitude;
+
+        // const url = `http://router.project-osrm.org/route/v1/biking/${startLong},${startLat};${destinationLong},${destinationLat}?alternatives=true&geometries=polyline`;
+
+        // console.log(url);
+
+        const response = await fetch(`http://router.project-osrm.org/route/v1/biking/${startLong},${startLat};${destinationLong},${destinationLat}?alternatives=true&geometries=polyline`);
+
+        const result = await response.json();
+
+        const polyDecoder = require('@mapbox/polyline');
+        const coordArr: number[][] = polyDecoder.decode(result.routes[0].geometry);
+
+        const latLngArr: LatLng[] = [];
+
+        coordArr.forEach(e => {
+            latLngArr.push({
+                latitude: e[0],
+                longitude: e[1]
+            });
+        });
+
+        // console.log(latLngArr);
+
+        return latLngArr;
     },
 };
 
