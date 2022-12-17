@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
+    "@mapbox/polyline": "^1.1.1",
     "expo": "~47.0.3",
     "expo-location": "^15.0.1",
     "expo-status-bar": "~1.4.2",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/mapbox__polyline": "^1.0.2",
     "@types/react": "~18.0.14",
     "@types/react-native": "~0.70.6",
     "@typescript-eslint/eslint-plugin": "^5.45.1",

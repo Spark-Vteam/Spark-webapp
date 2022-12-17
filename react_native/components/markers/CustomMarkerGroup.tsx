@@ -21,7 +21,7 @@ export default class CustomMarkerArr extends React.Component
      * Class method to create group of custom markers (for example bikes and stations)
      * @param {Bikes[]} listOfObjects array with bikes or stations
      * @param {number} img for example <require("../assets/pin.png")>
-     * @param {string} onpress set function called when pressing marker on map>
+     * @param {Function} onpress set function called when pressing marker on map>
      * @return {ReactNode | null} returns an group of markers or null if not valid coordinates
      */
     createMarkers = (
@@ -34,19 +34,23 @@ export default class CustomMarkerArr extends React.Component
             const lat = listItem.Position.split(',')[0];
             const long = listItem.Position.split(',')[1];
 
+            const coordinates = {
+                latitude: parseFloat(lat),
+                longitude: parseFloat(long)
+            };
+
             if (typeof (lat) == 'string' &&
                 lat.length > 0 &&
                 typeof (long) == 'string' &&
                 long.length > 0) {
                 return <CustomMarker
                     key={index}
-                    coordinates={{
-                        latitude: parseFloat(lat),
-                        longitude: parseFloat(long)
-                    }}
+                    coordinates={coordinates}
                     img={img}
-                    id={listItem.id}
-                    onpress={onpress}
+                    trackViewChanges={false}
+                    onpress={() => {
+                        onpress(listItem.id, coordinates);
+                    }}
                 />
             }
             // Invariant Violation error (when using wrong data format) is not caught by

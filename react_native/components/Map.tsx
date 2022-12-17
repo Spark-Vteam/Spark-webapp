@@ -16,11 +16,13 @@ import GeofenceGroup from './geofences/GeofenceGroup';
 import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
+import CustomMarkerSmall from './markers/CustomMarkerSmall';
 
 import RentedPanel from './panels/RentedPanel';
 import StationPanel from './panels/StationPanel';
 import BikePanel from './panels/BikePanel';
 import PricePanel from './panels/PricePanel';
+import SetDestinationPanel from './panels/SetDestinationPanel';
 
 
 export default class Map extends React.Component {
@@ -33,10 +35,17 @@ export default class Map extends React.Component {
         bikesCharging: null | Bike[],
         stations: null | Station[],
         stationMarkers: null | ReactNode,
-        rentedMarker: null | ReactNode,
         geofences: null | ReactNode,
 
+        rentedPos: null | LatLng,
+        rentedMarker: null | ReactNode,
+
         panel: null | ReactNode,
+
+        destination: null | LatLng;
+        destinationMarker: null | ReactNode;
+        preDestinationMarker: null | ReactNode;
+        route: null | ReactNode;
 
         scanButton: null | ReactNode,
         centerPoint: null | LatLng,
@@ -53,10 +62,16 @@ export default class Map extends React.Component {
             bikesCharging: null,
             stations: null,
             stationMarkers: null,
+            rentedPos: null,
             rentedMarker: null,
             geofences: null,
 
             panel: null,
+
+            destination: null,
+            destinationMarker: null,
+            preDestinationMarker: null,
+            route: null,
 
             scanButton: null,
             centerPoint: null,
@@ -64,17 +79,75 @@ export default class Map extends React.Component {
         };
     }
 
+    setRentedPos = (newRentedPos: LatLng | null) => {
+        this.setState({
+            rentedPos: newRentedPos
+        });
+    }
 
     setRentedMarker = (newRentedMarker: ReactNode | null) => {
         this.setState({
             rentedMarker: newRentedMarker
+        });
+    }
+
+    setRoute = (newRoute: ReactNode | null) => {
+        this.setState({
+            route: newRoute
         })
     }
 
     setPanel = (newpanel: ReactNode) => {
         this.setState({
             panel: newpanel
-        })
+        });
+    }
+
+    // DESTINATION
+    // ===================================
+
+    setDestination = (coordinates: LatLng | null) => {
+        // todo: Add polyline
+        // todo: if in simulation, get bike moving towards station
+        this.setState({
+            destination: coordinates,
+        });
+    }
+
+    setPreDestinationMarker = (newPreDestinationMarker: ReactNode) => {
+        this.setState({
+            preDestinationMarker: newPreDestinationMarker,
+        });
+    }
+
+    setDestinationMarker = (newDestinationMarker: ReactNode) => {
+        this.setState({
+            destinationMarker: newDestinationMarker,
+        });
+    }
+
+
+    removeDestinationMarker = () => {
+        // called if rent is stopped or destination changed to a station
+    }
+
+
+    // STOP RENT
+    // ===================================
+    stopRent = async () => {
+        await rentModel.stopRent();
+        const allRents = await rentModel.getRentsOnUser();
+        let price = 0;
+        if (allRents) {
+            const stoppedRent = allRents[allRents.length - 1];
+            price = stoppedRent.Price;
+        }
+        this.setState({
+            rentedMarker: null,
+            rentedPos: null,
+            route: null,
+            panel: <PricePanel price={price} />
+        });
     }
 
 
@@ -82,6 +155,7 @@ export default class Map extends React.Component {
     // ===================================
     createRentedMarker = (bikeId: number, coordinates: LatLng) => {
         this.setState({
+            rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 bikeId={bikeId}
                 coordinates={coordinates}
@@ -97,17 +171,8 @@ export default class Map extends React.Component {
     pressedRentedMarker = () => {
         this.setState({
             panel: <RentedPanel onpress={async () => {
-                await rentModel.stopRent();
-                const allRents = await rentModel.getRentsOnUser();
-                let price = 0;
-                if (allRents) {
-                    const stoppedRent = allRents[allRents.length - 1];
-                    price = stoppedRent.Price;
-                }
-                this.setState({
-                    rentedMarker: null,
-                    panel: <PricePanel price={price}/>
-                });
+                this.stopRent();
+                this.setDestinationMarker(null);
             }} />
         });
         this.scanArea();
@@ -126,13 +191,15 @@ export default class Map extends React.Component {
                 // const bikesOnStation = this.state.bikesCharging?.filter((e) => {
                 //     return e.Position === station.Position;
                 // })
-                // console.log("PRESSED STATIOOOON ----------------------------------------------");
-                // console.log(bikesOnStation);
 
                 this.setPanel(<StationPanel
-                    name={station.Name}
-                    availableSpots={station.Available}
-                    occupiedSpots={station.Occupied}
+                    station={station}
+                    rentedPosition={this.state.rentedPos}
+                    setRoute={this.setRoute}
+                    currentDestination={this.state.destination}
+                    setDestination={this.setDestination}
+                    setDestinationMarker={this.setDestinationMarker}
+                    setPanel={this.setPanel}
                     activeRent={this.state.rentedMarker !== null}
                 />);
             }
@@ -221,16 +288,6 @@ export default class Map extends React.Component {
                 bikesCharging: bikesAvailable
             });
         }
-
-        // console.log("SCAN ----------------------------------------------");
-        // const testBike = bikesCharging[0];
-        // console.log(testBike.Position)
-        // const teststation = stations.find((e) => {
-        //     return e.Position == testBike.Position;
-        // })
-        // console.log(teststation);
-
-        // console.log(teststation);
 
         if (stations !== null) {
             this.setState({
@@ -350,19 +407,52 @@ export default class Map extends React.Component {
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
-                    // e.nativeEvent.action === 'polygon-press' <-- funkar tyvärr inte
                     if (e.nativeEvent.action !== 'marker-press') {
-                        this.setState({
-                            panel: null
-                        })
+                        // console.log(e.nativeEvent.coordinate);
+                        if (this.state.rentedMarker && this.state.panel == null) {
+                            this.setState({
+                                preDestinationMarker: <CustomMarkerSmall
+                                coordinates={e.nativeEvent.coordinate}
+                                img={require('../assets/PreDestination.png')}
+                                onpress={() => {
+                                    this.setPanel(<SetDestinationPanel
+                                        setRoute={this.setRoute}
+                                        rentedPosition={this.state.rentedPos}
+                                        coordinates={e.nativeEvent.coordinate}
+                                        setDestination={this.setDestination}
+                                        setDestinationMarker={this.setDestinationMarker}
+                                        setPreDestinationMarker={this.setPreDestinationMarker}
+                                        setPanel={this.setPanel}
+                                        />)
+                                    }}
+                                    trackViewChanges={false}
+                                    />
+                                })
+                            this.setPanel(<SetDestinationPanel
+                                setRoute={this.setRoute}
+                                rentedPosition={this.state.rentedPos}
+                                coordinates={e.nativeEvent.coordinate}
+                                setDestination={this.setDestination}
+                                setDestinationMarker={this.setDestinationMarker}
+                                setPreDestinationMarker={this.setPreDestinationMarker}
+                                setPanel={this.setPanel}
+                            />)
+                        } else {
+                            this.setState({
+                                panel: null
+                            })
+                        }
                     }
                 }}
             >
+                {this.state.route}
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
                 {this.state.rentedMarker}
                 {this.state.geofences}
+                {this.state.preDestinationMarker}
+                {this.state.destinationMarker}
             </MapView>
             { this.state.scanButton }
             { this.state.panel }

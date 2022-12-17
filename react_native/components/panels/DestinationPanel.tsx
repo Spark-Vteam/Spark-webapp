@@ -2,22 +2,19 @@ import React from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 
-
-// Panel with button to stop the rent. OnPress function is injected.
-export default class RentedPanel extends React.Component<{
-    onpress: () => void
+// Panel that lets user keep track of destination
+export default class DestinationPanel extends React.Component<{
+    onpressButton: () => void,
 }> {
     render() {
-        const { onpress } = this.props;
+        const { onpressButton} = this.props;
         return (
             <View style={MapStyle.panel as any}>
                 <TouchableOpacity
                     style={ButtonStyle.button as any}
-                    onPress={() => {
-                        onpress();
-                    }}
+                    onPress={onpressButton}
                 >
-                    <Text style={ButtonStyle.buttonText as any}>STOP RIDE</Text>
+                    <Text style={ButtonStyle.buttonText as any}>CANCEL ROUTE</Text>
                 </TouchableOpacity>
             </View>
         );
