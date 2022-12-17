@@ -23,7 +23,7 @@ import RentedPanel from './panels/RentedPanel';
 import StationPanel from './panels/StationPanel';
 import BikePanel from './panels/BikePanel';
 import PricePanel from './panels/PricePanel';
-import DestinationPanel from './panels/DestinationPanel';
+import SetDestinationPanel from './panels/SetDestinationPanel';
 
 
 export default class Map extends React.Component {
@@ -91,7 +91,7 @@ export default class Map extends React.Component {
     // DESTINATION
     // ===================================
 
-    setDestination = (coordinates: LatLng) => {
+    setDestination = (coordinates: LatLng | null) => {
         // todo: Add polyline
         // todo: if in simulation, get bike moving towards station
         this.setState({
@@ -156,6 +156,7 @@ export default class Map extends React.Component {
         this.setState({
             panel: <RentedPanel onpress={async () => {
                 this.stopRent();
+                this.setDestinationMarker(null);
             }} />
         });
         this.scanArea();
@@ -177,7 +178,9 @@ export default class Map extends React.Component {
 
                 this.setPanel(<StationPanel
                     station={station}
+                    currentDestination={this.state.destination}
                     setDestination={this.setDestination}
+                    setDestinationMarker={this.setDestinationMarker}
                     setPanel={this.setPanel}
                     activeRent={this.state.rentedMarker !== null}
                 />);
@@ -394,27 +397,25 @@ export default class Map extends React.Component {
                 onPress={(e) => {
                     // check if user pressed outside a marker
                     // in that case hide panel
-
-                    // e.nativeEvent.action === 'polygon-press' <-- funkar tyvärr inte
                     if (e.nativeEvent.action !== 'marker-press') {
                         if (this.state.rentedMarker && this.state.panel == null) {
                             this.setState({
                                 preDestinationMarker: <CustomMarkerSmall
-                                    coordinates={e.nativeEvent.coordinate}
-                                    img={require('../assets/PreDestination.png')}
-                                    onpress={() => {
-                                        this.setPanel(<DestinationPanel
-                                            coordinates={e.nativeEvent.coordinate}
-                                            setDestination={this.setDestination}
-                                            setDestinationMarker={this.setDestinationMarker}
-                                            setPreDestinationMarker={this.setPreDestinationMarker}
-                                            setPanel={this.setPanel}
+                                coordinates={e.nativeEvent.coordinate}
+                                img={require('../assets/PreDestination.png')}
+                                onpress={() => {
+                                    this.setPanel(<SetDestinationPanel
+                                        coordinates={e.nativeEvent.coordinate}
+                                        setDestination={this.setDestination}
+                                        setDestinationMarker={this.setDestinationMarker}
+                                        setPreDestinationMarker={this.setPreDestinationMarker}
+                                        setPanel={this.setPanel}
                                         />)
                                     }}
                                     trackViewChanges={false}
-                                />
-                            })
-                            this.setPanel(<DestinationPanel
+                                    />
+                                })
+                            this.setPanel(<SetDestinationPanel
                                 coordinates={e.nativeEvent.coordinate}
                                 setDestination={this.setDestination}
                                 setDestinationMarker={this.setDestinationMarker}

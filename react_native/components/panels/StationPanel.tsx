@@ -10,19 +10,23 @@ import Station from '../../interfaces/station';
 // Panel with info about station. If no active rent, show existing bikes on station.
 export default class StationPanel extends React.Component<{
     station: Station
-    // name: string,
-    // availableSpots: number,
-    // occupiedSpots: number,
-    // bikes: Bike[] | null,
-    // setPanel: (newpanel: ReactNode) => void
-    // coordinates: string,
-    setDestination: (coordinates: LatLng) => void,
+    currentDestination: LatLng | null,
+    setDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
+    setDestination: (coordinates: LatLng | null) => void,
     setPanel: (newpanel: ReactNode) => void,
     activeRent: boolean,
 }> {
     render() {
-        const { station, setDestination, setPanel, activeRent } = this.props;
-        // const { name, availableSpots, occupiedSpots, bikes, setPanel, activeRent } = this.props;
+        const { station,
+            currentDestination,
+            setDestination,
+            setDestinationMarker,
+            setPanel,
+            activeRent } = this.props;
+
+        const lat = parseFloat(station.Position.split(',')[0]);
+        const long = parseFloat(station.Position.split(',')[1]);
+
         return (
             <View style={MapStyle.panel as any}>
                 <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
@@ -37,22 +41,61 @@ export default class StationPanel extends React.Component<{
                         <Text style={MapStyle.panelTextMiddle as any}>{3} bikes ready to rent</Text>
                 }
                 {
-                    activeRent === true && // && destination !== Station.coordinates
-                    // SET AS DESTINATION
+                    activeRent === true &&
+                    currentDestination === null &&
+                    // SET AS DESTINATION BUTTON
                     // ======================================
                     <TouchableOpacity
                         style={ButtonStyle.button as any}
                             onPress={() => {
-                                const lat = station.Position.split(',')[0];
-                                const long = station.Position.split(',')[1];
                                 setDestination({
-                                    latitude: parseFloat(lat),
-                                    longitude: parseFloat(long)
+                                    latitude: lat,
+                                    longitude: long
                                 });
                                 setPanel(null);
+                                setDestinationMarker(null)
                             }}
                     >
                         <Text style={ButtonStyle.buttonText as any}>SET AS DESTINATION</Text>
+                    </TouchableOpacity>
+                }
+                {
+                    activeRent === true &&
+                    currentDestination &&
+                    currentDestination.latitude !== lat &&
+                    currentDestination.longitude !== long &&
+                    // SET AS DESTINATION BUTTON
+                    // ======================================
+                    <TouchableOpacity
+                        style={ButtonStyle.button as any}
+                            onPress={() => {
+                                setDestination({
+                                    latitude: lat,
+                                    longitude: long
+                                });
+                                setPanel(null);
+                                setDestinationMarker(null)
+                            }}
+                    >
+                        <Text style={ButtonStyle.buttonText as any}>SET AS DESTINATION</Text>
+                    </TouchableOpacity>
+                }
+                {
+                    activeRent === true &&
+                    currentDestination &&
+                    currentDestination.latitude === lat &&
+                    currentDestination.longitude === long &&
+                    // CANCEL DESTINATION BUTTON
+                    // ======================================
+                    <TouchableOpacity
+                        style={ButtonStyle.longButton as any}
+                            onPress={() => {
+                                setDestination(null);
+                                setPanel(null);
+                                setDestinationMarker(null)
+                            }}
+                    >
+                        <Text style={ButtonStyle.buttonText as any}>CANCEL DESTINATION</Text>
                     </TouchableOpacity>
                 }
             </View>

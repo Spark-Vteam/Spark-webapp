@@ -1,29 +1,28 @@
 export const button = {
-    width: 160,
+    width: 165,
     height: 40,
-    // justifyContent: "center",
+
     backgroundColor: '#209F5B',
     borderRadius: 8,
     padding: 10,
     marginTop: 15,
     marginBottom: 15,
     alignSelf: 'center',
-    // marginLeft: 8,
-    // marginRight: 8,
 
-    // shadowColor: '#006BFF',
-    // shadowOffset: { width: 150, height: 150 },
-    // shadowRadius: 200,
-    // shadowOpacity: 1,
+    zIndex: 999,
+}
 
-    // shadowOffset: { width: 0, height: 1 },
-    // shadowColor: 'black',
-    // shadowOpacity: 0.3,
-    // elevation: 4,
-    // shadowRadius: 2,
+export const longButton = {
+    width: 190,
+    height: 40,
 
-    // background color must be set
-    // backgroundColor: "#0000" // invisible color
+    backgroundColor: '#209F5B',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
     zIndex: 999,
 }
 
