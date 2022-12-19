@@ -13,7 +13,7 @@ const mapsModel = {
 
         const result = await response.json();
 
-        const stations = result[0];
+        const stations = result.data;
 
         return stations;
     },
@@ -23,7 +23,7 @@ const mapsModel = {
 
         // const result = await response.json();
 
-        // const bikes = result[0];
+        // const bikes = result.data;
 
         // return bikes;
     },
@@ -32,7 +32,7 @@ const mapsModel = {
 
         const result = await response.json();
 
-        const bikes = result[0];
+        const bikes = result.data;
 
         return bikes;
     },
@@ -41,16 +41,16 @@ const mapsModel = {
 
         const result = await response.json();
 
-        const bike = result[0][0];
+        const bike = result.data;
 
-        return bike;
+        return bike[0];
     },
     getGeofences: async function getGeofences() {
         const response = await fetch(`http://${IP}:${config.port}/geofence`);
 
         const result = await response.json();
 
-        const geofences = result[0];
+        const geofences = result.data;
 
         return geofences;
     },
