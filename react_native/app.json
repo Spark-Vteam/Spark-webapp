@@ -2,6 +2,7 @@
   "expo": {
     "name": "react_native_app",
     "slug": "react_native_app",
+    "scheme": "reactNativeApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/IconColorsMobile.png",
@@ -18,9 +19,11 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "./assets/SparkMobile.png",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.spark.bikeapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/SparkMobile.png",
         "backgroundColor": "#00CDA3"
