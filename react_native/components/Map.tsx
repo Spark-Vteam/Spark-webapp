@@ -460,7 +460,7 @@ export default class Map extends React.Component {
                 {this.state.destinationMarker}
             </MapView>
             { this.state.scanButton }
-            { this.state.panel }
+            {this.state.panel}
         </View>
     }
 }
