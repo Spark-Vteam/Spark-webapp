@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { Text, View, TouchableOpacity, Button, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native';
-import LoginTest from './components/experiment/LoginTest';
+// import LoginTest from './components/experiment/LoginTest';
 // import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
@@ -42,10 +42,6 @@ export default class App extends Component {
   //   })
   // }
 
-
-
-
-
   render() {
 
 
@@ -54,8 +50,9 @@ export default class App extends Component {
         {/* <TestMap /> */}
         {/* <ClusterMap /> */}
         {/* <Test /> */}
-        <LoginTest  />
-        {/* <Map /> */}
+        {/* <LoginTest  /> */}
+        {/* Uncomment logintest and the import above to test login with oauth */}
+        <Map />
       </SafeAreaView>
 
 

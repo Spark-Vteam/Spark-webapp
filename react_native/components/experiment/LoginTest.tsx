@@ -23,7 +23,7 @@ export default function LoginTest() {
 
     React.useEffect(() => {
         if (response?.type === 'success') {
-            console.log("OAÄSNOAND");
+            console.log('OAÄSNOAND');
             const { code } = response.params;
         }
     }, [response]);
