@@ -1,6 +1,5 @@
-import BikePanel from '../components/panels/BikePanel';
-import { View, Text } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import BikePanel from '../../components/panels/BikePanel';
+import { render, screen, fireEvent } from '@testing-library/react-native';
 
 
 test('renders the BikePanel component with the correct props', () => {
@@ -24,5 +23,24 @@ test('renders the BikePanel component with the correct props', () => {
     // todo: lägg till när det kommit med och fecthar från backend
     // expect(getByText('SEK2.80/min')).toBeDefined();
     // expect(getByText('20% discount if returned to a station')).toBeDefined();
+});
+
+
+test('calls the onPress function when the start ride button is pressed', () => {
+    const bike = {
+        id: 1,
+        battery: 50,
+    };
+    const onpress = jest.fn();
+
+    const { getByTestId } = render(
+        <BikePanel bike={bike} onpress={(onpress)} />
+    );
+
+    const button = getByTestId('button');
+    fireEvent.press(button);
+
+    expect(button).toBeDefined();
+    expect(onpress).toHaveBeenCalled();
 
 });
