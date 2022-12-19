@@ -23,14 +23,14 @@ export default function LoginTest() {
 
     React.useEffect(() => {
         if (response?.type === 'success') {
-            console.log('OAÄSNOAND');
             const { code } = response.params;
+            console.log(code);
         }
     }, [response]);
 
     return (
         <View>
-            <Text>HAlluuuuuuuuuuuuuuu?</Text>
+            <Text>TESTING LOGIN WITH GITHUB OAUTH</Text>
             <Button
                 // disabled={!request}
                 title="Login"
