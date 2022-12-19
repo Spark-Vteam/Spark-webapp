@@ -11,8 +11,7 @@ const rentModel = {
             bikeId: bikeId
         }
 
-        // todo: ta bort 1 från url sen och använd bara body
-        // när backend har uppdaterats. Sen lägg in userId
+        // todo: Lägg in userId
         // från login när oAuth har implementerats.
         const response = await fetch(`http://${IP}:${config.port}/rent/user/1`, {
             body: JSON.stringify(body),
@@ -22,9 +21,6 @@ const rentModel = {
             method: 'POST'
         })
 
-        // hantera om error om t.ex. cykeln redan hann bli uthyrd
-        // todo: hantera om response.status !== 200 (skulle vara coolt att särkskilja
-        // på olika fel typ bike är redan tagen vs något är fel i systemet)
         const result = response.status;
 
         return result;
@@ -36,39 +32,43 @@ const rentModel = {
 
         const result = await response.json();
 
-        const rents = result[0];
+        const rents = result.data;
 
         return rents;
     },
-    getOngoingRent: async function getOngoingRent() {
-        const allRentsOnUser = await this.getRentsOnUser();
+    getOngoingRents: async function getOngoingRents() {
 
-        if (allRentsOnUser) {
-            const findActiveRent = allRentsOnUser.find((e) => {
-                return e.Status === 10; // code for active
-            });
+        const response = await fetch(`http://${IP}:${config.port}/rent/active/1`);
 
-            return findActiveRent;   // can be null
-        }
+        const result = await response.json();
 
-        return null;
+        const ongoingRent = result.data;
+
+        return ongoingRent;
     },
     stopRent: async function stopRent() {
 
-        const ongoingRent = await this.getOngoingRent();
+        const ongoingRents = await this.getOngoingRents();
+        // hopefully there is just one...
+        if (ongoingRents && ongoingRents.length > 0) {
 
-        if (ongoingRent) {
-            // todo: ha findRent.id i body istället för i param?
-            const response = await fetch(`http://${IP}:${config.port}/rent/${ongoingRent.id}`, {
-                // body: JSON.stringify(body),
+            // console.log(ongoingRents);
+            // console.log(ongoingRents.length);
+            // console.log("---------------------");
+            // console.log(ongoingRents[ongoingRents.length - 1].id);
+
+            // console.log(ongoingRents[3]);
+            // console.log(ongoingRents[3].id);
+
+            const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
+            const response = await fetch(`http://${IP}:${config.port}/rent/${lastOngoingRent.id}`, {
                 headers: {
                     'content-type': 'application/json'
                 },
                 method: 'PUT'
             })
 
-            // todo: hantera om response.status !== 200 , typ nåt systemfel
-            const result = response.status;
+            const result = await response.json();
 
             return result;
         }

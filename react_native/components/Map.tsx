@@ -358,10 +358,15 @@ export default class Map extends React.Component {
 
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
-        const ongoingRent = await rentModel.getOngoingRent();
-        if (ongoingRent) {
-            const bikeId = ongoingRent.Bikes_id;
+        const ongoingRents = await rentModel.getOngoingRents();
+        // hopefully there is just one...
+        // console.log(ongoingRents[ongoingRents.length - 1]);
+        if (ongoingRents && ongoingRents.length > 0) {
+            const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
+            const bikeId = lastOngoingRent.Bikes_id;
+            // console.log(bikeId);
             const bike = await mapsModel.getBike(bikeId);
+            console.log(bike.Position);
             const coordinates = {
                 latitude: parseFloat(bike.Position.split(',')[0]),
                 longitude: parseFloat(bike.Position.split(',')[1])
