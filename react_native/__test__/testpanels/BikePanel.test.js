@@ -1,46 +1,45 @@
 import BikePanel from '../../components/panels/BikePanel';
-import { render, screen, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 
 
-test('renders the BikePanel component with the correct props', () => {
-    const bike = { id: 1, Battery: 50 };
-    const onPress = jest.fn();
+describe('BikePanel', () => {
 
-    const { getByText } = render(
-        <BikePanel bike={bike} onPress={onPress} />
-    );
+    it('renders the BikePanel component with the correct props', () => {
+        const bike = { id: 1, Battery: 50 };
+        const onPress = jest.fn();
 
-    // // uncomment to see what is rendered in Map component:
-    // const { getByText, debug } = render(
-    //     <BikePanel bike={bike} onPress={onPress} />
-    // );
-    // debug({ message: "BikePanel component" })
+        const { getByText } = render(
+            <BikePanel bike={bike} onPress={onPress} />
+        );
 
-
-    expect(getByText('Bike nr 1')).toBeDefined();
-    expect(getByText('Battery left: 50%')).toBeDefined();
-    expect(getByText('START RIDE')).toBeDefined();
-    // todo: lägg till när det kommit med och fecthar från backend
-    // expect(getByText('SEK2.80/min')).toBeDefined();
-    // expect(getByText('20% discount if returned to a station')).toBeDefined();
-});
+        // // uncomment to see what is rendered in Map component:
+        // const { getByText, debug } = render(
+        //     <BikePanel bike={bike} onPress={onPress} />
+        // );
+        // debug({ message: "BikePanel component" })
 
 
-test('calls the onPress function when the start ride button is pressed', () => {
-    const bike = {
-        id: 1,
-        battery: 50,
-    };
-    const onpress = jest.fn();
+        expect(getByText('Bike nr 1')).toBeDefined();
+        expect(getByText('Battery left: 50%')).toBeDefined();
+        expect(getByText('START RIDE')).toBeDefined();
+    });
 
-    const { getByTestId } = render(
-        <BikePanel bike={bike} onpress={(onpress)} />
-    );
+    it('calls the onPress function when the start ride button is pressed', () => {
+        const bike = {
+            id: 1,
+            battery: 50,
+        };
+        const onpress = jest.fn();
 
-    const button = getByTestId('button');
-    fireEvent.press(button);
+        const { getByTestId } = render(
+            <BikePanel bike={bike} onpress={(onpress)} />
+        );
 
-    expect(button).toBeDefined();
-    expect(onpress).toHaveBeenCalled();
+        const button = getByTestId('button');
+        fireEvent.press(button);
 
+        expect(button).toBeDefined();
+        expect(onpress).toHaveBeenCalled();
+
+    });
 });

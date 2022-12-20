@@ -160,11 +160,10 @@ export default class Map extends React.Component {
 
     // CREATE RENTED BIKE MARKER
     // ===================================
-    createRentedMarker = (bikeId: number, coordinates: LatLng) => {
+    createRentedMarker = (coordinates: LatLng) => {
         this.setState({
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
-                bikeId={bikeId}
                 coordinates={coordinates}
                 onpress={this.pressedRentedMarker}  // see method below
             />,
@@ -333,7 +332,7 @@ export default class Map extends React.Component {
                 latitude: parseFloat(bike.Position.split(',')[0]),
                 longitude: parseFloat(bike.Position.split(',')[1])
             }
-            this.createRentedMarker(bikeId, coordinates);
+            this.createRentedMarker(coordinates);
         }
     }
 
@@ -354,6 +353,7 @@ export default class Map extends React.Component {
 
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
+                testID={"mapview"}
                 initialRegion={initialRegion}
                 onRegionChange={(e) => {
                     // GET RADIUS AND CENTER POINT
@@ -381,7 +381,8 @@ export default class Map extends React.Component {
                                 preDestinationMarker: <CustomMarkerSmall
                                 coordinates={e.nativeEvent.coordinate}
                                 img={require('../assets/PreDestination.png')}
-                                onpress={() => {
+                                    onpress={() => {
+                                    // set destination panel when pressing red spot
                                     this.setPanel(<SetDestinationPanel
                                         setRoute={this.setRoute}
                                         rentedPosition={this.state.rentedPos}
@@ -394,7 +395,8 @@ export default class Map extends React.Component {
                                     }}
                                     trackViewChanges={false}
                                     />
-                                })
+                            })
+                            // set destination panel when pressing map
                             this.setPanel(<SetDestinationPanel
                                 setRoute={this.setRoute}
                                 rentedPosition={this.state.rentedPos}

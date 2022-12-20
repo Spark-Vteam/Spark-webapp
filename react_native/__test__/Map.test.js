@@ -2,29 +2,69 @@
 
 import Map from '../components/Map';
 import { render } from '@testing-library/react-native';
+import { act, create } from 'react-test-renderer';
+import { Marker, Polygon } from 'react-native-maps';
+import { View } from 'react-native';
 
-// jest.useFakeTimers();   // inte säker på vad detta är men utan den blir det felmeddelande
-// ReferenceError: You are trying to `import` a file after the Jest environment has been torn down.
-// jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');  // för att slippa få felmeddelande från useFakeTimers
 
 // jest.mock("../components/Map", () => "Map");
 
-test('renders the Map component with the scan button', async () => {
-    const { getByText } = render(<Map />);
+describe('Map', () => {
+    it('renders the Map component with the scan button', async () => {
+        const { getByText, getByTestId } = render(<Map />);
 
-    // // uncomment to see what is rendered in Map component:
-    // const { getByText, debug } = render(<Map />);
-    // debug({ message: "Map component" })
+        const mapview = getByTestId('mapview');
 
-    expect(getByText('Scan this area')).toBeDefined();
+        // // uncomment to see what is rendered in Map component:
+        // const { getByText, debug } = render(<Map />);
+        // debug({ message: "Map component" })
+
+        expect(mapview).toBeDefined();
+        expect(getByText('Scan this area')).toBeDefined();
+    });
+
+
+    it('calling state methods update states', () => {
+
+        let component;
+
+        // Test updating rentedPos
+        act(() => {
+            component = create(<Map />);
+        });
+        const instance = component.getInstance();
+        act(() => {
+            instance.setRentedPos({ latitude: 123, longitude: 456 });
+        });
+
+        expect(instance.state.rentedPos).toEqual({ latitude: 123, longitude: 456 });
+        expect(instance.getRentedPosition()).toEqual({ latitude: 123, longitude: 456 });
+
+        // Test updating rentedMarker state
+        act(() => {
+            instance.setRentedMarker(<Marker />);
+        });
+        expect(instance.state.rentedMarker).toEqual(<Marker />);
+
+        // Test updating route state
+        act(() => {
+            instance.setRoute(<Polygon />);
+        });
+        expect(instance.state.route).toEqual(<Polygon />);
+
+        // Test updating panel state
+        act(() => {
+            instance.setPanel(<View />);
+        });
+        expect(instance.state.panel).toEqual(<View />);
+
+        // Test updating destination state
+        act(() => {
+            instance.setDestination({ latitude: 123, longitude: 456 });
+        });
+        expect(instance.state.destination).toEqual({
+            latitude: 123, longitude: 456
+        });
+    });
 });
 
-// test('updates the rentedPos state when setRentedPos is called', () => {
-//     const { getByTestId, rerender } = render(<Map />);
-//     const map = shallow(<Map />);
-//     const newRentedPos = { latitude: 0, longitude: 0 };
-//     rerender(<Map />);
-//     fireEvent(map, 'setRentedPos', newRentedPos);
-//     rerender(<Map />);
-//     expect(map.state.rentedPos).toEqual(newRentedPos);
-// });

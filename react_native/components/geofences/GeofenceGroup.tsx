@@ -74,11 +74,11 @@ export default class GeofenceGroup extends React.Component<{
 
         const { geofences, setPanel } = this.props;
 
-        const listMarkers = this.createMarkers(geofences, setPanel);
+        const geofenceGroup = this.createMarkers(geofences, setPanel);
 
         return (
             <View>
-                {listMarkers}
+                {geofenceGroup}
             </View>
         );
     }

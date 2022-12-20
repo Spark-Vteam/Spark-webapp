@@ -25,6 +25,7 @@ export default class Geofence extends React.Component
 
         return (
             <Polygon
+                testID="polygon"
                 coordinates={coordinatesCorrectFormat}
                 strokeWidth={3}
                 strokeColor={borderColor}
