@@ -353,7 +353,7 @@ export default class Map extends React.Component {
 
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
-                testID={"mapview"}
+                testID={'mapview'}
                 initialRegion={initialRegion}
                 onRegionChange={(e) => {
                     // GET RADIUS AND CENTER POINT

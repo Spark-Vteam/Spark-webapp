@@ -14,7 +14,7 @@ describe('GeofenceGroup', () => {
             component = create(
                 <GeofenceGroup
                     geofences={geofences}
-                    setPanel={() => { }}
+                    setPanel={jest.fn()}
                 />
             );
         });

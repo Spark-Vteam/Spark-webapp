@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import RentedMarker from '../../components/markers/RentedMarker';
 import { act, create } from 'react-test-renderer';
 import { Marker } from 'react-native-maps';
@@ -11,12 +11,14 @@ describe('RentedMarker', () => {
         // const marker = getByTestId('marker');
         // expect(marker).toBeDefined();
 
+
+
         let component;
         act(() => {
             component = create(
                 <RentedMarker
                     coordinates={{ latitude: 0, longitude: 0 }}
-                    onpress={() => { }} />
+                    onpress={jest.fn()} />
             );
         });
         const root = component.root;
@@ -31,7 +33,7 @@ describe('RentedMarker', () => {
             component = create(
                 <RentedMarker
                     coordinates={{ latitude: 0, longitude: 0 }}
-                    onpress={() => { }} />
+                    onpress={jest.fn()} />
             );
         });
         const root = component.root;

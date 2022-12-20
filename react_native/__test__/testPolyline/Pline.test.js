@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
 import Pline from '../../components/polyline/Polyline';
 import { Polyline } from 'react-native-maps';
 import { act, create } from 'react-test-renderer';

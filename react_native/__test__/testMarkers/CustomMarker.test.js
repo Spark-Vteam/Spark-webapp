@@ -12,7 +12,7 @@ describe('CustomMarker', () => {
                 <CustomMarker
                     coordinates={{ latitude: 0, longitude: 0 }}
                     img={1}
-                    onpress={() => { }}
+                    onpress={jest.fn()}
                     trackViewChanges={false}
                 />
             );
@@ -31,7 +31,7 @@ describe('CustomMarker', () => {
                 <CustomMarker
                     coordinates={coordinates}
                     img={1}
-                    onpress={() => { }}
+                    onpress={jest.fn()}
                     trackViewChanges={trackViewChanges}
                 />
             );

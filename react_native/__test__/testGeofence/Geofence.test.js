@@ -1,7 +1,6 @@
 import React from 'react';
-import { act, create } from 'react-test-renderer';
 import Geofence from '../../components/geofences/Geofence';
-import { render, fireEvent, toHaveStyle } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 // import { toHaveStyle } from '@testing-library/jest-dom'
 
 

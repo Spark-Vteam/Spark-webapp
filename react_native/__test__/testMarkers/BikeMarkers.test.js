@@ -39,8 +39,8 @@ describe('BikeMarkers', () => {
             component = create(
                 <BikeMarkers
                     bikes={bikes}
-                    setPanel={() => { }}
-                    createRentedMarker={() => { }}
+                    setPanel={jest.fn()}
+                    createRentedMarker={jest.fn()}
                 />
             );
         });
@@ -57,8 +57,8 @@ describe('BikeMarkers', () => {
             component = create(
                 <BikeMarkers
                     bikes={bikes}
-                    setPanel={() => { }}
-                    createRentedMarker={() => { }}
+                    setPanel={jest.fn()}
+                    createRentedMarker={jest.fn()}
                 />
             );
         });

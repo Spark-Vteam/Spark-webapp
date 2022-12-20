@@ -1,9 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import CustomMarker from '../../components/markers/CustomMarker';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { act, create } from 'react-test-renderer';
-import { Marker } from 'react-native-maps';
+import { render } from '@testing-library/react-native';
 import SetDestinationPanel from '../../components/panels/SetDestinationPanel';
 
 describe('SetDestinationPanel', () => {
