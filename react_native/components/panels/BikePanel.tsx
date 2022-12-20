@@ -13,6 +13,7 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
                 <Text style={MapStyle.panelTitle as any}>Bike nr {bike.id}</Text>
                 <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
                 <TouchableOpacity
+                    testID="button"
                     style={ButtonStyle.button as any}
                     onPress={() => {
                         onpress();

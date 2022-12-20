@@ -13,16 +13,15 @@ import rentModel from '../models/rentModel';
 
 import GeofenceGroup from './geofences/GeofenceGroup';
 
-import CustomMarkerGroup from './markers/CustomMarkerGroup';
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
 import CustomMarkerSmall from './markers/CustomMarkerSmall';
 
 import RentedPanel from './panels/RentedPanel';
-import StationPanel from './panels/StationPanel';
-import BikePanel from './panels/BikePanel';
 import PricePanel from './panels/PricePanel';
 import SetDestinationPanel from './panels/SetDestinationPanel';
+import BikeMarkers from './markers/BikeMarkers';
+import StationMarkers from './markers/StationMarkers';
 
 
 export default class Map extends React.Component {
@@ -79,6 +78,24 @@ export default class Map extends React.Component {
         };
     }
 
+    // GET METHODS
+    // =================================
+
+    getCurrentDestination = () => {
+        return this.state.destination;
+    }
+
+    getRentedPosition = () => {
+        return this.state.rentedPos;
+    }
+
+    getIsActiveRent = () => {
+        return this.state.rentedMarker !== null;
+    }
+
+    // SET METHODS
+    // =================================
+
     setRentedPos = (newRentedPos: LatLng | null) => {
         this.setState({
             rentedPos: newRentedPos
@@ -103,11 +120,7 @@ export default class Map extends React.Component {
         });
     }
 
-    // DESTINATION
-    // ===================================
-
     setDestination = (coordinates: LatLng | null) => {
-        // todo: Add polyline
         // todo: if in simulation, get bike moving towards station
         this.setState({
             destination: coordinates,
@@ -124,11 +137,6 @@ export default class Map extends React.Component {
         this.setState({
             destinationMarker: newDestinationMarker,
         });
-    }
-
-
-    removeDestinationMarker = () => {
-        // called if rent is stopped or destination changed to a station
     }
 
 
@@ -150,17 +158,16 @@ export default class Map extends React.Component {
         });
     }
 
-
     // CREATE RENTED BIKE MARKER
     // ===================================
-    createRentedMarker = (bikeId: number, coordinates: LatLng) => {
+    createRentedMarker = (coordinates: LatLng) => {
         this.setState({
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
-                bikeId={bikeId}
                 coordinates={coordinates}
                 onpress={this.pressedRentedMarker}  // see method below
-            />
+            />,
+            bikeMarkers: null
         })
         // open panel with rent right after creating it
         this.pressedRentedMarker();
@@ -176,56 +183,6 @@ export default class Map extends React.Component {
             }} />
         });
         this.scanArea();
-    }
-
-
-    // CREATE STATION PANEL
-    // ===================================
-    pressedStation = (id: number) => {
-        if (this.state.stations !== null && this.state.stations !== undefined) {
-            const station = this.state.stations.find((e) => {
-                return e.id == id
-            })
-
-            if (station !== undefined) {
-                // const bikesOnStation = this.state.bikesCharging?.filter((e) => {
-                //     return e.Position === station.Position;
-                // })
-
-                this.setPanel(<StationPanel
-                    station={station}
-                    rentedPosition={this.state.rentedPos}
-                    setRoute={this.setRoute}
-                    currentDestination={this.state.destination}
-                    setDestination={this.setDestination}
-                    setDestinationMarker={this.setDestinationMarker}
-                    setPanel={this.setPanel}
-                    activeRent={this.state.rentedMarker !== null}
-                />);
-            }
-        }
-    }
-
-    // CREATE AVAILABLE BIKE PANEL
-    // ===================================
-    pressedBike = (bikeId: number, coordinates: LatLng) => {
-        if (this.state.bikes !== undefined && this.state.bikes !== null) {
-            const bike = this.state.bikes.find((e) => {
-                return e.id == bikeId
-            })
-            if (bike !== undefined) {
-                this.setPanel(<BikePanel
-                    bike={bike}
-                    onpress={async () => {
-                        await rentModel.startRent(1, bikeId);
-                        this.createRentedMarker(bikeId, coordinates);
-                        this.setState({
-                            bikeMarkers: null
-                        });
-                    }}
-                />);
-            }
-        }
     }
 
 
@@ -274,10 +231,10 @@ export default class Map extends React.Component {
         if (bikesAvailable !== null) {
             this.setState({
                 bikes: bikesAvailable,
-                bikeMarkers: <CustomMarkerGroup
-                    listOfObjects={bikesAvailable}
-                    img={require('../assets/Available.png')}
-                    onpress={this.pressedBike}
+                bikeMarkers: <BikeMarkers
+                    bikes={bikesAvailable}
+                    setPanel={this.setPanel}
+                    createRentedMarker={this.createRentedMarker}
                 />
             });
         }
@@ -289,13 +246,19 @@ export default class Map extends React.Component {
             });
         }
 
+
         if (stations !== null) {
             this.setState({
                 stations: stations,
-                stationMarkers: <CustomMarkerGroup
-                    listOfObjects={stations}
-                    img={require('../assets/ChargingStation.png')}
-                    onpress={this.pressedStation}
+                stationMarkers: <StationMarkers
+                    stations={stations}
+                    setPanel={this.setPanel}
+                    getCurrentDestination={this.getCurrentDestination}
+                    setDestination={this.setDestination}
+                    setDestinationMarker={this.setDestinationMarker}
+                    getRentedPosition={this.getRentedPosition}
+                    setRoute={this.setRoute}
+                    getIsActiveRent={this.getIsActiveRent}
                 />
             });
         }
@@ -360,18 +323,16 @@ export default class Map extends React.Component {
         // ===================================
         const ongoingRents = await rentModel.getOngoingRents();
         // hopefully there is just one...
-        // console.log(ongoingRents[ongoingRents.length - 1]);
         if (ongoingRents && ongoingRents.length > 0) {
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const bikeId = lastOngoingRent.Bikes_id;
-            // console.log(bikeId);
             const bike = await mapsModel.getBike(bikeId);
             console.log(bike.Position);
             const coordinates = {
                 latitude: parseFloat(bike.Position.split(',')[0]),
                 longitude: parseFloat(bike.Position.split(',')[1])
             }
-            this.createRentedMarker(bikeId, coordinates);
+            this.createRentedMarker(coordinates);
         }
     }
 
@@ -392,6 +353,7 @@ export default class Map extends React.Component {
 
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
+                testID={'mapview'}
                 initialRegion={initialRegion}
                 onRegionChange={(e) => {
                     // GET RADIUS AND CENTER POINT
@@ -419,7 +381,8 @@ export default class Map extends React.Component {
                                 preDestinationMarker: <CustomMarkerSmall
                                 coordinates={e.nativeEvent.coordinate}
                                 img={require('../assets/PreDestination.png')}
-                                onpress={() => {
+                                    onpress={() => {
+                                    // set destination panel when pressing red spot
                                     this.setPanel(<SetDestinationPanel
                                         setRoute={this.setRoute}
                                         rentedPosition={this.state.rentedPos}
@@ -432,7 +395,8 @@ export default class Map extends React.Component {
                                     }}
                                     trackViewChanges={false}
                                     />
-                                })
+                            })
+                            // set destination panel when pressing map
                             this.setPanel(<SetDestinationPanel
                                 setRoute={this.setRoute}
                                 rentedPosition={this.state.rentedPos}
@@ -460,7 +424,7 @@ export default class Map extends React.Component {
                 {this.state.destinationMarker}
             </MapView>
             { this.state.scanButton }
-            { this.state.panel }
+            {this.state.panel}
         </View>
     }
 }

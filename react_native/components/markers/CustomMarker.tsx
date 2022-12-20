@@ -19,6 +19,7 @@ export default class CustomMarker extends PureComponent
         const { coordinates, img, onpress, trackViewChanges } = this.props;
         return (
             <Marker
+                testID="marker"
                 coordinate={coordinates}
                 tracksViewChanges={trackViewChanges}
                 onPress={onpress}
