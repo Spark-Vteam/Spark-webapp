@@ -8,15 +8,15 @@ filter:
         - "react_native/coverage/"
         - "react_native/__test__/"
 
-build:
-  nodes:
-    coverage:
-      tests:
-        override:
-          - command: npm --prefix /home/scrutinizer/build/react_native run test
-            coverage:
-              file: "react_native/coverage/clover.xml"
-              format: "clover"
+# build:
+#   nodes:
+#     coverage:
+#       tests:
+#         override:
+#           - command: npm --prefix /home/scrutinizer/build/react_native run test
+#             coverage:
+#               file: "react_native/coverage/clover.xml"
+#               format: "clover"
 
 
 
