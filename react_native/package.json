@@ -16,7 +16,6 @@
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",
     "@mapbox/polyline": "^1.1.1",
-    "@testing-library/react-native": "^11.5.0",
     "expo": "~47.0.3",
     "expo-auth-session": "^3.7.3",
     "expo-location": "^15.0.1",
