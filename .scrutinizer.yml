@@ -13,7 +13,7 @@ build:
     coverage:
       tests:
         override:
-          - command: npm run test react_native
+          - command: npm --prefix /home/scrutinizer/build/react_native run test
             coverage:
               file: react_native/coverage/clover.xml
               format: clover
