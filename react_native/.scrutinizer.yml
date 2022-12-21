@@ -1,10 +1,36 @@
 # .scrutinizer.yml
 
-# Set the directory where Scrutinizer should look for coverage reports
-coverage:
-  # Set the type of coverage report to 'html'
-  type: html
-  # Set the path to the coverage report directory
-  path: coverage
+filter:
+    excluded_paths: [coverage/*, __test/*__]
+
+build:
+  nodes:
+    coverage:
+      tests:
+        override:
+          - command: npm run test
+            coverage:
+              file: coverage/clover.xml   # <- Set this to where we find the coverage data.
+                                          #    The path is relative to the current directory.
+              format: clover
+
+
+# build:
+#     nodes:
+#         my-tests:
+#             environment:
+#                 php:
+#                     version: 8.1
+#         analysis:
+#             tests:
+#                 override:
+#                     - php-scrutinizer-run
+#     tests:
+#         override:
+#             -
+#                 command: "npm run test"
+#                 coverage:
+#                     file: "build/coverage.clover"
+#                     format: "php-clover"
 
 
