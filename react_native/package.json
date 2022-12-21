@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "jest": {
     "preset": "jest-expo"

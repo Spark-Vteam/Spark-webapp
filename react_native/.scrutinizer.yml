@@ -1,0 +1,10 @@
+# .scrutinizer.yml
+
+# Set the directory where Scrutinizer should look for coverage reports
+coverage:
+  # Set the type of coverage report to 'html'
+  type: html
+  # Set the path to the coverage report directory
+  path: coverage
+
+
