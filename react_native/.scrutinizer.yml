@@ -13,9 +13,9 @@ build:
     coverage:
       tests:
         override:
-          - command: npm run test
+          - command: npm run test react_native
             coverage:
               file: coverage/clover.xml
-              format: clover
+              format: javascript-clover
 
 
