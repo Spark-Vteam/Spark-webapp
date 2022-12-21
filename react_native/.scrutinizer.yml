@@ -1,0 +1,21 @@
+# .scrutinizer.yml
+
+# filter:
+#     excluded_paths:
+#                 - [react_native/coverage/*, react_native/__test/__*]
+filter:
+    excluded_paths:
+        - "coverage/"
+        - "__test__/"
+
+build:
+  nodes:
+    coverage:
+      tests:
+        override:
+          - command: npm run test
+            coverage:
+              file: coverage/clover.xml
+              format: clover
+
+
