@@ -1,10 +1,15 @@
 # Spark-webapp
 
+This is a sub module of the Spark project. It contains code for the mobile application. Follow instructions below to start up the mobile application only. To start up all backend and frontend applications, follow the the README instructions in the [main Spark repo](https://github.com/Spark-Vteam/Spark-Project) instead.
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/?branch=main)
+[![Build Status](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/badges/build.png?b=main)](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/build-status/main)
+
 ## Setup
 
-The react-native app needs to know your private local IP address to be able to fetch data from the express server that is running on localhost.
+The react-native app needs to know your private local IP address (IPv4) to be able to fetch data from the express server that is running on localhost.
 
-Type in `netstat -r` in terminal and find IP address under "Interface" in IPv4 Route Table.
+If you are unsure of how to find your local IP check [this link](https://www.whatismybrowser.com/detect/what-is-my-local-ip-address).
 
 Create two files .env
 - in folder root folder Spark-Webapp (to be able to start up dockerized react-native through expo LAN)
