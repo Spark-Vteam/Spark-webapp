@@ -10,5 +10,5 @@ EXPOSE 19000
 EXPOSE 19001
 EXPOSE 19002
 
-RUN npm i && npm i -g expo-cli
+RUN npm i --force && npm i -g expo-cli
 CMD [ "npx", "expo", "start" ]
