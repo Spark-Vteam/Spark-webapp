@@ -20,7 +20,7 @@ describe('Map', () => {
         // debug({ message: "Map component" })
 
         expect(mapview).toBeDefined();
-        expect(getByText('Scan this area')).toBeDefined();
+        expect(getByText('Scan this area INTENTIONAL FAIL')).toBeDefined();
     });
 
 
