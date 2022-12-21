@@ -21,7 +21,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+      name: Use Node.js ${{ matrix.node-version }}
     - run: cd react_native
     - run: npm i --force
     - run: npm test
