@@ -6,7 +6,7 @@
 filter:
     excluded_paths:
         - "react_native/coverage/"
-        - "react_native/__test/__"
+        - "react_native/__test__/"
 
 build:
   nodes:
