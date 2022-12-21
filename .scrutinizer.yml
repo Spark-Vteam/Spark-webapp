@@ -9,17 +9,18 @@ filter:
         - "react_native/__test__/"
 
 build:
-  nodes:  // behöver bog lägga till en environment
+  nodes:
     coverage:
       tests:
         override:
           - command: npm --prefix /home/scrutinizer/build/react_native run test
             coverage:
-              file: react_native/coverage/clover.xml
-              format: clover
+              file: "react_native/coverage/clover.xml"
+              format: "clover"
 
 
-# # Mikaels kod:
+
+# Mikaels kod:
 # imports:    // <------------
 #     - php
 
