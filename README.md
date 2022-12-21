@@ -22,9 +22,9 @@ Add your IP address as a variable in both .env files:
 Start up Docker desktop.
 In the project directory, you can then run:
 
-### `docker-compose up`
-Docker will start up containers with the express server and the react-native app.
+### `docker compose -f docker-compose_react_native.yml up`
+Docker will start up container with the react-native app only.
 Open App in Expo Go by scanning the QR code or manually enter URL `<your IP>`:19000.
 
-### `docker-compose down`
-Docker will stop the containers.
+### `docker compose -f docker-compose_react_native.yml down`
+Docker will stop the container.
