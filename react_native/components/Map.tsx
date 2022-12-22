@@ -228,11 +228,11 @@ export default class Map extends React.Component {
 
             if (bikesFromScan !== null) {
                 const availableBikes = bikesFromScan.filter((e) => {
-                    return e.Status == 10;  // todo: lägg till && e.Battery > 50 eller nåt
+                    return e.Status == 10 && e.Battery > 50;
                 })
 
                 const chargingBikes = bikesFromScan.filter((e) => {
-                    return e.Status == 40;  // todo: lägg till && e.Battery > 50 eller nåt
+                    return e.Status == 40 && e.Battery > 50;
                 })
 
                 // console.log(chargingBikes);
@@ -264,13 +264,11 @@ export default class Map extends React.Component {
             });
         }
 
-
         if (bikesCharging !== null) {
             this.setState({
                 bikesCharging: bikesAvailable
             });
         }
-
 
         if (stations !== null) {
             this.setState({
