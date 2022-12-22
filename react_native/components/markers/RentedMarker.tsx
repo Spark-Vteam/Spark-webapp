@@ -3,19 +3,22 @@ import { View, Image } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
 import { Images } from '../../styles/index';
+import Bike from '../../interfaces/bike';
 
 
 
-export default class RentedMarker extends React.Component<{ coordinates: LatLng, onpress: () => void }> {
+export default class RentedMarker extends React.Component<{
+    coordinates: LatLng,
+    bike:Bike,
+    onpress: (bike: Bike) => void
+}> {
 
 
-    createRentedMarker = (coordinates: LatLng, onpress: () => void): ReactNode | null => {
+    createRentedMarker = (coordinates: LatLng, bike:Bike, onpress: (bike:Bike) => void): ReactNode | null => {
         return <Marker
                 coordinate={coordinates}
                 draggable
-                onPress={() => {
-                    onpress();
-                }}
+            onPress={() => { onpress(bike); }}
                 // onDragEnd={(e) => {
                 //         // In real word, the python script on the bike
                 //         // would send coordinates to update rent,
@@ -33,9 +36,9 @@ export default class RentedMarker extends React.Component<{ coordinates: LatLng,
 
 
     render() {
-        const { coordinates, onpress } = this.props;
+        const { coordinates, bike, onpress } = this.props;
 
-        const rentedMarker = this.createRentedMarker(coordinates, onpress);
+        const rentedMarker = this.createRentedMarker(coordinates, bike, onpress);
 
         return (
             <View>

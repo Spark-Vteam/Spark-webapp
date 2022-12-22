@@ -14,7 +14,7 @@ export default class BikeMarkers extends React.Component
     <{
         bikes: Bike[],
         setPanel: (newpanel: ReactNode) => void,
-        createRentedMarker: (coordinates: LatLng) => void,
+        createRentedMarker: (bike:Bike) => void,
     }> {
 
 
@@ -27,7 +27,7 @@ export default class BikeMarkers extends React.Component
     createMarkers = (
         bikes: Bike[],
         setPanel: (newPanel: ReactNode) => void,
-        createRentedMarker: (coordinates: LatLng) => void)
+        createRentedMarker: (bike:Bike) => void)
         : ReactNode | null => {
         return bikes.map((e: Bike, index: number) => {
 
@@ -56,7 +56,7 @@ export default class BikeMarkers extends React.Component
                             bike={e}
                             onpress={async () => {
                                 await rentModel.startRent(1, e.id);
-                                createRentedMarker(coordinates);
+                                createRentedMarker(e);
                                 this.setState({
                                     bikeMarkers: null
                                 });

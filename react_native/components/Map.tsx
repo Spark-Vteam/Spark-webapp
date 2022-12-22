@@ -160,24 +160,43 @@ export default class Map extends React.Component {
 
     // CREATE RENTED BIKE MARKER
     // ===================================
-    createRentedMarker = (coordinates: LatLng) => {
+    createRentedMarker = (bike: Bike) => {
+        const coordinates = {
+            latitude: parseFloat(bike.Position.split(',')[0]),
+            longitude: parseFloat(bike.Position.split(',')[1])
+        }
         this.setState({
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 coordinates={coordinates}
-                onpress={this.pressedRentedMarker}  // see method below
+                bike={bike}
+                onpress={(bike: Bike) => {
+                    this.setState({
+                        panel: <RentedPanel
+                            bike={bike}
+                            onpress={async () => {
+                                this.stopRent();
+                                this.setDestinationMarker(null);
+                            }} />
+                    });
+                    this.scanArea();
+                }}  // see method below
             />,
             bikeMarkers: null
         })
         // open panel with rent right after creating it
-        this.pressedRentedMarker();
+        console.log("OPEN!!");
+        this.pressedRentedMarker(bike);
     }
 
     // CREATE RENTED BIKE PANEL
     // ===================================
-    pressedRentedMarker = () => {
+    pressedRentedMarker = (bike: Bike) => {
+        console.log("PANEL");
         this.setState({
-            panel: <RentedPanel onpress={async () => {
+            panel: <RentedPanel
+                bike={bike}
+                onpress={async () => {
                 this.stopRent();
                 this.setDestinationMarker(null);
             }} />
@@ -327,12 +346,12 @@ export default class Map extends React.Component {
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const bikeId = lastOngoingRent.Bikes_id;
             const bike = await mapsModel.getBike(bikeId);
-            console.log(bike.Position);
-            const coordinates = {
-                latitude: parseFloat(bike.Position.split(',')[0]),
-                longitude: parseFloat(bike.Position.split(',')[1])
-            }
-            this.createRentedMarker(coordinates);
+            // console.log(bike.Position);
+            // const coordinates = {
+            //     latitude: parseFloat(bike.Position.split(',')[0]),
+            //     longitude: parseFloat(bike.Position.split(',')[1])
+            // }
+            this.createRentedMarker(bike);
         }
     }
 

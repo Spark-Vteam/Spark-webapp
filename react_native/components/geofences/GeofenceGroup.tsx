@@ -67,6 +67,20 @@ export default class GeofenceGroup extends React.Component<{
                     }}
                 />
             }
+            if (type == 50) {
+                return <Geofence
+                    coordinates={coordinates}
+                    key={index}
+                    color={'rgba(0, 107, 255, 0.5)'}
+                    borderColor={'#0E2443'}
+                    onpress={() => {
+                        setPanel(<GeofencePanel
+                            name={name}
+                            info={'Parking area'}
+                        />)
+                    }}
+                />
+            }
         })
     };
 
