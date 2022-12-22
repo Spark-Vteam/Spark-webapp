@@ -6,8 +6,10 @@ import priceModel from '../../models/priceModel';
 
 import Bike from '../../interfaces/bike';
 
+import rentModel from '../../models/rentModel';
+
 // Panel with info about available bike. Button to start ride, OnPress function is injected.
-export default class BikePanel extends React.Component<{ bike: Bike, onpress: () => void }> {
+export default class BikePanel extends React.Component<{ bike: Bike, createRentedMarker: (bike: Bike) => void}> {
 
     state: {
         priceStart: number | null,
@@ -28,7 +30,7 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
         };
     }
 
-    async componentDidMount() {
+    createPricing = async () => {
         const pricing = await priceModel.getPrice();
         console.log(pricing);
         this.setState({
@@ -42,7 +44,8 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
 
 
     render() {
-        const { bike, onpress } = this.props;
+        const { bike, createRentedMarker } = this.props;
+        this.createPricing();
 
         return (
             <View style={MapStyle.panelLong as any}>
@@ -51,9 +54,15 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
                 <TouchableOpacity
                     testID="button"
                     style={ButtonStyle.button as any}
-                    onPress={() => {
-                        onpress();
-                    }}
+                    onPress={
+                        async () => {
+                            await rentModel.startRent(1, bike.id);
+                            createRentedMarker(bike);
+                            this.setState({
+                                bikeMarkers: null
+                            });
+                        }
+                    }
                 >
                     <Text style={ButtonStyle.buttonText as any}>START RIDE</Text>
                 </TouchableOpacity>

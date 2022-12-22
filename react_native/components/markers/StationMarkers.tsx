@@ -60,6 +60,19 @@ export default class StationMarkers extends React.Component
                     img={require('../../assets/ChargingStation.png')}
                     trackViewChanges={false}
                     onpress={() => {
+                        // setPanel(null);
+                        // setTimeout(function () {
+                        //     setPanel(<StationPanel
+                        //         station={e}
+                        //         currentDestination={getCurrentDestination()}
+                        //         setDestinationMarker={setDestinationMarker}
+                        //         setDestination={setDestination}
+                        //         rentedPosition={getRentedPosition()}
+                        //         setRoute={setRoute}
+                        //         setPanel={setPanel}
+                        //         activeRent={getIsActiveRent()}
+                        //     />);
+                        // }, 1);
                         setPanel(<StationPanel
                             station={e}
                             currentDestination={getCurrentDestination()}

@@ -1,6 +1,7 @@
 import config from '../config/config.json';
 import { IP } from '@env'
 import Bike from '../interfaces/bike';
+import ChargingBike from '../interfaces/chargingbike';
 import { LatLng } from 'react-native-maps/lib/sharedTypes';
 
 import polyDecoder from '@mapbox/polyline';
@@ -55,7 +56,7 @@ const mapsModel = {
 
         // return bikes;
     },
-    getBikes: async function getBikes(): Promise<Bike[] | null> {
+    getBikes: async function getBikes(): Promise<Bike[]> {
         const response = await fetch(`http://${IP}:${config.port}/bike`);
 
         const result = await response.json();
@@ -63,6 +64,14 @@ const mapsModel = {
         const bikes = result.data;
 
         return bikes;
+    },
+    getChargingBikes: async function getBikes(): Promise<ChargingBike[]> {
+        const response = await fetch(`http://${IP}:${config.port}/bike/charging`);
+        const result = await response.json();
+
+        const chargingBikes = result.data;
+
+        return chargingBikes;
     },
     getBike: async function getBikes(bikeId: number): Promise<Bike> {
         const response = await fetch(`http://${IP}:${config.port}/bike/${bikeId}`);

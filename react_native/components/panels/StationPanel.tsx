@@ -2,17 +2,18 @@ import React, {ReactNode} from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 import { LatLng } from 'react-native-maps';
-// import Bike from '../../interfaces/bike';
-// import BikePanel from './BikePanel';
+import Bike from '../../interfaces/bike';
 import Station from '../../interfaces/station';
 import Pline from '../polyline/Polyline';
 
-import mapsModel from '../../models/mapModel';
+import mapModel from '../../models/mapModel';
+import ChargBikeIconGroup from './ChargBikeIconGroup';
 
 
 // Panel with info about station. If no active rent, show existing bikes on station.
 export default class StationPanel extends React.Component<{
     station: Station
+    createRentedMarker: (bike: Bike) => void,
     currentDestination: LatLng | null,
     setDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
     setDestination: (coordinates: LatLng | null) => void,
@@ -21,6 +22,37 @@ export default class StationPanel extends React.Component<{
     setPanel: (newpanel: ReactNode) => void,
     activeRent: boolean,
 }> {
+
+    state: {
+        chargingBikesCount: number | null,
+        chargingBikes: ReactNode | null,
+    }
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            chargingBikesCount: null,
+            chargingBikes: null,
+        };
+    }
+
+    createChargingBikeIcons = async () => {
+        const allChargingBikes = await mapModel.getChargingBikes()
+        const correctChargingBikesArr = allChargingBikes.filter((e) => {
+            return e.Name == this.props.station.Name && e.Battery > 50;
+        });
+
+        this.setState({
+            chargingBikesCount: correctChargingBikesArr.length,
+            chargingBikes: < ChargBikeIconGroup
+                chargingBikes={correctChargingBikesArr}
+                createRentedMarker={this.props.createRentedMarker}
+                setPanel={this.props.setPanel}
+            />
+        })
+    }
+
+
     render() {
         const { station,
             currentDestination,
@@ -39,6 +71,8 @@ export default class StationPanel extends React.Component<{
             longitude: long
         }
 
+        this.createChargingBikeIcons();
+
         return (
             <View style={MapStyle.panel as any}>
                 <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
@@ -47,10 +81,13 @@ export default class StationPanel extends React.Component<{
                 <Text style={MapStyle.panelTextMiddle as any}>{station.Occupied} occupied spots</Text>
                 {
                     // Show bikes to rent only if there are no active rents already
-                    activeRent === false &&
+                    activeRent === false && this.state.chargingBikes &&
                         // todo: fetch bikes parked at station somehow and
                         // make it so that one can rent from here
-                        <Text style={MapStyle.panelTextMiddle as any}>{3} bikes ready to rent</Text>
+                    <View>
+                        <Text style={MapStyle.panelTextMiddle as any}>{this.state.chargingBikesCount} bikes ready to rent</Text>
+                        {this.state.chargingBikes}
+                    </View>
                 }
                 {
                     ((activeRent === true &&
@@ -65,7 +102,7 @@ export default class StationPanel extends React.Component<{
                     <TouchableOpacity
                         style={ButtonStyle.button as any}
                             onPress={async () => {
-                                const coordArrForPline = await mapsModel.getRoute(rentedPosition, stationCoordinates);
+                                const coordArrForPline = await mapModel.getRoute(rentedPosition, stationCoordinates);
                                 setRoute(<Pline
                                     coordinates={coordArrForPline}
                                 />)

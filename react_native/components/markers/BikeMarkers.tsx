@@ -54,13 +54,16 @@ export default class BikeMarkers extends React.Component
                     onpress={() => {
                         setPanel(<BikePanel
                             bike={e}
-                            onpress={async () => {
-                                await rentModel.startRent(1, e.id);
-                                createRentedMarker(e);
-                                this.setState({
-                                    bikeMarkers: null
-                                });
-                            }}
+                            createRentedMarker={createRentedMarker}
+                            // onpress={
+                            //     async () => {
+                            //     await rentModel.startRent(1, e.id);
+                            //     createRentedMarker(e);
+                            //     this.setState({
+                            //         bikeMarkers: null
+                            //     });
+                            //     }
+                            // }
                         />);
                     }}
                 />

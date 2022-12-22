@@ -26,6 +26,21 @@ export const longButton = {
     zIndex: 999,
 }
 
+export const chargBikeButton = {
+    width: 100,
+    height: 40,
+
+    backgroundColor: '#209F5B',
+    borderRadius: 8,
+    padding: 10,
+    marginLeft: 15,
+    marginRight: 15,
+
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
 export const buttonText = {
     textAlign: 'center',
     fontWeight: 'bold',
