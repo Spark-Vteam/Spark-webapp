@@ -12,3 +12,7 @@ export const normal = {
     marginBottom: 10,
 };
 
+export const bold = {
+    fontWeight: 'bold',
+}
+

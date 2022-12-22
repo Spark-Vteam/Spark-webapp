@@ -8,7 +8,7 @@ import { MapStyle, ButtonStyle } from '../styles/index';
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
 
-import mapsModel from '../models/mapModel';
+import mapModel from '../models/mapModel';
 import rentModel from '../models/rentModel';
 
 import GeofenceGroup from './geofences/GeofenceGroup';
@@ -47,7 +47,7 @@ export default class Map extends React.Component {
         route: null | ReactNode;
 
         scanButton: null | ReactNode,
-        centerPoint: null | LatLng,
+        centerPoint: LatLng,
         radius: number
     }
 
@@ -73,8 +73,11 @@ export default class Map extends React.Component {
             route: null,
 
             scanButton: null,
-            centerPoint: null,
-            radius: 0.01 * 111 * 1000 / 2 // see below under onRegionChangeComplete
+            centerPoint: {           // see below under componentDidMount
+                latitude: 55.7047,  // temporary, is set by on readyMount initalRegion
+                longitude: 13.1910,
+            },
+            radius: 0.01
         };
     }
 
@@ -208,7 +211,10 @@ export default class Map extends React.Component {
     // Scan the visible area for bikes and stations
     scanArea = async () => {
 
-        // Todo: Implement scan instead of getting all bikes and stations
+        let testBikes = await mapModel.getBikesInRadius(
+            this.state.centerPoint,
+            this.state.radius
+        )
         // use this.state.radius och this.state.centerPoint
 
         let bikesAvailable: Bike[] | null = null;
@@ -218,7 +224,7 @@ export default class Map extends React.Component {
         // ===================================
         // Makes so that one can only rent one at a time
         if (this.state.rentedMarker === null) {
-            const bikesFromScan = await mapsModel.getBikes();    // todo: change to scan
+            const bikesFromScan = await mapModel.getBikes();    // todo: change to scan
 
             if (bikesFromScan !== null) {
                 const availableBikes = bikesFromScan.filter((e) => {
@@ -240,7 +246,7 @@ export default class Map extends React.Component {
 
         // GET STATIONS AND SET MARKERS
         // ===================================
-        let stations: Station[] | null = await mapsModel.getStations();
+        let stations: Station[] | null = await mapModel.getStations();
 
         if (stations !== null) { // todo: delete once scan radius works
             // Slicing array to not overload mobile phone (switch later to 'scan area')
@@ -329,7 +335,7 @@ export default class Map extends React.Component {
 
         // CREATE GEOFENCES
         // ===================================
-        const geofences = await mapsModel.getGeofences();
+        const geofences = await mapModel.getGeofences();
         this.setState({
             geofences: <GeofenceGroup
                 geofences={geofences}
@@ -345,7 +351,7 @@ export default class Map extends React.Component {
         if (ongoingRents && ongoingRents.length > 0) {
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const bikeId = lastOngoingRent.Bikes_id;
-            const bike = await mapsModel.getBike(bikeId);
+            const bike = await mapModel.getBike(bikeId);
             // console.log(bike.Position);
             // const coordinates = {
             //     latitude: parseFloat(bike.Position.split(',')[0]),
@@ -386,7 +392,7 @@ export default class Map extends React.Component {
                         // 1 degree = 111 km
                         // 1 km = 1000 m
                         // radius = 1/2 diameter
-                        radius: latDelta * 111 * 1000 / 2,
+                        radius: latDelta,
                         centerPoint: { lat, long }
                     });
                 }}

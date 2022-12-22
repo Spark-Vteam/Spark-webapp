@@ -17,13 +17,41 @@ const mapsModel = {
 
         return stations;
     },
-    getBikesInRadius: async function getBikesInRadius() {
-        // todo: send in latitudeDelta as a parameter (divide by 2?)
-        // const response = await fetch(`http://${IP}:${config.port}/bike`);
+    getBikesInRadius: async function getBikesInRadius(centerPoint: LatLng, radiusDegrees: number) {
+
+        // // 1 degree = 111 km
+        // // 1 km = 1000 m
+        // // radius = 1/2 diameter
+
+        // const body = {
+        //     latitude: 55.70584,
+        //     longitude: 13.19321,
+        //     radius: 300.234235
+        // }
+
+        // // const body = {
+        // //     latitude: centerPoint.latitude,
+        // //     longitude: centerPoint.longitude,
+        // //     radius: radiusDegrees * 111 * 1000 / 2
+        // // }
+
+        // console.log(body);
+
+        // const response = await fetch(`http://${IP}:${config.port}/bike/radius`, {
+        //     body: JSON.stringify(body),
+        //     headers: {
+        //         'content-type': 'application/json'
+        //     },
+        //     method: 'GET'
+        // })
 
         // const result = await response.json();
 
+        // console.log(result);
+
         // const bikes = result.data;
+
+        // console.log(bikes);
 
         // return bikes;
     },

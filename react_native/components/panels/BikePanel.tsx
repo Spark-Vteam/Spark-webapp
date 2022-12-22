@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import { MapStyle, ButtonStyle } from '../../styles/index';
+import { MapStyle, ButtonStyle, Typography } from '../../styles/index';
 
 import priceModel from '../../models/priceModel';
 
@@ -13,8 +13,8 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
         priceStart: number | null,
         priceMinute: number | null,
         priceFreeParking: number | null,
-        discountStartFreeparking: number | null,
-        discountEndParkingZone: number | null
+        discountStartFreeparking: number,
+        discountEndParkingZone: number
     }
 
     constructor(props: any) {
@@ -23,8 +23,8 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
             priceStart: null,
             priceMinute: null,
             priceFreeParking: null,
-            discountStartFreeparking: null,
-            discountEndParkingZone: null
+            discountStartFreeparking: 0,
+            discountEndParkingZone: 0
         };
     }
 
@@ -38,11 +38,6 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
             discountStartFreeparking: pricing.DiscountStartFree,
             discountEndParkingZone: pricing.DiscountEndParkingZone
         })
-        console.log(this.state.priceStart)
-        console.log(this.state.priceMinute)
-        console.log(this.state.priceFreeParking)
-        console.log(this.state.discountStartFreeparking)
-        console.log(this.state.discountEndParkingZone)
     }
 
 
@@ -62,11 +57,14 @@ export default class BikePanel extends React.Component<{ bike: Bike, onpress: ()
                 >
                     <Text style={ButtonStyle.buttonText as any}>START RIDE</Text>
                 </TouchableOpacity>
-                <Text style={MapStyle.panelTextMiddle as any}>Price / min: {this.state.priceMinute} kr   Unlock fee: {this.state.priceStart} kr</Text>
-                <Text style={MapStyle.panelTextMiddle as any}>+{this.state.priceFreeParking} kr if parked outside station or parking</Text>
-                <Text style={MapStyle.panelTextMiddle as any}>{this.state.discountStartFreeparking} % discount on unlock fee if started from outside a station or parking</Text>
-                <Text style={MapStyle.panelTextMiddle as any}>{this.state.discountEndParkingZone} % discount on unlock fee if returned to a station or parking</Text>
-                <Text/>
+                {
+                    this.state.priceStart !== null &&
+                    <View>
+                            <Text style={MapStyle.panelTextMiddle as any}><Text style={Typography.bold as any}>Price / min: {this.state.priceMinute} kr</Text>       Unlock fee: {this.state.priceStart * this.state.discountStartFreeparking / 100} kr <Text style={Typography.bold as any}>({this.state.discountStartFreeparking} % off!)</Text></Text>
+                            <Text style={MapStyle.panelTextMiddle as any}>+{this.state.priceFreeParking} kr if parked outside station or blue zones</Text>
+                    </View>
+                }
+
             </View>
         );
     }

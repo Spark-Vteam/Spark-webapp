@@ -28,7 +28,7 @@ export const panelLong = {
     paddingVertical: 30,
     paddingHorizontal: 40,
     width: '100%',
-    height: 300,
+    height: 260,
     backgroundColor: '#FFFFFF',
 }
 
