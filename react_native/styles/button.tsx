@@ -12,6 +12,22 @@ export const button = {
     zIndex: 999,
 }
 
+export const buttonRound = {
+    width: 40,
+    height: 40,
+
+    backgroundColor: '#209F5B',
+    borderRadius: 20,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
+
+
 export const longButton = {
     width: 190,
     height: 40,
@@ -33,8 +49,8 @@ export const chargBikeButton = {
     backgroundColor: '#209F5B',
     borderRadius: 8,
     padding: 10,
-    marginLeft: 15,
-    marginRight: 15,
+    marginTop: 5,
+    marginBottom: 5,
 
     alignSelf: 'center',
 

@@ -8,6 +8,6 @@ export const base = {
 
 export const flexRow = {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 1000
 }

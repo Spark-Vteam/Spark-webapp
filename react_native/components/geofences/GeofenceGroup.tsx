@@ -76,7 +76,7 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={'Parking area'}
+                            info={'Parking area.\n50% discount on Unlock fee if parked here or on a station.'}
                         />)
                     }}
                 />

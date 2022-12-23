@@ -26,6 +26,7 @@ export default class ChargBikeIcon extends React.Component
                     setPanel(<BikePanel
                         bike={bike}
                         createRentedMarker={createRentedMarker}
+                        discount={false}
                     />)
                     }}
                 >

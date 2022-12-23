@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { MapStyle, ButtonStyle, Typography } from '../../styles/index';
 
 import priceModel from '../../models/priceModel';
@@ -9,14 +9,17 @@ import Bike from '../../interfaces/bike';
 import rentModel from '../../models/rentModel';
 
 // Panel with info about available bike. Button to start ride, OnPress function is injected.
-export default class BikePanel extends React.Component<{ bike: Bike, createRentedMarker: (bike: Bike) => void}> {
+export default class BikePanel extends React.Component<{
+    bike: Bike,
+    createRentedMarker: (bike: Bike) => void,
+    discount: boolean
+}> {
 
     state: {
         priceStart: number | null,
         priceMinute: number | null,
         priceFreeParking: number | null,
         discountStartFreeparking: number,
-        discountEndParkingZone: number
     }
 
     constructor(props: any) {
@@ -25,14 +28,17 @@ export default class BikePanel extends React.Component<{ bike: Bike, createRente
             priceStart: null,
             priceMinute: null,
             priceFreeParking: null,
-            discountStartFreeparking: 0,
-            discountEndParkingZone: 0
+            discountStartFreeparking: 0
         };
     }
 
-    createPricing = async () => {
+    componentDidMount() {
+        this.fetchPricing();
+    }
+
+    fetchPricing = async () => {
         const pricing = await priceModel.getPrice();
-        console.log(pricing);
+        // console.log(pricing);
         this.setState({
             priceStart: pricing.Start,
             priceMinute: pricing.Minute,
@@ -44,8 +50,10 @@ export default class BikePanel extends React.Component<{ bike: Bike, createRente
 
 
     render() {
-        const { bike, createRentedMarker } = this.props;
-        this.createPricing();
+        const { bike, createRentedMarker, discount } = this.props;
+
+        console.log(bike.Status);
+
 
         return (
             <View style={MapStyle.panelLong as any}>
@@ -67,9 +75,16 @@ export default class BikePanel extends React.Component<{ bike: Bike, createRente
                     <Text style={ButtonStyle.buttonText as any}>START RIDE</Text>
                 </TouchableOpacity>
                 {
-                    this.state.priceStart !== null &&
+                    this.state.priceStart !== null && discount === true &&
                     <View>
                             <Text style={MapStyle.panelTextMiddle as any}><Text style={Typography.bold as any}>Price / min: {this.state.priceMinute} kr</Text>       Unlock fee: {this.state.priceStart * this.state.discountStartFreeparking / 100} kr <Text style={Typography.bold as any}>({this.state.discountStartFreeparking} % off!)</Text></Text>
+                            <Text style={MapStyle.panelTextMiddle as any}>+{this.state.priceFreeParking} kr if parked outside station or blue zones</Text>
+                    </View>
+                }
+                {
+                    this.state.priceStart !== null && discount === false &&
+                    <View>
+                            <Text style={MapStyle.panelTextMiddle as any}><Text style={Typography.bold as any}>Price / min: {this.state.priceMinute} kr</Text>       Unlock fee: {this.state.priceStart} kr</Text>
                             <Text style={MapStyle.panelTextMiddle as any}>+{this.state.priceFreeParking} kr if parked outside station or blue zones</Text>
                     </View>
                 }

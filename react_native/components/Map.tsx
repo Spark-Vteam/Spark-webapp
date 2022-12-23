@@ -31,7 +31,6 @@ export default class Map extends React.Component {
         locationmarker: null | ReactNode,
         bikes: null | Bike[],
         bikeMarkers: null | ReactNode,
-        bikesCharging: null | Bike[],
         stations: null | Station[],
         stationMarkers: null | ReactNode,
         geofences: null | ReactNode,
@@ -58,7 +57,6 @@ export default class Map extends React.Component {
             locationmarker: null,
             bikes: null,
             bikeMarkers: null,
-            bikesCharging: null,
             stations: null,
             stationMarkers: null,
             rentedPos: null,
@@ -188,14 +186,12 @@ export default class Map extends React.Component {
             bikeMarkers: null
         })
         // open panel with rent right after creating it
-        console.log("OPEN!!");
         this.pressedRentedMarker(bike);
     }
 
     // CREATE RENTED BIKE PANEL
     // ===================================
     pressedRentedMarker = (bike: Bike) => {
-        console.log("PANEL");
         this.setState({
             panel: <RentedPanel
                 bike={bike}
@@ -211,14 +207,14 @@ export default class Map extends React.Component {
     // Scan the visible area for bikes and stations
     scanArea = async () => {
 
-        let testBikes = await mapModel.getBikesInRadius(
+        // todo: fix radius
+        const testBikes = await mapModel.getBikesInRadius(
             this.state.centerPoint,
             this.state.radius
         )
         // use this.state.radius och this.state.centerPoint
 
         let bikesAvailable: Bike[] | null = null;
-        let bikesCharging: Bike[] | null = null;
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -231,16 +227,9 @@ export default class Map extends React.Component {
                     return e.Status == 10 && e.Battery > 50;
                 })
 
-                const chargingBikes = bikesFromScan.filter((e) => {
-                    return e.Status == 40 && e.Battery > 50;
-                })
-
-                // console.log(chargingBikes);
-
                  // todo: delete once scan radius works
                 // Slicing array to not overload mobile phone (switch later when scan works)
                 bikesAvailable = availableBikes.slice(0, 100);
-                bikesCharging = chargingBikes.slice(0, 100);
             }
         }
 
@@ -260,13 +249,8 @@ export default class Map extends React.Component {
                     bikes={bikesAvailable}
                     setPanel={this.setPanel}
                     createRentedMarker={this.createRentedMarker}
+                    discount={true}
                 />
-            });
-        }
-
-        if (bikesCharging !== null) {
-            this.setState({
-                bikesCharging: bikesAvailable
             });
         }
 
@@ -275,6 +259,7 @@ export default class Map extends React.Component {
                 stations: stations,
                 stationMarkers: <StationMarkers
                     stations={stations}
+                    createRentedMarker={this.createRentedMarker}
                     setPanel={this.setPanel}
                     getCurrentDestination={this.getCurrentDestination}
                     setDestination={this.setDestination}
@@ -341,7 +326,6 @@ export default class Map extends React.Component {
             />
         })
 
-
         // GET USERS ONGOING RENT (IF THERE IS ANY)
         // ===================================
         const ongoingRents = await rentModel.getOngoingRents();
@@ -350,11 +334,6 @@ export default class Map extends React.Component {
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const bikeId = lastOngoingRent.Bikes_id;
             const bike = await mapModel.getBike(bikeId);
-            // console.log(bike.Position);
-            // const coordinates = {
-            //     latitude: parseFloat(bike.Position.split(',')[0]),
-            //     longitude: parseFloat(bike.Position.split(',')[1])
-            // }
             this.createRentedMarker(bike);
         }
     }
@@ -398,7 +377,6 @@ export default class Map extends React.Component {
                     // check if user pressed outside a marker
                     // in that case hide panel
                     if (e.nativeEvent.action !== 'marker-press') {
-                        // console.log(e.nativeEvent.coordinate);
                         if (this.state.rentedMarker && this.state.panel == null) {
                             this.setState({
                                 preDestinationMarker: <CustomMarkerSmall

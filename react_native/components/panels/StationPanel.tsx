@@ -7,7 +7,9 @@ import Station from '../../interfaces/station';
 import Pline from '../polyline/Polyline';
 
 import mapModel from '../../models/mapModel';
-import ChargBikeIconGroup from './ChargBikeIconGroup';
+import ChargBikeIconPanel from './ChargBikeIconPanel';
+
+import ChargingBike from '../../interfaces/chargingbike';
 
 
 // Panel with info about station. If no active rent, show existing bikes on station.
@@ -25,15 +27,19 @@ export default class StationPanel extends React.Component<{
 
     state: {
         chargingBikesCount: number | null,
-        chargingBikes: ReactNode | null,
+        chargingBikes: ChargingBike[],
     }
 
     constructor(props: any) {
         super(props);
         this.state = {
             chargingBikesCount: null,
-            chargingBikes: null,
+            chargingBikes: [],
         };
+    }
+
+    componentDidMount() {
+        this.createChargingBikeIcons();
     }
 
     createChargingBikeIcons = async () => {
@@ -44,17 +50,19 @@ export default class StationPanel extends React.Component<{
 
         this.setState({
             chargingBikesCount: correctChargingBikesArr.length,
-            chargingBikes: < ChargBikeIconGroup
-                chargingBikes={correctChargingBikesArr}
-                createRentedMarker={this.props.createRentedMarker}
-                setPanel={this.props.setPanel}
-            />
+            chargingBikes: correctChargingBikesArr
+            // chargingBikes: < ChargBikeIconPanel
+            //     chargingBikes={correctChargingBikesArr}
+            //     createRentedMarker={this.props.createRentedMarker}
+            //     setPanel={this.props.setPanel}
+            // />
         })
     }
 
 
     render() {
         const { station,
+            createRentedMarker,
             currentDestination,
             setDestination,
             setDestinationMarker,
@@ -71,22 +79,29 @@ export default class StationPanel extends React.Component<{
             longitude: long
         }
 
-        this.createChargingBikeIcons();
 
         return (
             <View style={MapStyle.panel as any}>
                 <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
                 <Text style={MapStyle.panelTextMiddle as any}>{station.Available} available spots</Text>
-                {/* Behöver vi number of occupied spots eller blir det överflödigt? */}
                 <Text style={MapStyle.panelTextMiddle as any}>{station.Occupied} occupied spots</Text>
                 {
                     // Show bikes to rent only if there are no active rents already
                     activeRent === false && this.state.chargingBikes &&
-                        // todo: fetch bikes parked at station somehow and
-                        // make it so that one can rent from here
                     <View>
-                        <Text style={MapStyle.panelTextMiddle as any}>{this.state.chargingBikesCount} bikes ready to rent</Text>
-                        {this.state.chargingBikes}
+                        <TouchableOpacity
+                            style={ButtonStyle.buttonRound as any}
+                            onPress={() => {
+                                setPanel(<ChargBikeIconPanel
+                                    chargingBikes={this.state.chargingBikes}
+                                    createRentedMarker={createRentedMarker}
+                                    setPanel={setPanel}
+                                />)
+                            }}
+                        >
+                            <Text>{this.state.chargingBikesCount} x bikes</Text>
+                        </TouchableOpacity>
+                        {/* {this.state.chargingBikes} */}
                     </View>
                 }
                 {

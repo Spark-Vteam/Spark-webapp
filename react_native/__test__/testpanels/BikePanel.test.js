@@ -5,7 +5,10 @@ import { render, fireEvent } from '@testing-library/react-native';
 describe('BikePanel', () => {
 
     it('renders the BikePanel component with the correct props', () => {
-        const bike = { id: 1, Battery: 50 };
+        const bike = {
+            id: 1,
+            Battery: 50
+        };
         const onPress = jest.fn();
 
         const { getByText } = render(

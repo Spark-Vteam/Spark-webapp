@@ -1,15 +1,16 @@
 import React, { ReactNode } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import ChargingBike from '../../interfaces/chargingbike';
-import { Base } from '../../styles';
 import ChargBikeIcon from './ChargBikeIcon';
 
 import Bike from '../../interfaces/bike';
 
+import { MapStyle } from '../../styles';
 
 
-export default class ChargBikeIconGroup extends React.Component
+
+export default class ChargBikeIconPanel extends React.Component
     <{
         chargingBikes: ChargingBike[]
         createRentedMarker: (bike: Bike) => void,
@@ -31,7 +32,11 @@ export default class ChargBikeIconGroup extends React.Component
         })
 
         return (
-            <View style={Base.flexRow as any}>
+            // <View style={Base.flexRow as any}>
+            //     {chargGroup}
+            // </View>
+
+            <View style={MapStyle.panel as any}>
                 {chargGroup}
             </View>
         );

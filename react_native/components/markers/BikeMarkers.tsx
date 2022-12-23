@@ -1,18 +1,16 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { LatLng } from 'react-native-maps';
 
 import Bike from '../../interfaces/bike';
 import BikePanel from '../panels/BikePanel';
 
 import CustomMarker from './CustomMarker';
 
-import rentModel from '../../models/rentModel';
-
 
 export default class BikeMarkers extends React.Component
     <{
-        bikes: Bike[],
+    bikes: Bike[],
+        discount: boolean,
         setPanel: (newpanel: ReactNode) => void,
         createRentedMarker: (bike:Bike) => void,
     }> {
@@ -26,6 +24,7 @@ export default class BikeMarkers extends React.Component
      */
     createMarkers = (
         bikes: Bike[],
+        discount: boolean,
         setPanel: (newPanel: ReactNode) => void,
         createRentedMarker: (bike:Bike) => void)
         : ReactNode | null => {
@@ -55,6 +54,7 @@ export default class BikeMarkers extends React.Component
                         setPanel(<BikePanel
                             bike={e}
                             createRentedMarker={createRentedMarker}
+                            discount={discount}
                             // onpress={
                             //     async () => {
                             //     await rentModel.startRent(1, e.id);
@@ -77,9 +77,9 @@ export default class BikeMarkers extends React.Component
 
     render() {
 
-        const { bikes, setPanel, createRentedMarker } = this.props;
+        const { bikes, setPanel, createRentedMarker, discount } = this.props;
 
-        const bikeMarkers = this.createMarkers(bikes, setPanel, createRentedMarker);
+        const bikeMarkers = this.createMarkers(bikes, discount, setPanel, createRentedMarker);
 
         return (
             <View>
