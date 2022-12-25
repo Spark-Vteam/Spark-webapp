@@ -18,43 +18,23 @@ const mapsModel = {
 
         return stations;
     },
-    getBikesInRadius: async function getBikesInRadius(centerPoint: LatLng, radiusDegrees: number) {
+    getBikesInRadius: async function getBikesInRadius(centerPoint: LatLng, radiusDegrees: number): Promise<Bike[]> {
 
-        // // 1 degree = 111 km
-        // // 1 km = 1000 m
-        // // radius = 1/2 diameter
+        // 1 degree = 111 km
+        // 1 km = 1000 m
+        // radius = 1/2 diameter
 
-        // const body = {
-        //     latitude: 55.70584,
-        //     longitude: 13.19321,
-        //     radius: 300.234235
-        // }
+        const latitude = centerPoint.latitude;
+        const longitude = centerPoint.longitude;
+        const radius = radiusDegrees * 111 * 1000 / 2;
 
-        // // const body = {
-        // //     latitude: centerPoint.latitude,
-        // //     longitude: centerPoint.longitude,
-        // //     radius: radiusDegrees * 111 * 1000 / 2
-        // // }
+        const response = await fetch(`http://${IP}:${config.port}/bike/${longitude}/${latitude}/${radius}`);
 
-        // console.log(body);
+        const result = await response.json();
 
-        // const response = await fetch(`http://${IP}:${config.port}/bike/radius`, {
-        //     body: JSON.stringify(body),
-        //     headers: {
-        //         'content-type': 'application/json'
-        //     },
-        //     method: 'GET'
-        // })
+        const bikes = result.data;
 
-        // const result = await response.json();
-
-        // console.log(result);
-
-        // const bikes = result.data;
-
-        // console.log(bikes);
-
-        // return bikes;
+        return bikes;
     },
     getBikes: async function getBikes(): Promise<Bike[]> {
         const response = await fetch(`http://${IP}:${config.port}/bike`);

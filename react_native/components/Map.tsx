@@ -207,29 +207,21 @@ export default class Map extends React.Component {
     // Scan the visible area for bikes and stations
     scanArea = async () => {
 
-        // todo: fix radius
-        const testBikes = await mapModel.getBikesInRadius(
-            this.state.centerPoint,
-            this.state.radius
-        )
-        // use this.state.radius och this.state.centerPoint
-
         let bikesAvailable: Bike[] | null = null;
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
         // Makes so that one can only rent one at a time
         if (this.state.rentedMarker === null) {
-            const bikesFromScan = await mapModel.getBikes();    // todo: change to scan
+            const bikesFromScan = await mapModel.getBikesInRadius(
+                this.state.centerPoint,
+                this.state.radius
+            );
 
             if (bikesFromScan !== null) {
-                const availableBikes = bikesFromScan.filter((e) => {
+                bikesAvailable = bikesFromScan.filter((e) => {
                     return e.Status == 10 && e.Battery > 50;
                 })
-
-                 // todo: delete once scan radius works
-                // Slicing array to not overload mobile phone (switch later when scan works)
-                bikesAvailable = availableBikes.slice(0, 100);
             }
         }
 
@@ -272,10 +264,11 @@ export default class Map extends React.Component {
         }
     }
 
+
     // COMPONENT DID MOUNT
     // ===================================
     // -- 'componentDidMount' is the equivalent of onEffect,
-    // -- except it will only run once (no dependencies)
+    // -- except it will always only run once (no dependencies)
     async componentDidMount() {
 
         // SET SCAN BUTTON
@@ -361,16 +354,12 @@ export default class Map extends React.Component {
                     // GET RADIUS AND CENTER POINT
                     // OF RENDERED MAP TO USE WHEN SCANNING
                     // ======================
-                    const latDelta = e.latitudeDelta;
-                    const lat = e.latitude;
-                    const long = e.longitude;
-
                     this.setState({
-                        // 1 degree = 111 km
-                        // 1 km = 1000 m
-                        // radius = 1/2 diameter
-                        radius: latDelta,
-                        centerPoint: { lat, long }
+                        radius: e.latitudeDelta,
+                        centerPoint: {
+                            latitude: e.latitude,
+                            longitude: e.longitude
+                        }
                     });
                 }}
                 onPress={(e) => {
@@ -378,6 +367,7 @@ export default class Map extends React.Component {
                     // in that case hide panel
                     if (e.nativeEvent.action !== 'marker-press') {
                         if (this.state.rentedMarker && this.state.panel == null) {
+                            // set red dot
                             this.setState({
                                 preDestinationMarker: <CustomMarkerSmall
                                 coordinates={e.nativeEvent.coordinate}
