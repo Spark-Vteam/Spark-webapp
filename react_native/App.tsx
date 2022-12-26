@@ -6,8 +6,6 @@ import { SafeAreaView } from 'react-native';
 
 import { Base } from './styles/index';
 
-import Auth from './interfaces/auth';
-
 import Map from './components/Map';
 import AuthMenu from './components/login/AuthMenu';
 
@@ -16,18 +14,18 @@ export default class App extends Component {
 
   // -- In class component we keep all states in one object...
   state: {
-    isLoggedIn: Boolean
+    isLoggedIn: boolean
   }
 
   // -- ... and initialize them in in the constructor
   constructor(props: Record<string, unknown>) {
     super(props);
     this.state = {
-      isLoggedIn: false,  // <-- todo: check if valid token exists
+      isLoggedIn: true,  // <-- todo: check if valid token exists
     };
   }
 
-  setIsLoggedIn = (value: Boolean) => {
+  setIsLoggedIn = (value: boolean) => {
     this.setState({
       isLoggedIn: value
     });
@@ -41,10 +39,15 @@ export default class App extends Component {
         {/* <TestMap /> */}
         {/* <ClusterMap /> */}
         {/* <Test /> */}
-        <AuthMenu
-          setIsLoggedIn={this.setIsLoggedIn}
-        />
-        {/* <Map /> */}
+        {
+          this.state.isLoggedIn ?
+            <Map />
+            :
+          <AuthMenu
+              setIsLoggedIn={this.setIsLoggedIn}
+            />
+        }
+
       </SafeAreaView>
     );
   }

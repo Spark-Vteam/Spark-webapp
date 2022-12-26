@@ -1,8 +1,8 @@
-import { View, Text, TextInput, Button, TouchableOpacity, Image, Linking } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Typography, FormStyle, Base, ButtonStyle, Images } from '../../styles';
 
-import { IP } from '@env'
-import config from '../../config/config.json';
+// import { IP } from '@env'
+// import config from '../../config/config.json';
 
 import Auth from '../../interfaces/auth';
 
@@ -24,7 +24,7 @@ export default function AuthFields(props: {
                     props.setAuth({ ...props.auth, email: content })
                 }}
                 value={props.auth?.email}
-                placeholder={"Email"}
+                placeholder={'Email'}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 multiline={false}
@@ -35,7 +35,7 @@ export default function AuthFields(props: {
                     props.setAuth({ ...props.auth, password: content })
                 }}
                 value={props.auth?.password}
-                placeholder={"Password"}
+                placeholder={'Password'}
                 secureTextEntry={true}
                 autoCapitalize="none"
                 multiline={false}
@@ -61,4 +61,4 @@ export default function AuthFields(props: {
             </TouchableOpacity> */}
         </View>
     );
-};
+}
