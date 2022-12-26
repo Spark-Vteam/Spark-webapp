@@ -46,7 +46,7 @@ export default class RentedPanel extends React.Component<{
                 <Text style={MapStyle.panelTitle as any}>Rented bike #{bike.id}</Text>
                 <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
                 <TouchableOpacity
-                    style={ButtonStyle.button as any}
+                    style={ButtonStyle.buttonBlue as any}
                     onPress={() => {
                         onpress();
                     }}

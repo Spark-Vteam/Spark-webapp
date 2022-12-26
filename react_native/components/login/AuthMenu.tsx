@@ -14,25 +14,28 @@ export default function AuthMenu(props: {
     const [auth, setAuth] = useState<Partial<Auth>>({});
 
     async function doLogin() {
-        if (auth.email && auth.password) {
-            const result = await AuthModel.logIn(auth.email, auth.password);
+        props.setIsLoggedIn(true);
 
-            if (result.type === 'success') {
-                props.setIsLoggedIn(true);
-            }
+        // Todo: replace above with this
+        // if (auth.email && auth.password) {
+        //     const result = await AuthModel.logIn(auth.email, auth.password);
 
-            showMessage({
-                message: result.title,
-                description: result.message,
-                type: result.type,
-            });
-        } else {
-            showMessage({
-                message: 'Varning',
-                description: 'E-post och/eller lösenord saknas',
-                type: 'warning',
-            });
-        }
+        //     if (result.type === 'success') {
+        //         props.setIsLoggedIn(true);
+        //     }
+
+        //     showMessage({
+        //         message: result.title,
+        //         description: result.message,
+        //         type: result.type,
+        //     });
+        // } else {
+        //     showMessage({
+        //         message: 'Varning',
+        //         description: 'E-post och/eller lösenord saknas',
+        //         type: 'warning',
+        //     });
+        // }
     }
 
     return (

@@ -34,7 +34,7 @@ export default class SetDestinationPanel extends React.Component<{
             <View style={MapStyle.panel as any}>
                 {/* <Text style={MapStyle.panelTitle as any}>{ title }</Text> */}
                 <TouchableOpacity
-                    style={ButtonStyle.button as any}
+                    style={ButtonStyle.buttonBlue as any}
                     onPress={async () => {
                         setDestination(coordinates);
                         const coordArrForPline = await mapsModel.getRoute(rentedPosition, coordinates);

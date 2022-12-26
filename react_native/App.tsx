@@ -21,7 +21,7 @@ export default class App extends Component {
   constructor(props: Record<string, unknown>) {
     super(props);
     this.state = {
-      isLoggedIn: true,  // <-- todo: check if valid token exists
+      isLoggedIn: false,  // <-- todo: check if valid token exists
     };
   }
 
