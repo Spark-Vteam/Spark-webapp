@@ -2,7 +2,7 @@ export const button = {
     width: 165,
     height: 40,
 
-    backgroundColor: '#209F5B',
+    backgroundColor: '#FF5719',
     borderRadius: 8,
     padding: 10,
     marginTop: 15,
@@ -11,6 +11,36 @@ export const button = {
 
     zIndex: 999,
 }
+
+export const buttonBlue = {
+    width: 165,
+    height: 40,
+
+    backgroundColor: '#00CDA3',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
+export const buttonRound = {
+    width: 40,
+    height: 40,
+
+    backgroundColor: '#209F5B',
+    borderRadius: 20,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
+
 
 export const longButton = {
     width: 190,
@@ -21,6 +51,21 @@ export const longButton = {
     padding: 10,
     marginTop: 15,
     marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
+export const chargBikeButton = {
+    width: 100,
+    height: 40,
+
+    backgroundColor: '#209F5B',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 5,
+    marginBottom: 5,
+
     alignSelf: 'center',
 
     zIndex: 999,

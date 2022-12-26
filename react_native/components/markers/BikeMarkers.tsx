@@ -1,20 +1,18 @@
 import React, { ReactNode } from 'react';
 import { View } from 'react-native';
-import { LatLng } from 'react-native-maps';
 
 import Bike from '../../interfaces/bike';
 import BikePanel from '../panels/BikePanel';
 
 import CustomMarker from './CustomMarker';
 
-import rentModel from '../../models/rentModel';
-
 
 export default class BikeMarkers extends React.Component
     <{
-        bikes: Bike[],
+    bikes: Bike[],
+        discount: boolean,
         setPanel: (newpanel: ReactNode) => void,
-        createRentedMarker: (coordinates: LatLng) => void,
+        createRentedMarker: (bike:Bike) => void,
     }> {
 
 
@@ -26,8 +24,9 @@ export default class BikeMarkers extends React.Component
      */
     createMarkers = (
         bikes: Bike[],
+        discount: boolean,
         setPanel: (newPanel: ReactNode) => void,
-        createRentedMarker: (coordinates: LatLng) => void)
+        createRentedMarker: (bike:Bike) => void)
         : ReactNode | null => {
         return bikes.map((e: Bike, index: number) => {
 
@@ -54,13 +53,17 @@ export default class BikeMarkers extends React.Component
                     onpress={() => {
                         setPanel(<BikePanel
                             bike={e}
-                            onpress={async () => {
-                                await rentModel.startRent(1, e.id);
-                                createRentedMarker(coordinates);
-                                this.setState({
-                                    bikeMarkers: null
-                                });
-                            }}
+                            createRentedMarker={createRentedMarker}
+                            discount={discount}
+                            // onpress={
+                            //     async () => {
+                            //     await rentModel.startRent(1, e.id);
+                            //     createRentedMarker(e);
+                            //     this.setState({
+                            //         bikeMarkers: null
+                            //     });
+                            //     }
+                            // }
                         />);
                     }}
                 />
@@ -74,9 +77,9 @@ export default class BikeMarkers extends React.Component
 
     render() {
 
-        const { bikes, setPanel, createRentedMarker } = this.props;
+        const { bikes, setPanel, createRentedMarker, discount } = this.props;
 
-        const bikeMarkers = this.createMarkers(bikes, setPanel, createRentedMarker);
+        const bikeMarkers = this.createMarkers(bikes, discount, setPanel, createRentedMarker);
 
         return (
             <View>

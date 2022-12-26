@@ -20,6 +20,18 @@ export const panel = {
     backgroundColor: '#FFFFFF',
 }
 
+export const panelLong = {
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: -20,
+    alignSelf: 'center',
+    paddingVertical: 30,
+    paddingHorizontal: 40,
+    width: '100%',
+    height: 260,
+    backgroundColor: '#FFFFFF',
+}
+
 export const panelTitle = {
     textAlign: 'center',
     fontWeight: 'bold'

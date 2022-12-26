@@ -5,6 +5,8 @@ import { LatLng } from 'react-native-maps';
 import Station from '../../interfaces/station';
 import StationPanel from '../panels/StationPanel';
 
+import Bike from '../../interfaces/bike';
+
 import CustomMarker from './CustomMarker';
 
 
@@ -14,6 +16,7 @@ export default class StationMarkers extends React.Component
     <{
         stations: Station[],
         setPanel: (newpanel: ReactNode) => void,
+        createRentedMarker: (bike: Bike) => void,
         getCurrentDestination: () => LatLng | null,
         setDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
         setDestination: (coordinates: LatLng | null) => void,
@@ -23,15 +26,12 @@ export default class StationMarkers extends React.Component
     }> {
 
 
-    /**
-     * Class method to create group of custom markers (for example bikes and stations)
-     * @param {Station[]} station array with stations
-     * @param {Function} setPanel set function to display panel about bike when pressed
-     * @return {ReactNode | null} returns an group of markers or null if not valid coordinates
-     */
+
+    // Class method to create group of station markers
     createMarkers = (
         stations: Station[],
         setPanel: (newpanel: ReactNode) => void,
+        createRentedMarker: (bike: Bike) => void,
         getCurrentDestination: () => LatLng | null,
         setDestinationMarker: (newPreDestinationMarker: ReactNode) => void,
         setDestination: (coordinates: LatLng | null) => void,
@@ -60,8 +60,22 @@ export default class StationMarkers extends React.Component
                     img={require('../../assets/ChargingStation.png')}
                     trackViewChanges={false}
                     onpress={() => {
+                        // setPanel(null);
+                        // setTimeout(function () {
+                        //     setPanel(<StationPanel
+                        //         station={e}
+                        //         currentDestination={getCurrentDestination()}
+                        //         setDestinationMarker={setDestinationMarker}
+                        //         setDestination={setDestination}
+                        //         rentedPosition={getRentedPosition()}
+                        //         setRoute={setRoute}
+                        //         setPanel={setPanel}
+                        //         activeRent={getIsActiveRent()}
+                        //     />);
+                        // }, 1);
                         setPanel(<StationPanel
                             station={e}
+                            createRentedMarker={createRentedMarker}
                             currentDestination={getCurrentDestination()}
                             setDestinationMarker={setDestinationMarker}
                             setDestination={setDestination}
@@ -84,6 +98,7 @@ export default class StationMarkers extends React.Component
 
         const { stations,
             setPanel,
+            createRentedMarker,
             getCurrentDestination,
             setDestinationMarker,
             setDestination,
@@ -94,6 +109,7 @@ export default class StationMarkers extends React.Component
         const stationMarkers = this.createMarkers(
             stations,
             setPanel,
+            createRentedMarker,
             getCurrentDestination,
             setDestinationMarker,
             setDestination,

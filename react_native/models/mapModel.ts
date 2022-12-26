@@ -1,6 +1,7 @@
 import config from '../config/config.json';
 import { IP } from '@env'
 import Bike from '../interfaces/bike';
+import ChargingBike from '../interfaces/chargingbike';
 import { LatLng } from 'react-native-maps/lib/sharedTypes';
 
 import polyDecoder from '@mapbox/polyline';
@@ -17,17 +18,25 @@ const mapsModel = {
 
         return stations;
     },
-    getBikesInRadius: async function getBikesInRadius() {
-        // todo: send in latitudeDelta as a parameter (divide by 2?)
-        // const response = await fetch(`http://${IP}:${config.port}/bike`);
+    getBikesInRadius: async function getBikesInRadius(centerPoint: LatLng, radiusDegrees: number): Promise<Bike[]> {
 
-        // const result = await response.json();
+        // 1 degree = 111 km
+        // 1 km = 1000 m
+        // radius = 1/2 diameter
 
-        // const bikes = result.data;
+        const latitude = centerPoint.latitude;
+        const longitude = centerPoint.longitude;
+        const radius = radiusDegrees * 111 * 1000 / 2;
 
-        // return bikes;
+        const response = await fetch(`http://${IP}:${config.port}/bike/${longitude}/${latitude}/${radius}`);
+
+        const result = await response.json();
+
+        const bikes = result.data;
+
+        return bikes;
     },
-    getBikes: async function getBikes(): Promise<Bike[] | null> {
+    getBikes: async function getBikes(): Promise<Bike[]> {
         const response = await fetch(`http://${IP}:${config.port}/bike`);
 
         const result = await response.json();
@@ -35,6 +44,14 @@ const mapsModel = {
         const bikes = result.data;
 
         return bikes;
+    },
+    getChargingBikes: async function getBikes(): Promise<ChargingBike[]> {
+        const response = await fetch(`http://${IP}:${config.port}/bike/charging`);
+        const result = await response.json();
+
+        const chargingBikes = result.data;
+
+        return chargingBikes;
     },
     getBike: async function getBikes(bikeId: number): Promise<Bike> {
         const response = await fetch(`http://${IP}:${config.port}/bike/${bikeId}`);
