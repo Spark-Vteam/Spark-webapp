@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { showMessage } from 'react-native-flash-message';
+// import { showMessage } from 'react-native-flash-message';
 import Auth from '../../interfaces/auth';
 
-import AuthModel from '../../models/authModel'
+// import AuthModel from '../../models/authModel'
 
 import AuthFields from './Authfields';
 
