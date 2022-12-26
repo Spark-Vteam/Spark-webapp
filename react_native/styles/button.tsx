@@ -2,7 +2,21 @@ export const button = {
     width: 165,
     height: 40,
 
-    backgroundColor: '#209F5B',
+    backgroundColor: '#FF5719',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
+export const buttonBlue = {
+    width: 165,
+    height: 40,
+
+    backgroundColor: '#00CDA3',
     borderRadius: 8,
     padding: 10,
     marginTop: 15,

@@ -211,8 +211,11 @@ export default class Map extends React.Component {
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
-        // Makes so that one can only rent one at a time
+        // Checking if rentedMarker exists.
+        // This makes so that one can only scan for bikes
+        // if there is no current rent
         if (this.state.rentedMarker === null) {
+            // Scan for bikes
             const bikesFromScan = await mapModel.getBikesInRadius(
                 this.state.centerPoint,
                 this.state.radius
