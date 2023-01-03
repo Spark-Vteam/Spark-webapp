@@ -11,7 +11,7 @@ export default class DestinationPanel extends React.Component<{
         return (
             <View style={MapStyle.panel as any}>
                 <TouchableOpacity
-                    style={ButtonStyle.button as any}
+                    style={ButtonStyle.buttonBlue as any}
                     onPress={onpressButton}
                 >
                     <Text style={ButtonStyle.buttonText as any}>CANCEL ROUTE</Text>

@@ -308,6 +308,10 @@ export default class Map extends React.Component {
     // -- except it will always only run once (no dependencies)
     async componentDidMount() {
 
+        // PERFORM FIRST SCAN RIGHT AWAY
+        // ===================================
+        this.scanArea();
+
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ===================================
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -433,10 +437,10 @@ export default class Map extends React.Component {
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}
                 {this.state.stationMarkers}
-                {this.state.rentedMarker}
                 {this.state.geofences}
                 {this.state.preDestinationMarker}
                 {this.state.destinationMarker}
+                {this.state.rentedMarker}
             </MapView>
             { this.state.scanButton }
             {this.state.panel}

@@ -122,7 +122,7 @@ export default class StationPanel extends React.Component<{
                     // SET AS DESTINATION BUTTON
                     // ======================================
                     <TouchableOpacity
-                        style={ButtonStyle.button as any}
+                            style={ButtonStyle.buttonBlue as any}
                             onPress={async () => {
                                 const coordArrForPline = await mapModel.getRoute(rentedPosition, stationCoordinates);
                                 setRoute(<Pline
@@ -144,7 +144,7 @@ export default class StationPanel extends React.Component<{
                     // CANCEL DESTINATION BUTTON
                     // ======================================
                     <TouchableOpacity
-                        style={ButtonStyle.button as any}
+                            style={ButtonStyle.buttonBlue as any}
                             onPress={() => {
                                 setDestination(null);
                                 setPanel(null);
