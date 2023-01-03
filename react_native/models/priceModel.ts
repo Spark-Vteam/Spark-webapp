@@ -3,7 +3,7 @@ import { IP } from '@env'
 
 const priceModel = {
     getPrice: async function getPrice() {
-        const response = await fetch(`http://${IP}:${config.port}/pricing`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/pricing`);
 
         const result = await response.json();
 

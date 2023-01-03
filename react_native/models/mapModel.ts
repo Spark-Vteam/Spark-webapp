@@ -10,7 +10,7 @@ import polyDecoder from '@mapbox/polyline';
 
 const mapsModel = {
     getStations: async function getStations() {
-        const response = await fetch(`http://${IP}:${config.port}/station`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/station`);
 
         const result = await response.json();
 
@@ -28,7 +28,7 @@ const mapsModel = {
         const longitude = centerPoint.longitude;
         const radius = radiusDegrees * 111 * 1000 / 2;
 
-        const response = await fetch(`http://${IP}:${config.port}/bike/${longitude}/${latitude}/${radius}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${longitude}/${latitude}/${radius}`);
 
         const result = await response.json();
 
@@ -37,7 +37,7 @@ const mapsModel = {
         return bikes;
     },
     getBikes: async function getBikes(): Promise<Bike[]> {
-        const response = await fetch(`http://${IP}:${config.port}/bike`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike`);
 
         const result = await response.json();
 
@@ -46,7 +46,7 @@ const mapsModel = {
         return bikes;
     },
     getChargingBikes: async function getBikes(): Promise<ChargingBike[]> {
-        const response = await fetch(`http://${IP}:${config.port}/bike/charging`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/charging`);
         const result = await response.json();
 
         const chargingBikes = result.data;
@@ -54,7 +54,7 @@ const mapsModel = {
         return chargingBikes;
     },
     getBike: async function getBikes(bikeId: number): Promise<Bike> {
-        const response = await fetch(`http://${IP}:${config.port}/bike/${bikeId}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${bikeId}`);
 
         const result = await response.json();
 
@@ -63,7 +63,7 @@ const mapsModel = {
         return bike[0];
     },
     getGeofences: async function getGeofences() {
-        const response = await fetch(`http://${IP}:${config.port}/geofence`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/geofence`);
 
         const result = await response.json();
 

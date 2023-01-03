@@ -13,7 +13,7 @@ const rentModel = {
 
         // todo: Lägg in userId
         // från login när oAuth har implementerats.
-        const response = await fetch(`http://${IP}:${config.port}/rent/user/1`, {
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/1`, {
             body: JSON.stringify(body),
             headers: {
                 'content-type': 'application/json'
@@ -28,7 +28,7 @@ const rentModel = {
     getRentsOnUser: async function getRentOnUser(): Promise<Rent[] | null> {
         // Is used by method getOngoingRent below
 
-        const response = await fetch(`http://${IP}:${config.port}/rent/user/1`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/1`);
 
         const result = await response.json();
 
@@ -38,7 +38,7 @@ const rentModel = {
     },
     getOngoingRents: async function getOngoingRents() {
 
-        const response = await fetch(`http://${IP}:${config.port}/rent/active/1`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/active/1`);
 
         const result = await response.json();
 
@@ -61,7 +61,7 @@ const rentModel = {
             // console.log(ongoingRents[3].id);
 
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
-            const response = await fetch(`http://${IP}:${config.port}/rent/${lastOngoingRent.id}`, {
+            const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/${lastOngoingRent.id}`, {
                 headers: {
                     'content-type': 'application/json'
                 },
