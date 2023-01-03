@@ -81,6 +81,9 @@ export const scanButton = {
     position: 'absolute',
     alignSelf: 'center',
     bottom: 100,
+    height: 55,
+    width: 150,
+    justifyContent: 'center',
 
     backgroundColor: '#0796D4',
     borderRadius: 30,
@@ -89,7 +92,6 @@ export const scanButton = {
 }
 
 export const scanButtonText = {
-    textAlign: 'center',
     fontWeight: 'bold',
     color: '#FFFF',
     fontSize: 17

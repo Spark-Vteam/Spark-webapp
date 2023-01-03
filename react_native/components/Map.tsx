@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import MapView, { LatLng } from 'react-native-maps';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
 
 import { MapStyle, ButtonStyle } from '../styles/index';
@@ -45,7 +45,9 @@ export default class Map extends React.Component {
         preDestinationMarker: null | ReactNode;
         route: null | ReactNode;
 
+        // isSearchingBikes: Boolean,
         scanButton: null | ReactNode,
+
         centerPoint: LatLng,
         radius: number
     }
@@ -70,7 +72,9 @@ export default class Map extends React.Component {
             preDestinationMarker: null,
             route: null,
 
-            scanButton: null,
+            // isSearchingBikes: false,
+            scanButton: this.getOriginalScanButton(),
+
             centerPoint: {           // see below under componentDidMount
                 latitude: 55.7047,  // temporary, is set by on readyMount initalRegion
                 longitude: 13.1910,
@@ -92,6 +96,32 @@ export default class Map extends React.Component {
 
     getIsActiveRent = () => {
         return this.state.rentedMarker !== null;
+    }
+
+    getOriginalScanButton = () => {
+        return <TouchableOpacity
+            style={ButtonStyle.scanButton as any}
+            onPress={() => {
+                this.scanArea();
+                this.setState({
+                    isSearchingBikes: true,
+                    scanButton: <TouchableOpacity
+                        style={ButtonStyle.scanButton as any}
+                        onPress={() => {
+                            this.scanArea();
+                            this.setState({
+                                isSearchingBikes: true,
+                                scanButton: <ActivityIndicator animating={true} color='white' size={28} />
+                            })
+                        }}
+                    >
+                        <ActivityIndicator animating={true} color='white' size={28} />
+                    </TouchableOpacity>
+                })
+            }}
+        >
+            <Text style={ButtonStyle.scanButtonText as any}>Scan this area</Text>
+        </TouchableOpacity>
     }
 
     // SET METHODS
@@ -138,6 +168,13 @@ export default class Map extends React.Component {
         this.setState({
             destinationMarker: newDestinationMarker,
         });
+    }
+
+
+    doneSearchingBikes = () => {
+        this.setState({
+            scanButton: this.getOriginalScanButton()
+        })
     }
 
 
@@ -245,6 +282,7 @@ export default class Map extends React.Component {
                     setPanel={this.setPanel}
                     createRentedMarker={this.createRentedMarker}
                     discount={true}
+                    doneSearchingBikes={this.doneSearchingBikes}
                 />
             });
         }
@@ -273,19 +311,6 @@ export default class Map extends React.Component {
     // -- 'componentDidMount' is the equivalent of onEffect,
     // -- except it will always only run once (no dependencies)
     async componentDidMount() {
-
-        // SET SCAN BUTTON
-        // ===================================
-        this.setState({
-            scanButton: <TouchableOpacity
-                style={ButtonStyle.scanButton as any}
-                onPress={() => {
-                    this.scanArea();
-                }}
-            >
-                <Text style={ButtonStyle.scanButtonText as any}>Scan this area</Text>
-            </TouchableOpacity>
-        })
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ===================================

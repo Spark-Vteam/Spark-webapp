@@ -12,7 +12,8 @@ export default class BikeMarkers extends React.Component
     bikes: Bike[],
         discount: boolean,
         setPanel: (newpanel: ReactNode) => void,
-        createRentedMarker: (bike:Bike) => void,
+        createRentedMarker: (bike: Bike) => void,
+        doneSearchingBikes: () => void
     }> {
 
 
@@ -74,6 +75,14 @@ export default class BikeMarkers extends React.Component
             return null
         })
     };
+
+    componentDidMount() {
+        this.props.doneSearchingBikes();
+    }
+
+    componentDidUpdate() {
+        this.props.doneSearchingBikes();
+    }
 
     render() {
 
