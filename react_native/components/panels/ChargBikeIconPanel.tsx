@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 
 import ChargingBike from '../../interfaces/chargingbike';
 import ChargBikeIcon from './ChargBikeIcon';
@@ -37,7 +37,10 @@ export default class ChargBikeIconPanel extends React.Component
             // </View>
 
             <View style={MapStyle.panel as any}>
-                {chargGroup}
+                <ScrollView>
+                    {chargGroup}
+                    <Text />
+                </ScrollView>
             </View>
         );
     }

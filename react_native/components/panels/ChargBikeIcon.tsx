@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, Image } from 'react-native';
 import { ButtonStyle } from '../../styles/index';
 import Bike from '../../interfaces/bike';
 import mapsModel from '../../models/mapModel';
@@ -20,17 +20,22 @@ export default class ChargBikeIcon extends React.Component
 
         return (
             <TouchableOpacity
-                style={ButtonStyle.chargBikeButton as any}
-                onPress={async () => {
-                    const bike = await mapsModel.getBike(id);
-                    setPanel(<BikePanel
-                        bike={bike}
-                        createRentedMarker={createRentedMarker}
-                        discount={false}
+            style={ButtonStyle.chargBikeButton as any}
+            onPress={async () => {
+                const bike = await mapsModel.getBike(id);
+                setPanel(<BikePanel
+                    bike={bike}
+                    createRentedMarker={createRentedMarker}
+                    discount={false}
                     />)
-                    }}
+                }}
                 >
-                <Text style={ButtonStyle.buttonText as any}>#{id}   {battery}%</Text>
+                <Text>#{id}   </Text>
+                <Image
+                    source={require('../../assets/BatteryIcon.png')}
+                    style={ButtonStyle.chargBikeButtonBatteryIcon}
+                />
+                <Text> {battery}%</Text>
             </TouchableOpacity>
         );
     }

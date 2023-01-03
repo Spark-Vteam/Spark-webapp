@@ -26,18 +26,28 @@ export const buttonBlue = {
     zIndex: 999,
 }
 
-export const buttonRound = {
-    width: 40,
+export const stationBikesToRentButton = {
+    width: 80,
     height: 40,
 
-    backgroundColor: '#209F5B',
-    borderRadius: 20,
+    backgroundColor: '#49F88F',
+    borderRadius: 8,
     padding: 10,
     marginTop: 15,
     marginBottom: 15,
     alignSelf: 'center',
 
+    flexDirection: 'row',
+
     zIndex: 999,
+
+    justifyContent: 'center',
+    alignItems: 'center'
+}
+
+export const stationBikesToRentImage = {
+    width: 20,
+    height: 23,
 }
 
 
@@ -60,7 +70,12 @@ export const chargBikeButton = {
     width: 100,
     height: 40,
 
-    backgroundColor: '#209F5B',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    flexDirection: 'row',
+
+    backgroundColor: '#49F88F',
     borderRadius: 8,
     padding: 10,
     marginTop: 5,
@@ -69,6 +84,18 @@ export const chargBikeButton = {
     alignSelf: 'center',
 
     zIndex: 999,
+}
+
+export const chargBikeButtonBatteryIcon = {
+    width: 8,
+    height: 13,
+}
+
+
+export const buttonTextBlack = {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'black'
 }
 
 export const buttonText = {

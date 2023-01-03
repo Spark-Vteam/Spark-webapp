@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 import { LatLng } from 'react-native-maps';
 import Bike from '../../interfaces/bike';
@@ -39,6 +39,10 @@ export default class StationPanel extends React.Component<{
     }
 
     componentDidMount() {
+        this.createChargingBikeIcons();
+    }
+
+    componentDidUpdate() {
         this.createChargingBikeIcons();
     }
 
@@ -90,7 +94,7 @@ export default class StationPanel extends React.Component<{
                     activeRent === false && this.state.chargingBikes &&
                     <View>
                         <TouchableOpacity
-                            style={ButtonStyle.buttonRound as any}
+                            style={ButtonStyle.stationBikesToRentButton as any}
                             onPress={() => {
                                 setPanel(<ChargBikeIconPanel
                                     chargingBikes={this.state.chargingBikes}
@@ -99,7 +103,10 @@ export default class StationPanel extends React.Component<{
                                 />)
                             }}
                         >
-                            <Text>{this.state.chargingBikesCount} x bikes</Text>
+                                <Text>{this.state.chargingBikesCount} x </Text>
+                                <Image source={require('../../assets/BikeIcon.png')}
+                                    style={ButtonStyle.stationBikesToRentImage}
+                                />
                         </TouchableOpacity>
                         {/* {this.state.chargingBikes} */}
                     </View>
