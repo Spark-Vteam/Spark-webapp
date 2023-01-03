@@ -244,7 +244,7 @@ export default class Map extends React.Component {
     // Scan the visible area for bikes and stations
     scanArea = async () => {
 
-        let bikesAvailable: Bike[] | null = null;
+        let bikesAvailable: Bike[] = [];
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -258,51 +258,47 @@ export default class Map extends React.Component {
                 this.state.radius
             );
 
-            if (bikesFromScan !== null) {
-                bikesAvailable = bikesFromScan.filter((e) => {
-                    return e.Status == 10 && e.Battery > 50;
-                })
-            }
+
+            bikesAvailable = bikesFromScan.filter((e) => {
+                return e.Status == 10 && e.Battery > 50;
+            })
+
         }
 
         // GET STATIONS AND SET MARKERS
         // ===================================
-        let stations: Station[] | null = await mapModel.getStations();
+        let stations: Station[] = await mapModel.getStations();
+        // todo: instead get them in onDidMount (hämtar alla direkt en enda gång)
 
-        if (stations !== null) { // todo: delete once scan radius works
-            // Slicing array to not overload mobile phone (switch later to 'scan area')
-            stations = stations.slice(0, 50);
-        }
+        // todo: delete when not testing anymore
+        stations = stations.slice(0, 50);
 
-        if (bikesAvailable !== null) {
-            this.setState({
-                bikes: bikesAvailable,
-                bikeMarkers: <BikeMarkers
-                    bikes={bikesAvailable}
-                    setPanel={this.setPanel}
-                    createRentedMarker={this.createRentedMarker}
-                    discount={true}
-                    doneSearchingBikes={this.doneSearchingBikes}
-                />
-            });
-        }
 
-        if (stations !== null) {
-            this.setState({
-                stations: stations,
-                stationMarkers: <StationMarkers
-                    stations={stations}
-                    createRentedMarker={this.createRentedMarker}
-                    setPanel={this.setPanel}
-                    getCurrentDestination={this.getCurrentDestination}
-                    setDestination={this.setDestination}
-                    setDestinationMarker={this.setDestinationMarker}
-                    getRentedPosition={this.getRentedPosition}
-                    setRoute={this.setRoute}
-                    getIsActiveRent={this.getIsActiveRent}
-                />
-            });
-        }
+        this.setState({
+            bikes: bikesAvailable,
+            bikeMarkers: <BikeMarkers
+                bikes={bikesAvailable}
+                setPanel={this.setPanel}
+                createRentedMarker={this.createRentedMarker}
+                discount={true}
+                doneSearchingBikes={this.doneSearchingBikes}
+            />
+        });
+
+        this.setState({
+            stations: stations,
+            stationMarkers: <StationMarkers
+                stations={stations}
+                createRentedMarker={this.createRentedMarker}
+                setPanel={this.setPanel}
+                getCurrentDestination={this.getCurrentDestination}
+                setDestination={this.setDestination}
+                setDestinationMarker={this.setDestinationMarker}
+                getRentedPosition={this.getRentedPosition}
+                setRoute={this.setRoute}
+                getIsActiveRent={this.getIsActiveRent}
+            />
+        })
     }
 
 
