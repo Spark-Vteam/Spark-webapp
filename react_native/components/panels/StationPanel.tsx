@@ -91,7 +91,7 @@ export default class StationPanel extends React.Component<{
                 <Text style={MapStyle.panelTextMiddle as any}>{station.Occupied} occupied spots</Text>
                 {
                     // Show bikes to rent only if there are no active rents already
-                    activeRent === false && this.state.chargingBikes &&
+                    activeRent === false && this.state.chargingBikes && this.state.chargingBikesCount &&
                     <View>
                         <TouchableOpacity
                             style={ButtonStyle.stationBikesToRentButton as any}
