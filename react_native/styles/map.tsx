@@ -25,7 +25,7 @@ export const panelLong = {
     position: 'absolute',
     bottom: -20,
     alignSelf: 'center',
-    paddingVertical: 30,
+    paddingVertical: 20,
     paddingHorizontal: 40,
     width: '100%',
     height: 260,

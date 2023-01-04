@@ -16,8 +16,20 @@ export const flexRow = {
     gap: 1000
 }
 
+export const flextRowNoFlex1 = {
+    // flex: 1,
+    flexDirection: 'row',
+    gap: 1000,
+    alignItems: 'center',
+    justifyContent: 'center',
+}
+
 export const bottomPosition = {
     position: 'absolute',
     bottom: 40,
     left: 33
+}
+
+export const marginTop = {
+    marginTop: 30
 }

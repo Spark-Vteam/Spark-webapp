@@ -18,3 +18,11 @@ export const logo = {
     width: 200,
     resizeMode: 'contain',
 }
+
+export const panelLogo = {
+    position: 'absolute',
+    left: '6%',
+    top: 20,
+    width: 40,
+    height: 40,
+}
