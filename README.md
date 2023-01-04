@@ -4,6 +4,7 @@ This is a sub module of the Spark project. It contains code for the mobile appli
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/?branch=main)
 [![Build Status](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/badges/build.png?b=main)](https://scrutinizer-ci.com/g/Spark-Vteam/Spark-webapp/build-status/main)
+[![Node.js CI](https://github.com/Spark-Vteam/Spark-webapp/actions/workflows/node4.js.yml/badge.svg)](https://github.com/Spark-Vteam/Spark-webapp/actions/workflows/node4.js.yml)
 
 ## Setup
 
