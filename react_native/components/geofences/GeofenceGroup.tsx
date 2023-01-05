@@ -34,7 +34,8 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={'Your max speed will be reduced here.'}
+                            info={'Reduced speed area\nYour max speed will be reduced here.'}
+                            logo={require('../../assets/logos/ReducedSpeedLogo.png')}
                         />)
                     }}
                 />
@@ -48,7 +49,8 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={'You are not allowed to park here.'}
+                            info={'No parking area\nYou are not allowed to park here.'}
+                            logo={require('../../assets/logos/NoParkingLogo.png')}
                         />)
                     }}
                 />
@@ -62,7 +64,8 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={'No riding in this area. Your bike will stop if you try to drive here.'}
+                            info={'Off-limits area\nNo riding in this place. Your bike will stop if you try to drive here.'}
+                            logo={require('../../assets/logos/StopLogo.png')}
                         />)
                     }}
                 />
@@ -76,7 +79,8 @@ export default class GeofenceGroup extends React.Component<{
                     onpress={() => {
                         setPanel(<GeofencePanel
                             name={name}
-                            info={'Parking area.\n50% discount on Unlock fee if parked here or on a station.'}
+                            info={'Parking area\n50% discount on Unlock fee if parked here or on a station.'}
+                            logo={require('../../assets/logos/ParkingLogo.png')}
                         />)
                     }}
                 />

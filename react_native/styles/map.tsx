@@ -13,10 +13,22 @@ export const panel = {
     position: 'absolute',
     bottom: -20,
     alignSelf: 'center',
-    paddingVertical: 30,
+    paddingVertical: 35,
     paddingHorizontal: 40,
     width: '100%',
     height: 240,
+    backgroundColor: '#FFFFFF',
+}
+
+export const panelShort = {
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: -20,
+    alignSelf: 'center',
+    paddingVertical: 35,
+    paddingHorizontal: 40,
+    width: '100%',
+    height: 200,
     backgroundColor: '#FFFFFF',
 }
 
@@ -25,7 +37,7 @@ export const panelLong = {
     position: 'absolute',
     bottom: -20,
     alignSelf: 'center',
-    paddingVertical: 20,
+    paddingVertical: 35,
     paddingHorizontal: 40,
     width: '100%',
     height: 260,
@@ -37,6 +49,12 @@ export const panelTitle = {
     fontWeight: 'bold'
 }
 
+export const panelTitleMoreMarginDown = {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 13
+}
+
 export const panelText = {
 
 }
@@ -44,4 +62,10 @@ export const panelText = {
 export const panelTextMiddle = {
     textAlign: 'center',
     fontStyle: 'italic'
+}
+
+export const panelTextMiddlePadded = {
+    textAlign: 'center',
+    fontStyle: 'italic',
+    paddingHorizontal: 40
 }

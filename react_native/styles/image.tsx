@@ -26,3 +26,11 @@ export const panelLogo = {
     width: 40,
     height: 40,
 }
+
+export const panelLogoBig = {
+    position: 'absolute',
+    left: '8%',
+    top: 25,
+    width: 70,
+    height: 70,
+}

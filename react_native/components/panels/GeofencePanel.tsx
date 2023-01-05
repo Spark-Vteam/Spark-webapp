@@ -1,16 +1,27 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { MapStyle } from '../../styles/index';
+import { Text, View, Image } from 'react-native';
+import { MapStyle, Images } from '../../styles/index';
+
 
 
 // Panel with info about rules inside geofence
-export default class GeofencePanel extends React.Component<{ name: string, info: string }> {
+export default class GeofencePanel extends React.Component<{
+    name: string,
+    info: string,
+    logo: number
+}> {
     render() {
-        const { name, info } = this.props;
+        const { name, info, logo } = this.props;
+
+
         return (
-            <View style={MapStyle.panel as any}>
+            <View style={MapStyle.panelShort as any}>
+                <Image
+                    style={Images.panelLogo as any}
+                    source={logo}
+                />
                 <Text style={MapStyle.panelTitle as any}>{name}</Text>
-                <Text style={MapStyle.panelTextMiddle as any}>{info}</Text>
+                <Text style={MapStyle.panelTextMiddlePadded as any}>{info}</Text>
             </View>
         );
     }

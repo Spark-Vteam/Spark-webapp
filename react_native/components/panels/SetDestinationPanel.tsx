@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { MapStyle, ButtonStyle } from '../../styles/index';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { MapStyle, ButtonStyle, Images } from '../../styles/index';
 
 import { LatLng } from 'react-native-maps';
 import CustomMarker from '../markers/CustomMarker';
@@ -32,7 +32,11 @@ export default class SetDestinationPanel extends React.Component<{
         } = this.props;
         return (
             <View style={MapStyle.panel as any}>
-                {/* <Text style={MapStyle.panelTitle as any}>{ title }</Text> */}
+                <Image
+                    source={require('../../assets/logos/PreDestinationLogo.png')}
+                    style={Images.panelLogo as any}
+                />
+                <Text style={MapStyle.panelTitleMoreMarginDown as any}>Set destination</Text>
                 <TouchableOpacity
                     style={ButtonStyle.buttonBlue as any}
                     onPress={async () => {

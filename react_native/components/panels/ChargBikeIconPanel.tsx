@@ -1,12 +1,13 @@
 import React, { ReactNode } from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView, Text, Image } from 'react-native';
 
 import ChargingBike from '../../interfaces/chargingbike';
 import ChargBikeIcon from './ChargBikeIcon';
 
 import Bike from '../../interfaces/bike';
 
-import { MapStyle } from '../../styles';
+import { MapStyle, Images } from '../../styles';
+import Station from '../../interfaces/station';
 
 
 
@@ -15,11 +16,12 @@ export default class ChargBikeIconPanel extends React.Component
         chargingBikes: ChargingBike[]
         createRentedMarker: (bike: Bike) => void,
         setPanel: (newpanel: ReactNode) => void,
+        station: Station
     }> {
 
     render() {
 
-        const { chargingBikes } = this.props;
+        const { chargingBikes, station } = this.props;
 
         const chargGroup = chargingBikes.map((e, index) => {
             return <ChargBikeIcon
@@ -36,10 +38,15 @@ export default class ChargBikeIconPanel extends React.Component
             //     {chargGroup}
             // </View>
 
-            <View style={MapStyle.panel as any}>
+            <View style={MapStyle.panelLong as any}>
+                <Image
+                    style={Images.panelLogo as any}
+                    source={require('../../assets/logos/StationLogo.png')}
+                />
+                <Text style={MapStyle.panelTitle as any}>Station {station.Name}</Text>
                 <ScrollView>
+                    <Text></Text>
                     {chargGroup}
-                    <Text />
                 </ScrollView>
             </View>
         );

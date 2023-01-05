@@ -26,6 +26,20 @@ export const buttonBlue = {
     zIndex: 999,
 }
 
+export const buttonGreen = {
+    width: 165,
+    height: 40,
+
+    backgroundColor: '#209F5B',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 15,
+    marginBottom: 15,
+    alignSelf: 'center',
+
+    zIndex: 999,
+}
+
 export const stationBikesToRentButton = {
     width: 80,
     height: 40,
@@ -88,7 +102,7 @@ export const chargBikeButton = {
 
 export const chargBikeButtonBatteryIcon = {
     width: 8,
-    height: 13,
+    height: 13.5,
 }
 
 
