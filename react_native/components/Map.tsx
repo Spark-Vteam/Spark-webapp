@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import MapView, { LatLng, Region } from 'react-native-maps';
-import { View, TouchableOpacity, Text, ActivityIndicator, ProgressViewIOSComponent } from 'react-native';
-import * as Location from 'expo-location';
+import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 
 import { MapStyle, ButtonStyle } from '../styles/index';
 
@@ -20,6 +19,7 @@ import CustomMarker from './markers/CustomMarker';
 
 import RentedPanel from './panels/RentedPanel';
 import PricePanel from './panels/PricePanel';
+import LoadingPanel from './panels/LoadingPanel';
 import SetDestinationPanel from './panels/SetDestinationPanel';
 import BikeMarkers from './markers/BikeMarkers';
 import StationMarkers from './markers/StationMarkers';
@@ -34,6 +34,7 @@ export default class Map extends React.Component<{
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
+        trackUsersLocation: Boolean,
         bikes: null | Bike[],
         bikeMarkers: null | ReactNode,
         stations: null | Station[],
@@ -62,6 +63,7 @@ export default class Map extends React.Component<{
         super(props);
         this.state = {
             locationmarker: null,
+            trackUsersLocation: true,
             bikes: null,
             bikeMarkers: null,
             stations: null,
@@ -190,18 +192,26 @@ export default class Map extends React.Component<{
     // ===================================
     stopRent = async () => {
         await rentModel.stopRent();
-        const allRents = await rentModel.getRentsOnUser();
-        let price = 0;
-        if (allRents) {
-            const stoppedRent = allRents[allRents.length - 1];
-            price = stoppedRent.Price;
-        }
         this.setState({
             rentedMarker: null,
             rentedPos: null,
             route: null,
-            panel: <PricePanel price={price} />
-        });
+            panel: <LoadingPanel />
+        })
+        // give database time to stop rent and create invoice
+        // then show price panel and do new scan
+        setTimeout(async () => {
+            const allInvoices = await rentModel.getInvoices();
+            const lastInvoice = allInvoices[allInvoices.length - 1];
+            const price = lastInvoice.Amount;
+            this.setState({
+                panel: <PricePanel price={price} />,
+                scanButton: this.getLoadingScanButton(),
+                trackUsersLocation: true
+            });
+            this.scanArea();
+        }, 2000);
+
     }
 
     // CREATE RENTED BIKE MARKER
@@ -211,7 +221,9 @@ export default class Map extends React.Component<{
             latitude: parseFloat(bike.Position.split(',')[0]),
             longitude: parseFloat(bike.Position.split(',')[1])
         }
+        // stop tracking users location (the location marker will also stop rendering)
         this.setState({
+            trackUsersLocation: false,
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 coordinates={coordinates}
@@ -225,9 +237,10 @@ export default class Map extends React.Component<{
                                 this.setDestinationMarker(null);
                             }} />
                     });
-                }}  // see method below
+                }}
             />,
-            bikeMarkers: null
+            bikeMarkers: null,
+            scanButton: null
         })
         // open panel with rent right after creating it
         this.pressedRentedMarker(bike);
@@ -240,9 +253,8 @@ export default class Map extends React.Component<{
             panel: <RentedPanel
                 bike={bike}
                 onpress={async () => {
-                this.stopRent();
-                this.setDestinationMarker(null);
-                this.scanArea();
+                    this.stopRent();
+                    this.setDestinationMarker(null);
             }} />
         });
     }
@@ -250,11 +262,23 @@ export default class Map extends React.Component<{
     // UPDATE USER LOCATION
     // ===================================
     trackUserLocation = () => {
-        setInterval( () => {
-            this.props.updateUserLocation();
-            this.setState({
-                locationmarker: <UserMarker currentLocation={this.props.userLocation} />
-            })
+        setInterval(() => {
+            // If tracking location - update and re-render location marker
+            // Otherwise set location marker to null
+            if (this.state.trackUsersLocation) {
+                this.props.updateUserLocation();
+                this.setState({
+                    locationmarker: <UserMarker
+                        currentLocation={this.props.userLocation}
+                        setPanel={this.setPanel}
+                    />
+                })
+            } else {
+                this.setState({
+                    locationmarker: null
+                })
+            }
+
         }, 1000);
     }
 
@@ -329,7 +353,10 @@ export default class Map extends React.Component<{
         // SET LOCATIONMARKER (Location position from props)
         // ===================================
         this.setState({
-            locationmarker: <UserMarker currentLocation={this.props.userLocation} />
+            locationmarker: <UserMarker
+                currentLocation={this.props.userLocation}
+                setPanel={this.setPanel}
+            />
         });
         this.trackUserLocation();
 

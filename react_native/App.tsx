@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView } from 'react-native';
 import * as Location from 'expo-location';
-import { LatLng, Region } from 'react-native-maps';
+import { Region } from 'react-native-maps';
 
 // import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/TestMap';
@@ -68,8 +68,6 @@ export default class App extends Component {
       longitudeDelta: 0.01
     }
 
-    const TESTING = false;
-
     if (this.state.TESTING) {
       this.setState({
         userLocation: {
@@ -85,7 +83,7 @@ export default class App extends Component {
       })
     }
 
-    console.log(this.state.userLocation);
+    // console.log(this.state.userLocation);
   }
 
   componentDidMount() {
