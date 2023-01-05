@@ -47,8 +47,7 @@ export default function AuthFields(props: {
             >
                 <Text style={ButtonStyle.buttonText as any}>Log in</Text>
             </TouchableOpacity>
-            <Text/>
-            <Text style={Typography.centered as any}> Please note that you need to register on web client. Currently not possible to do on mobile device.</Text>
+            <Text style={Base.bottomPosition as any}> Please note that you need to register at <Text style={Typography.bold as any}>http://localhost:3000/</Text> using a computer. This is currently not possible to do on mobile device.</Text>
             {/* <TouchableOpacity
                 testID="button"
                 style={ButtonStyle.buttonBlue as any}

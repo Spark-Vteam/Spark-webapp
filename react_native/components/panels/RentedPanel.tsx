@@ -1,9 +1,9 @@
 import React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { MapStyle, ButtonStyle } from '../../styles/index';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { MapStyle, ButtonStyle, Images } from '../../styles/index';
 import Bike from '../../interfaces/bike';
 
-import { Typography } from '../../styles/index';
+import { Typography , Base} from '../../styles/index';
 
 import priceModel from '../../models/priceModel';
 
@@ -42,11 +42,24 @@ export default class RentedPanel extends React.Component<{
 
         const { bike, onpress } = this.props;
         return (
-            <View style={MapStyle.panel as any}>
-                <Text style={MapStyle.panelTitle as any}>Rented bike #{bike.id}</Text>
-                <Text style={MapStyle.panelText}>Battery left: {bike.Battery}%</Text>
+            <View style={MapStyle.panelLong as any}>
+                <Image
+                    source={require('../../assets/logos/RentedBikeLogo.png')}
+                    style={Images.panelLogo as any}
+                />
+
+                <View style={Base.flextRowNoFlex1 as any}>
+                    <Text style={Typography.bold as any}>Bike #{bike.id}</Text>
+                    <Text>      </Text>
+                    <Image
+                        source={require('../../assets/BatteryIcon.png')}
+                        style={ButtonStyle.chargBikeButtonBatteryIcon}
+                    />
+                    <Text> </Text>
+                    <Text style={Typography.bold as any}>{bike.Battery}%</Text>
+                </View>
                 <TouchableOpacity
-                    style={ButtonStyle.buttonBlue as any}
+                    style={ButtonStyle.button as any}
                     onPress={() => {
                         onpress();
                     }}
@@ -55,6 +68,7 @@ export default class RentedPanel extends React.Component<{
                 </TouchableOpacity>
                 <Text style={MapStyle.panelTextMiddle as any}><Text style={Typography.bold as any}>Discount {this.state.discountEndParkingZone}%</Text> on Unlock fee if parked at a station or blue zone.</Text>
             </View>
+
         );
     }
 }

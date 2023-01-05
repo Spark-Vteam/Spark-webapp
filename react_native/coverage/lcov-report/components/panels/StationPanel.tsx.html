@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.82% </span>
+                <span class="strong">45.83% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/23</span>
+                <span class='fraction'>11/24</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.47% </span>
+                <span class="strong">72.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/17</span>
+                <span class='fraction'>13/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/8</span>
+                <span class='fraction'>4/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.82% </span>
+                <span class="strong">45.83% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/23</span>
+                <span class='fraction'>11/24</span>
             </div>
         
             
@@ -216,7 +216,14 @@
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -258,6 +265,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -311,6 +322,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -370,7 +384,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, {ReactNode} from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { MapStyle, ButtonStyle } from '../../styles/index';
 import { LatLng } from 'react-native-maps';
 import Bike from '../../interfaces/bike';
@@ -411,6 +425,10 @@ export default class StationPanel extends React.Component&lt;{
 &nbsp;
     componentDidMount() {
         this.createChargingBikeIcons();
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    co</span>mponentDidUpdate() {
+<span class="cstat-no" title="statement not covered" >        this.createChargingBikeIcons();</span>
     }
 &nbsp;
     createChargingBikeIcons = async () =&gt; {
@@ -458,10 +476,10 @@ export default class StationPanel extends React.Component&lt;{
                 &lt;Text style={MapStyle.panelTextMiddle as any}&gt;{station.Occupied} occupied spots&lt;/Text&gt;
                 {
                     // Show bikes to rent only if there are no active rents already
-                    activeRent === false &amp;&amp; this.state.chargingBikes &amp;&amp;
-                    &lt;View&gt;
+                    activeRent === false &amp;&amp; this.state.chargingBikes &amp;&amp; this.state.chargingBikesCount &amp;&amp;
+<span class="branch-3 cbranch-no" title="branch not covered" >                    &lt;View&gt;</span>
                         &lt;TouchableOpacity
-                            style={ButtonStyle.buttonRound as any}
+                            style={ButtonStyle.stationBikesToRentButton as any}
                             onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                                setPanel(&lt;ChargBikeIconPanel</span>
                                     chargingBikes={this.state.chargingBikes}
@@ -470,7 +488,10 @@ export default class StationPanel extends React.Component&lt;{
                                 /&gt;)
                             }}
                         &gt;
-                            &lt;Text&gt;{this.state.chargingBikesCount} x bikes&lt;/Text&gt;
+                                &lt;Text&gt;{this.state.chargingBikesCount} x &lt;/Text&gt;
+                                &lt;Image source={require('../../assets/BikeIcon.png')}
+                                    style={ButtonStyle.stationBikesToRentImage}
+                                /&gt;
                         &lt;/TouchableOpacity&gt;
                         {/* {this.state.chargingBikes} */}
                     &lt;/View&gt;
@@ -486,7 +507,7 @@ export default class StationPanel extends React.Component&lt;{
                     // SET AS DESTINATION BUTTON
                     // ======================================
                     &lt;TouchableOpacity
-                        style={ButtonStyle.button as any}
+                            style={ButtonStyle.buttonBlue as any}
                             onPress={<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {
                                 const coordArrForPline = <span class="cstat-no" title="statement not covered" >await mapModel.getRoute(rentedPosition, stationCoordinates);</span>
 <span class="cstat-no" title="statement not covered" >                                setRoute(&lt;Pline</span>
@@ -508,7 +529,7 @@ export default class StationPanel extends React.Component&lt;{
                     // CANCEL DESTINATION BUTTON
                     // ======================================
 <span class="branch-4 cbranch-no" title="branch not covered" >                    &lt;TouchableOpacity</span>
-                        style={ButtonStyle.button as any}
+                            style={ButtonStyle.buttonBlue as any}
                             onPress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                                setDestination(null);</span>
 <span class="cstat-no" title="statement not covered" >                                setPanel(null);</span>
@@ -529,7 +550,7 @@ export default class StationPanel extends React.Component&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2022-12-23T11:26:29.687Z
+                at 2023-01-04T16:53:50.754Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
