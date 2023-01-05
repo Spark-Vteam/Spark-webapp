@@ -15,11 +15,10 @@ export default class UserMarker extends React.Component<{ currentLocation: any }
             <Marker coordinate={{
                 latitude: currentLocation.coords.latitude,
                 longitude: currentLocation.coords.longitude
-            }}>
-                <Image
-                    style={Images.pinSquareSmall}
-                    source={require('../../assets/User.png')} />
-            </Marker>
+            }}
+                image={require('../../assets/User.png')}
+            />
+
         );
     }
 }

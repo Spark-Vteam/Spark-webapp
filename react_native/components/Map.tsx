@@ -15,7 +15,8 @@ import GeofenceGroup from './geofences/GeofenceGroup';
 
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
-import CustomMarkerSmall from './markers/CustomMarkerSmall';
+
+import CustomMarker from './markers/CustomMarker';
 
 import RentedPanel from './panels/RentedPanel';
 import PricePanel from './panels/PricePanel';
@@ -73,7 +74,7 @@ export default class Map extends React.Component {
             route: null,
 
             // isSearchingBikes: false,
-            scanButton: this.getOriginalScanButton(),
+            scanButton: this.getLoadingScanButton(),
 
             centerPoint: {           // see below under componentDidMount
                 latitude: 55.7047,  // temporary, is set by on readyMount initalRegion
@@ -98,6 +99,21 @@ export default class Map extends React.Component {
         return this.state.rentedMarker !== null;
     }
 
+    getLoadingScanButton = () => {
+        return <TouchableOpacity
+            style={ButtonStyle.scanButton as any}
+            onPress={() => {
+                this.scanArea();
+                this.setState({
+                    isSearchingBikes: true,
+                    scanButton: <ActivityIndicator animating={true} color='white' size={28} />
+                })
+            }}
+        >
+            <ActivityIndicator animating={true} color='white' size={28} />
+        </TouchableOpacity>
+    }
+
     getOriginalScanButton = () => {
         return <TouchableOpacity
             style={ButtonStyle.scanButton as any}
@@ -105,18 +121,7 @@ export default class Map extends React.Component {
                 this.scanArea();
                 this.setState({
                     isSearchingBikes: true,
-                    scanButton: <TouchableOpacity
-                        style={ButtonStyle.scanButton as any}
-                        onPress={() => {
-                            this.scanArea();
-                            this.setState({
-                                isSearchingBikes: true,
-                                scanButton: <ActivityIndicator animating={true} color='white' size={28} />
-                            })
-                        }}
-                    >
-                        <ActivityIndicator animating={true} color='white' size={28} />
-                    </TouchableOpacity>
+                    scanButton: this.getLoadingScanButton()
                 })
             }}
         >
@@ -260,7 +265,7 @@ export default class Map extends React.Component {
 
 
             bikesAvailable = bikesFromScan.filter((e) => {
-                return e.Status == 10 && e.Battery > 50;
+                return e.Status >= 10 && e.Status < 20 && e.Battery > 50;
             })
 
         }
@@ -271,7 +276,7 @@ export default class Map extends React.Component {
         // todo: instead get them in onDidMount (hämtar alla direkt en enda gång)
 
         // todo: delete when not testing anymore
-        stations = stations.slice(0, 50);
+        // stations = stations.slice(0, 50);
 
 
         this.setState({
@@ -397,7 +402,7 @@ export default class Map extends React.Component {
                         if (this.state.rentedMarker && this.state.panel == null) {
                             // set red dot
                             this.setState({
-                                preDestinationMarker: <CustomMarkerSmall
+                                preDestinationMarker: <CustomMarker
                                 coordinates={e.nativeEvent.coordinate}
                                 img={require('../assets/PreDestination.png')}
                                     onpress={() => {
@@ -412,7 +417,6 @@ export default class Map extends React.Component {
                                         setPanel={this.setPanel}
                                         />)
                                     }}
-                                    trackViewChanges={false}
                                     />
                             })
                             // set destination panel when pressing map
@@ -433,6 +437,7 @@ export default class Map extends React.Component {
                     }
                 }}
             >
+
                 {this.state.route}
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}

@@ -11,24 +11,32 @@ export default class CustomMarker extends PureComponent
         coordinates: LatLng,
         img: number
         onpress: any
-        trackViewChanges: boolean
+        // trackViewChanges: boolean
     }>{
 
     render() {
 
-        const { coordinates, img, onpress, trackViewChanges } = this.props;
+        const { coordinates, img, onpress } = this.props;
+        // const { coordinates, img, onpress, trackViewChanges } = this.props;
         return (
             <Marker
                 testID="marker"
                 coordinate={coordinates}
-                tracksViewChanges={trackViewChanges}
+                // tracksViewChanges={trackViewChanges}
                 onPress={onpress}
-            >
-                <Image
-                    style={Images.pin}
-                    source={img}
-                />
-            </Marker>
+                image={img}
+            />
+            // <Marker
+            //     testID="marker"
+            //     coordinate={coordinates}
+            //     tracksViewChanges={trackViewChanges}
+            //     onPress={onpress}
+            // >
+            //     <Image
+            //         style={Images.pin}
+            //         source={img}
+            //     />
+            // </Marker>
         );
     }
 }

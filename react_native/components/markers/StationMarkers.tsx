@@ -58,7 +58,7 @@ export default class StationMarkers extends React.Component
                     key={index}
                     coordinates={coordinates}
                     img={require('../../assets/ChargingStation.png')}
-                    trackViewChanges={false}
+                    // trackViewChanges={false}
                     onpress={() => {
                         // setPanel(null);
                         // setTimeout(function () {

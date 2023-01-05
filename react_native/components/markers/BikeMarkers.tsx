@@ -47,7 +47,7 @@ export default class BikeMarkers extends React.Component
                     key={index}
                     coordinates={coordinates}
                     img={require('../../assets/Available.png')}
-                    trackViewChanges={false}
+                    // trackViewChanges={false}
                     // onpress={() => {
                     //     onpress(e.id, coordinates);
                     // }}

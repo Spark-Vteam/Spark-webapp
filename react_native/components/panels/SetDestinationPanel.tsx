@@ -58,7 +58,6 @@ export default class SetDestinationPanel extends React.Component<{
                                     }}
                                 />)
                             }}
-                            trackViewChanges={true}
                         />)
                         setPanel(null);
                         setPreDestinationMarker(null);
