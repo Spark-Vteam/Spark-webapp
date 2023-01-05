@@ -25,12 +25,13 @@ const rentModel = {
 
         return result;
     },
-    getRentsOnUser: async function getRentOnUser(): Promise<Rent[] | null> {
+    getRentsOnUser: async function getRentOnUser(): Promise<Rent[]> {
         // Is used by method getOngoingRent below
 
         const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/1`);
 
         const result = await response.json();
+
 
         const rents = result.data;
 
@@ -46,20 +47,21 @@ const rentModel = {
 
         return ongoingRent;
     },
+    getInvoices: async function getInvoices() {
+
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/invoice/user/1`);
+
+        const result = await response.json();
+
+        const invoices = result.data;
+
+        return invoices;
+    },
     stopRent: async function stopRent() {
 
         const ongoingRents = await this.getOngoingRents();
         // hopefully there is just one...
         if (ongoingRents && ongoingRents.length > 0) {
-
-            // console.log(ongoingRents);
-            // console.log(ongoingRents.length);
-            // console.log("---------------------");
-            // console.log(ongoingRents[ongoingRents.length - 1].id);
-
-            // console.log(ongoingRents[3]);
-            // console.log(ongoingRents[3].id);
-
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/${lastOngoingRent.id}`, {
                 headers: {

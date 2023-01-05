@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
-import MapView, { LatLng } from 'react-native-maps';
+import MapView, { LatLng, Region } from 'react-native-maps';
 import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import * as Location from 'expo-location';
 
 import { MapStyle, ButtonStyle } from '../styles/index';
 
@@ -15,20 +14,27 @@ import GeofenceGroup from './geofences/GeofenceGroup';
 
 import UserMarker from './markers/UserMarker';
 import RentedMarker from './markers/RentedMarker';
-import CustomMarkerSmall from './markers/CustomMarkerSmall';
+
+import CustomMarker from './markers/CustomMarker';
 
 import RentedPanel from './panels/RentedPanel';
 import PricePanel from './panels/PricePanel';
+import LoadingPanel from './panels/LoadingPanel';
 import SetDestinationPanel from './panels/SetDestinationPanel';
 import BikeMarkers from './markers/BikeMarkers';
 import StationMarkers from './markers/StationMarkers';
 
 
-export default class Map extends React.Component {
+export default class Map extends React.Component<{
+    userLocation: Region, centerPoint: LatLng,
+    updateUserLocation: () => void,
+    setNotTesting: () => void
+}> {
 
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
+        trackUsersLocation: Boolean,
         bikes: null | Bike[],
         bikeMarkers: null | ReactNode,
         stations: null | Station[],
@@ -53,10 +59,11 @@ export default class Map extends React.Component {
     }
 
     // -- ... and initialize them in in the constructor
-    constructor(props: Record<string, unknown>) {
+    constructor(props: any) {
         super(props);
         this.state = {
             locationmarker: null,
+            trackUsersLocation: true,
             bikes: null,
             bikeMarkers: null,
             stations: null,
@@ -72,15 +79,12 @@ export default class Map extends React.Component {
             preDestinationMarker: null,
             route: null,
 
-            // isSearchingBikes: false,
-            scanButton: this.getOriginalScanButton(),
+            scanButton: this.getLoadingScanButton(),
 
-            centerPoint: {           // see below under componentDidMount
-                latitude: 55.7047,  // temporary, is set by on readyMount initalRegion
-                longitude: 13.1910,
-            },
+            centerPoint: props.centerPoint,
             radius: 0.01
         };
+
     }
 
     // GET METHODS
@@ -98,6 +102,21 @@ export default class Map extends React.Component {
         return this.state.rentedMarker !== null;
     }
 
+    getLoadingScanButton = () => {
+        return <TouchableOpacity
+            style={ButtonStyle.scanButton as any}
+            onPress={() => {
+                this.scanArea();
+                this.setState({
+                    isSearchingBikes: true,
+                    scanButton: <ActivityIndicator animating={true} color='white' size={28} />
+                })
+            }}
+        >
+            <ActivityIndicator animating={true} color='white' size={28} />
+        </TouchableOpacity>
+    }
+
     getOriginalScanButton = () => {
         return <TouchableOpacity
             style={ButtonStyle.scanButton as any}
@@ -105,18 +124,7 @@ export default class Map extends React.Component {
                 this.scanArea();
                 this.setState({
                     isSearchingBikes: true,
-                    scanButton: <TouchableOpacity
-                        style={ButtonStyle.scanButton as any}
-                        onPress={() => {
-                            this.scanArea();
-                            this.setState({
-                                isSearchingBikes: true,
-                                scanButton: <ActivityIndicator animating={true} color='white' size={28} />
-                            })
-                        }}
-                    >
-                        <ActivityIndicator animating={true} color='white' size={28} />
-                    </TouchableOpacity>
+                    scanButton: this.getLoadingScanButton()
                 })
             }}
         >
@@ -170,8 +178,10 @@ export default class Map extends React.Component {
         });
     }
 
-
+    // STOP SCAN BUTTON FROM LOADING
+    // ===================================
     doneSearchingBikes = () => {
+        // called from BikeMarkers on DidMount and DidUpdate
         this.setState({
             scanButton: this.getOriginalScanButton()
         })
@@ -182,18 +192,26 @@ export default class Map extends React.Component {
     // ===================================
     stopRent = async () => {
         await rentModel.stopRent();
-        const allRents = await rentModel.getRentsOnUser();
-        let price = 0;
-        if (allRents) {
-            const stoppedRent = allRents[allRents.length - 1];
-            price = stoppedRent.Price;
-        }
         this.setState({
             rentedMarker: null,
             rentedPos: null,
             route: null,
-            panel: <PricePanel price={price} />
-        });
+            panel: <LoadingPanel />
+        })
+        // give database time to stop rent and create invoice
+        // then show price panel and do new scan
+        setTimeout(async () => {
+            const allInvoices = await rentModel.getInvoices();
+            const lastInvoice = allInvoices[allInvoices.length - 1];
+            const price = lastInvoice.Amount;
+            this.setState({
+                panel: <PricePanel price={price} />,
+                scanButton: this.getLoadingScanButton(),
+                trackUsersLocation: true
+            });
+            this.scanArea();
+        }, 2000);
+
     }
 
     // CREATE RENTED BIKE MARKER
@@ -203,7 +221,9 @@ export default class Map extends React.Component {
             latitude: parseFloat(bike.Position.split(',')[0]),
             longitude: parseFloat(bike.Position.split(',')[1])
         }
+        // stop tracking users location (the location marker will also stop rendering)
         this.setState({
+            trackUsersLocation: false,
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 coordinates={coordinates}
@@ -217,10 +237,10 @@ export default class Map extends React.Component {
                                 this.setDestinationMarker(null);
                             }} />
                     });
-                    this.scanArea();
-                }}  // see method below
+                }}
             />,
-            bikeMarkers: null
+            bikeMarkers: null,
+            scanButton: null
         })
         // open panel with rent right after creating it
         this.pressedRentedMarker(bike);
@@ -233,18 +253,40 @@ export default class Map extends React.Component {
             panel: <RentedPanel
                 bike={bike}
                 onpress={async () => {
-                this.stopRent();
-                this.setDestinationMarker(null);
+                    this.stopRent();
+                    this.setDestinationMarker(null);
             }} />
         });
-        this.scanArea();
+    }
+
+    // UPDATE USER LOCATION
+    // ===================================
+    trackUserLocation = () => {
+        setInterval(() => {
+            // If tracking location - update and re-render location marker
+            // Otherwise set location marker to null
+            if (this.state.trackUsersLocation) {
+                this.props.updateUserLocation();
+                this.setState({
+                    locationmarker: <UserMarker
+                        currentLocation={this.props.userLocation}
+                        setPanel={this.setPanel}
+                    />
+                })
+            } else {
+                this.setState({
+                    locationmarker: null
+                })
+            }
+
+        }, 1000);
     }
 
 
-    // Scan the visible area for bikes and stations
+    // SCAN ARE (INSIDE RADIUS) FOR BIKES
+    // ===================================
     scanArea = async () => {
-
-        let bikesAvailable: Bike[] = [];
+        // this.props.setNotTesting();
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -259,31 +301,39 @@ export default class Map extends React.Component {
             );
 
 
-            bikesAvailable = bikesFromScan.filter((e) => {
-                return e.Status == 10 && e.Battery > 50;
+            const bikesAvailable = bikesFromScan.filter((e) => {
+                return e.Status >= 10 && e.Status < 20 && e.Battery > 50;
             })
 
+            this.setState({
+                bikes: bikesAvailable,
+                bikeMarkers: <BikeMarkers
+                    bikes={bikesAvailable}
+                    setPanel={this.setPanel}
+                    createRentedMarker={this.createRentedMarker}
+                    discount={true}
+                    doneSearchingBikes={this.doneSearchingBikes}
+                />
+            });
         }
+    }
 
-        // GET STATIONS AND SET MARKERS
+
+    // COMPONENT DID MOUNT
+    // ===================================
+    // -- 'componentDidMount' is the equivalent of
+    // useEffect(() => {
+    //      ...
+    // }, []), (no dependencies)
+    async componentDidMount() {
+
+        // PERFORM FIRST SCAN (BIKES ONLY) RIGHT AWAY
+        // ===================================
+        this.scanArea();
+
+        // GET STATIONS AND SET STATION MARKERS
         // ===================================
         let stations: Station[] = await mapModel.getStations();
-        // todo: instead get them in onDidMount (hämtar alla direkt en enda gång)
-
-        // todo: delete when not testing anymore
-        stations = stations.slice(0, 50);
-
-
-        this.setState({
-            bikes: bikesAvailable,
-            bikeMarkers: <BikeMarkers
-                bikes={bikesAvailable}
-                setPanel={this.setPanel}
-                createRentedMarker={this.createRentedMarker}
-                discount={true}
-                doneSearchingBikes={this.doneSearchingBikes}
-            />
-        });
 
         this.setState({
             stations: stations,
@@ -299,32 +349,17 @@ export default class Map extends React.Component {
                 getIsActiveRent={this.getIsActiveRent}
             />
         })
-    }
 
-
-    // COMPONENT DID MOUNT
-    // ===================================
-    // -- 'componentDidMount' is the equivalent of onEffect,
-    // -- except it will always only run once (no dependencies)
-    async componentDidMount() {
-
-        // PERFORM FIRST SCAN RIGHT AWAY
+        // SET LOCATIONMARKER (Location position from props)
         // ===================================
-        this.scanArea();
-
-        // GET USERS LOCATION AND SET LOCATIONMARKER
-        // ===================================
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            // handle somehow
-            return;
-        }
-        const currentLocation = await Location.getCurrentPositionAsync({});
-
-        // -- We set one or more state variables with this.setState
         this.setState({
-            locationmarker: <UserMarker currentLocation={currentLocation} />
+            locationmarker: <UserMarker
+                currentLocation={this.props.userLocation}
+                setPanel={this.setPanel}
+            />
         });
+        this.trackUserLocation();
+
 
         // INITAL CENTERPOINT FOR TESTING
         // ===================================
@@ -363,21 +398,10 @@ export default class Map extends React.Component {
     // -- add more code and then specify output of component in return
     render() {
 
-        // INITIAL REGION FOR TESTING
-        // ===================================
-        // Initial region is set to Lund for testing. Replace later
-        // to set initial region to where user is.
-        const initialRegion = {
-            latitude: 55.7047,
-            longitude: 13.1910,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
-        };
-
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 testID={'mapview'}
-                initialRegion={initialRegion}
+                initialRegion={this.props.userLocation}
                 onRegionChange={(e) => {
                     // GET RADIUS AND CENTER POINT
                     // OF RENDERED MAP TO USE WHEN SCANNING
@@ -391,13 +415,15 @@ export default class Map extends React.Component {
                     });
                 }}
                 onPress={(e) => {
+                    // SET DESTINATION
+                    // ======================
                     // check if user pressed outside a marker
                     // in that case hide panel
                     if (e.nativeEvent.action !== 'marker-press') {
                         if (this.state.rentedMarker && this.state.panel == null) {
                             // set red dot
                             this.setState({
-                                preDestinationMarker: <CustomMarkerSmall
+                                preDestinationMarker: <CustomMarker
                                 coordinates={e.nativeEvent.coordinate}
                                 img={require('../assets/PreDestination.png')}
                                     onpress={() => {
@@ -412,7 +438,6 @@ export default class Map extends React.Component {
                                         setPanel={this.setPanel}
                                         />)
                                     }}
-                                    trackViewChanges={false}
                                     />
                             })
                             // set destination panel when pressing map
@@ -433,6 +458,7 @@ export default class Map extends React.Component {
                     }
                 }}
             >
+
                 {this.state.route}
                 {this.state.locationmarker}
                 {this.state.bikeMarkers}

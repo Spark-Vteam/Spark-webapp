@@ -1,25 +1,27 @@
-import React from 'react';
-import { Image } from 'react-native';
+import React, {ReactNode} from 'react';
 import { Marker } from 'react-native-maps';
+import UserPanel from '../panels/UserPanel';
 
-import { Images } from '../../styles/index';
-
-// Create a unique user Marker using
-// cooridates from currectLocation.
-export default class UserMarker extends React.Component<{ currentLocation: any }> {
+// Create a user Marker using
+// cooridates from state userLocation in App.tsx.
+export default class UserMarker extends React.Component<{
+    currentLocation: any,
+    setPanel: (newpanel: ReactNode) => void
+}> {
 
     render() {
-        const { currentLocation } = this.props;
 
         return (
             <Marker coordinate={{
-                latitude: currentLocation.coords.latitude,
-                longitude: currentLocation.coords.longitude
-            }}>
-                <Image
-                    style={Images.pinSquareSmall}
-                    source={require('../../assets/User.png')} />
-            </Marker>
+                latitude: this.props.currentLocation.latitude,
+                longitude: this.props.currentLocation.longitude
+            }}
+                image={require('../../assets/User.png')}
+                onPress={() => {
+                    this.props.setPanel(<UserPanel/>)
+                }}
+            />
+
         );
     }
 }
