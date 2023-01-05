@@ -246,11 +246,9 @@ export default class Map extends React.Component {
     }
 
 
+
     // Scan the visible area for bikes and stations
     scanArea = async () => {
-
-        let bikesAvailable: Bike[] = [];
-
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
         // Checking if rentedMarker exists.
@@ -264,31 +262,37 @@ export default class Map extends React.Component {
             );
 
 
-            bikesAvailable = bikesFromScan.filter((e) => {
+            const bikesAvailable = bikesFromScan.filter((e) => {
                 return e.Status >= 10 && e.Status < 20 && e.Battery > 50;
             })
 
+            this.setState({
+                bikes: bikesAvailable,
+                bikeMarkers: <BikeMarkers
+                    bikes={bikesAvailable}
+                    setPanel={this.setPanel}
+                    createRentedMarker={this.createRentedMarker}
+                    discount={true}
+                    doneSearchingBikes={this.doneSearchingBikes}
+                />
+            });
         }
+    }
 
-        // GET STATIONS AND SET MARKERS
+
+    // COMPONENT DID MOUNT
+    // ===================================
+    // -- 'componentDidMount' is the equivalent of onEffect,
+    // -- except it will always only run once (no dependencies)
+    async componentDidMount() {
+
+        // PERFORM FIRST SCAN (BIKES ONLY) RIGHT AWAY
+        // ===================================
+        this.scanArea();
+
+        // GET STATIONS AND SET STATION MARKERS
         // ===================================
         let stations: Station[] = await mapModel.getStations();
-        // todo: instead get them in onDidMount (hämtar alla direkt en enda gång)
-
-        // todo: delete when not testing anymore
-        // stations = stations.slice(0, 50);
-
-
-        this.setState({
-            bikes: bikesAvailable,
-            bikeMarkers: <BikeMarkers
-                bikes={bikesAvailable}
-                setPanel={this.setPanel}
-                createRentedMarker={this.createRentedMarker}
-                discount={true}
-                doneSearchingBikes={this.doneSearchingBikes}
-            />
-        });
 
         this.setState({
             stations: stations,
@@ -304,18 +308,6 @@ export default class Map extends React.Component {
                 getIsActiveRent={this.getIsActiveRent}
             />
         })
-    }
-
-
-    // COMPONENT DID MOUNT
-    // ===================================
-    // -- 'componentDidMount' is the equivalent of onEffect,
-    // -- except it will always only run once (no dependencies)
-    async componentDidMount() {
-
-        // PERFORM FIRST SCAN RIGHT AWAY
-        // ===================================
-        this.scanArea();
 
         // GET USERS LOCATION AND SET LOCATIONMARKER
         // ===================================
