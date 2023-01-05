@@ -73,7 +73,6 @@ export default class Map extends React.Component {
             preDestinationMarker: null,
             route: null,
 
-            // isSearchingBikes: false,
             scanButton: this.getLoadingScanButton(),
 
             centerPoint: {           // see below under componentDidMount
@@ -175,8 +174,10 @@ export default class Map extends React.Component {
         });
     }
 
-
+    // STOP SCAN BUTTON FROM LOADING
+    // ===================================
     doneSearchingBikes = () => {
+        // called from BikeMarkers on DidMount and DidUpdate
         this.setState({
             scanButton: this.getOriginalScanButton()
         })
@@ -247,7 +248,8 @@ export default class Map extends React.Component {
 
 
 
-    // Scan the visible area for bikes and stations
+    // SCAN ARE (INSIDE RADIUS) FOR BIKES
+    // ===================================
     scanArea = async () => {
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
@@ -282,8 +284,10 @@ export default class Map extends React.Component {
 
     // COMPONENT DID MOUNT
     // ===================================
-    // -- 'componentDidMount' is the equivalent of onEffect,
-    // -- except it will always only run once (no dependencies)
+    // -- 'componentDidMount' is the equivalent of
+    // useEffect(() => {
+    //      ...
+    // }, []), (no dependencies)
     async componentDidMount() {
 
         // PERFORM FIRST SCAN (BIKES ONLY) RIGHT AWAY
@@ -388,6 +392,8 @@ export default class Map extends React.Component {
                     });
                 }}
                 onPress={(e) => {
+                    // SET DESTINATION
+                    // ======================
                     // check if user pressed outside a marker
                     // in that case hide panel
                     if (e.nativeEvent.action !== 'marker-press') {
