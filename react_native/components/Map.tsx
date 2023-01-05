@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import MapView, { LatLng } from 'react-native-maps';
-import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import MapView, { LatLng, Region } from 'react-native-maps';
+import { View, TouchableOpacity, Text, ActivityIndicator, ProgressViewIOSComponent } from 'react-native';
 import * as Location from 'expo-location';
 
 import { MapStyle, ButtonStyle } from '../styles/index';
@@ -25,7 +25,11 @@ import BikeMarkers from './markers/BikeMarkers';
 import StationMarkers from './markers/StationMarkers';
 
 
-export default class Map extends React.Component {
+export default class Map extends React.Component<{
+    userLocation: Region, centerPoint: LatLng,
+    updateUserLocation: () => void,
+    setNotTesting: () => void
+}> {
 
     // -- In class component we keep all states in one object...
     state: {
@@ -54,7 +58,7 @@ export default class Map extends React.Component {
     }
 
     // -- ... and initialize them in in the constructor
-    constructor(props: Record<string, unknown>) {
+    constructor(props: any) {
         super(props);
         this.state = {
             locationmarker: null,
@@ -75,12 +79,10 @@ export default class Map extends React.Component {
 
             scanButton: this.getLoadingScanButton(),
 
-            centerPoint: {           // see below under componentDidMount
-                latitude: 55.7047,  // temporary, is set by on readyMount initalRegion
-                longitude: 13.1910,
-            },
+            centerPoint: props.centerPoint,
             radius: 0.01
         };
+
     }
 
     // GET METHODS
@@ -223,7 +225,6 @@ export default class Map extends React.Component {
                                 this.setDestinationMarker(null);
                             }} />
                     });
-                    this.scanArea();
                 }}  // see method below
             />,
             bikeMarkers: null
@@ -241,16 +242,28 @@ export default class Map extends React.Component {
                 onpress={async () => {
                 this.stopRent();
                 this.setDestinationMarker(null);
+                this.scanArea();
             }} />
         });
-        this.scanArea();
     }
 
+    // UPDATE USER LOCATION
+    // ===================================
+    trackUserLocation = () => {
+        setInterval( () => {
+            this.props.updateUserLocation();
+            this.setState({
+                locationmarker: <UserMarker currentLocation={this.props.userLocation} />
+            })
+        }, 1000);
+    }
 
 
     // SCAN ARE (INSIDE RADIUS) FOR BIKES
     // ===================================
     scanArea = async () => {
+        // this.props.setNotTesting();
+
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
         // Checking if rentedMarker exists.
@@ -313,19 +326,13 @@ export default class Map extends React.Component {
             />
         })
 
-        // GET USERS LOCATION AND SET LOCATIONMARKER
+        // SET LOCATIONMARKER (Location position from props)
         // ===================================
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            // handle somehow
-            return;
-        }
-        const currentLocation = await Location.getCurrentPositionAsync({});
-
-        // -- We set one or more state variables with this.setState
         this.setState({
-            locationmarker: <UserMarker currentLocation={currentLocation} />
+            locationmarker: <UserMarker currentLocation={this.props.userLocation} />
         });
+        this.trackUserLocation();
+
 
         // INITAL CENTERPOINT FOR TESTING
         // ===================================
@@ -364,21 +371,10 @@ export default class Map extends React.Component {
     // -- add more code and then specify output of component in return
     render() {
 
-        // INITIAL REGION FOR TESTING
-        // ===================================
-        // Initial region is set to Lund for testing. Replace later
-        // to set initial region to where user is.
-        const initialRegion = {
-            latitude: 55.7047,
-            longitude: 13.1910,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01
-        };
-
         return <View style={MapStyle.mapContainer}>
             <MapView style={MapStyle.map}
                 testID={'mapview'}
-                initialRegion={initialRegion}
+                initialRegion={this.props.userLocation}
                 onRegionChange={(e) => {
                     // GET RADIUS AND CENTER POINT
                     // OF RENDERED MAP TO USE WHEN SCANNING

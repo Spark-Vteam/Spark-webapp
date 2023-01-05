@@ -1,22 +1,22 @@
 import React from 'react';
-import { Image } from 'react-native';
 import { Marker } from 'react-native-maps';
-
-import { Images } from '../../styles/index';
 
 // Create a unique user Marker using
 // cooridates from currectLocation.
 export default class UserMarker extends React.Component<{ currentLocation: any }> {
 
     render() {
-        const { currentLocation } = this.props;
+
+
+        console.log("please");
 
         return (
             <Marker coordinate={{
-                latitude: currentLocation.coords.latitude,
-                longitude: currentLocation.coords.longitude
+                latitude: this.props.currentLocation.latitude,
+                longitude: this.props.currentLocation.longitude
             }}
                 image={require('../../assets/User.png')}
+                key={this.props.currentLocation.latitude}
             />
 
         );
