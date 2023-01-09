@@ -33,3 +33,9 @@ export const bottomPosition = {
 export const marginTop = {
     marginTop: 30
 }
+
+export const centerChild = {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+}
