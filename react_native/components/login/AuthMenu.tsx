@@ -10,25 +10,17 @@ import AuthFields from './Authfields';
 
 
 export default function AuthMenu(props: {
+    setUserId: (value: number) => void,
     setIsLoggedIn: (vale: boolean) => void,
-    isLoading: Boolean,
-    setIsLoading: (value: boolean) => void
+    isLoading: Boolean
 }) {
 
-    // const [isLoading, setIsLoading] = useState<Boolean>(true);
     const [auth, setAuth] = useState<Partial<Auth>>({});
-
-    useEffect(() => {
-        console.log("STOP LOADING")
-        // props.setIsLoading(false);
-    }, []);
-
 
     async function doLogin() {
 
         if (auth.email && auth.password) {
             const result = await authModel.logIn(auth.email, auth.password);
-            props.setIsLoading(false);
             if (result?.msg === "No user found" || result?.errors?.message === "Password not correct") {
                 console.log("password failed");
                 showMessage({
@@ -39,6 +31,7 @@ export default function AuthMenu(props: {
                 return
             }
             if (result?.data?.token) {
+                props.setUserId(result.data.info.user.id);
                 props.setIsLoggedIn(true);
                 return
             }

@@ -28,7 +28,8 @@ import StationMarkers from './markers/StationMarkers';
 export default class Map extends React.Component<{
     userLocation: Region, centerPoint: LatLng,
     updateUserLocation: () => void,
-    setNotTesting: () => void
+    setNotTesting: () => void,
+    userId: number
 }> {
 
     // -- In class component we keep all states in one object...

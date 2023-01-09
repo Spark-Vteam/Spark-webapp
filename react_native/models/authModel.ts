@@ -4,21 +4,22 @@ import { IP } from '@env'
 import storageModel from './storageModel';
 
 const authModel = {
-    loggedIn: async function loggedIn() {
-        const token = await storageModel.readToken();
-        if (token) {
+    // getAuthStorage: async function getAuthStorage(){
+
+    // },
+    getAuthStorage: async function loggedIn() {
+        const authInfo = await storageModel.readAuthInfo();
+        if (authInfo) {
             const twentyFourHours = 1000 * 60 * 60 * 24;
-            const notExpired = (new Date().getTime() - token.date) < twentyFourHours;
-            return token && notExpired;
+            const notExpired = (new Date().getTime() - authInfo.date) < twentyFourHours;
+            if (notExpired) {
+                return authInfo;
+            }
+            return false;
         }
         return false;
     },
     logIn: async function logIn(email: string, password: string) {
-
-        console.log("trying to log in")
-        console.log(email);
-        console.log(password);
-
         const data = {
             // api_key: config.api_key,
             emailAdress: email,
@@ -35,8 +36,11 @@ const authModel = {
 
         const result = await response.json();
 
+        if (result.data.token) {
+            // store both token and userId
+            await storageModel.storeToken(result.data.token, result.data.info.user.id);
+        }
 
-        await storageModel.storeToken(result.data.token);
 
         return result;
     },

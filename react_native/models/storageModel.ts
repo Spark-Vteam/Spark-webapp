@@ -1,22 +1,24 @@
+import { numberLiteralTypeAnnotation } from '@babel/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storage = {
-    storeToken: async function storeToken(token: string) {
+    storeToken: async function storeToken(token: string, userId: number) {
         try {
             const tokenAndDate = {
                 token: token,
+                userId: userId,
                 date: new Date().getTime(),
             };
             const jsonValue = JSON.stringify(tokenAndDate);
 
-            await AsyncStorage.setItem('@token', jsonValue);
+            await AsyncStorage.setItem('@authInfo', jsonValue);
         } catch (e) {
             // saving error
         }
     },
-    readToken: async function readToken(): Promise<any> {
+    readAuthInfo: async function readToken(): Promise<any> {
         try {
-            const jsonValue = await AsyncStorage.getItem('@token');
+            const jsonValue = await AsyncStorage.getItem('@authInfo');
             return jsonValue != null ? JSON.parse(jsonValue) : null;
         } catch (e) {
             // error reading value

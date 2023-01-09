@@ -22,7 +22,8 @@ export default class App extends Component {
     isLoggedIn: boolean,
     userLocation: Region | null,
     TESTING: Boolean,
-    isLoading: Boolean
+    isLoading: Boolean,
+    userId: number
   }
 
   // -- ... and initialize them in in the constructor
@@ -32,7 +33,8 @@ export default class App extends Component {
       isLoading: true,
       isLoggedIn: false,  // <-- todo: check if valid token exists
       userLocation: null,
-      TESTING: true
+      TESTING: true,
+      userId: -1
     };
   }
 
@@ -43,12 +45,9 @@ export default class App extends Component {
   // }
 
   setIsLoading = (value: Boolean) => {
-    console.log("'''''''''");
-    console.log(value);
     this.setState ({
       isLoading: value
     })
-    console.log(this.state.isLoading)
   }
 
   setNotTesting = () => {
@@ -60,6 +59,12 @@ export default class App extends Component {
   setIsLoggedIn = (value: boolean) => {
     this.setState({
       isLoggedIn: value
+    });
+  }
+
+  setUserId = (newUserId: number) => {
+    this.setState({
+      userId: newUserId
     });
   }
 
@@ -97,6 +102,8 @@ export default class App extends Component {
       })
     }
 
+
+
     // console.log(this.state.userLocation);
   }
 
@@ -110,21 +117,29 @@ export default class App extends Component {
       danger: "#B62306",
     });
 
-    const isLoggedIn = await authModel.loggedIn()
+    const authStorage = await authModel.getAuthStorage();
 
-    // Log in automatically if valid token is in storage
-    this.setState({
-      isLoggedIn: isLoggedIn
-    })
+    if (authStorage) {
+      // Log in automatically if valid token is in storage
+      this.setState({
+        isLoggedIn: true,
+        userId: authStorage.userId,
+      })
+    } else {
+      this.setIsLoading(false);
+    }
 
-    // Prevents loading from popping up if valid token is found
-    // instead keep showing loading bar
-    this.setIsLoading(isLoggedIn);
+
+
+    // // Prevents loading from popping up if valid token is found
+    // // instead keep showing loading bar
+    // this.setIsLoading(isLoggedIn);
+
+    // ONLY FOR TESTING!!
+    // this.setIsLoading(false);
   }
 
   render() {
-
-    console.log(this.state.isLoading)
 
     return (
 
@@ -135,7 +150,8 @@ export default class App extends Component {
         {
           this.state.isLoggedIn && this.state.userLocation ?
             <View style={Base.base}>
-            <Map
+              <Map
+              userId={this.state.userId}
               userLocation={this.state.userLocation}
               updateUserLocation={this.setUserLocation}
               centerPoint={{
@@ -148,8 +164,8 @@ export default class App extends Component {
             :
           <View style={Base.base}>
               <AuthMenu
+                setUserId={this.setUserId}
                 isLoading={this.state.isLoading}
-                setIsLoading={this.setIsLoading}
                 setIsLoggedIn={this.setIsLoggedIn}
                 />
               <FlashMessage
