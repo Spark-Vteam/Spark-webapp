@@ -53,7 +53,7 @@ const mapsModel = {
 
         return chargingBikes;
     },
-    getBike: async function getBikes(bikeId: number): Promise<Bike> {
+    getBike: async function getBike(bikeId: number): Promise<Bike> {
         const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${bikeId}`);
 
         const result = await response.json();
@@ -95,6 +95,72 @@ const mapsModel = {
 
         return latLngArr;
     },
+    simulateRoute: async function simulateRoute(bikeId: number, rentedPosition: LatLng | null, destination: LatLng) {
+        // todo: Connect to FLASK
+        // const response = await fetch(`http://${IP}:8000/activate`);
+
+        const pos = `${rentedPosition?.latitude},${destination.longitude}`;
+        const dest = `${destination.latitude},${destination.longitude}`;
+
+        const body = {
+            bike_id: bikeId,
+            user_id: 1,
+            position: pos,
+            destination: dest
+        };
+
+        // console.log(typeof(body.bike_id))
+        // console.log(typeof(body.user_id))
+        // console.log(typeof(body.position))
+        // console.log(typeof(body.destination))
+
+        // console.log("NEWWWBODYYY");
+        // console.log(JSON.stringify(body));
+        // console.log(typeof (JSON.stringify(body)))
+
+
+        // fetch('https://mywebsite.com/endpoint/', {
+        //     method: 'POST',
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         firstParam: 'yourValue',
+        //         secondParam: 'yourOtherValue',
+        //     }),
+        // });
+
+
+
+        const response = await fetch(`http://${IP}:8000/activate/${bikeId}/1/${pos}/${dest}`);
+
+        console.log(pos);
+        console.log(dest);
+
+
+        // const response = await fetch(`http://${IP}:8000/activate`, {
+        //     body: JSON.stringify({
+        //         test: "erik",
+        //         halloj: "oops"
+        //     }),
+        //     headers: {
+        //         'Content-type': 'application/json',
+        //     },
+        //     method: 'POST'
+        // });
+
+        // const response = await fetch(`http://${IP}:8000/enable-activation`);
+
+        // const result = await response.json();
+        const result = await response.text();
+
+        // console.log("-------------------------");
+        // console.log(result);
+
+        return result
+
+    }
 };
 
 export default mapsModel;

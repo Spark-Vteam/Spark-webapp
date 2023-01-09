@@ -41,6 +41,7 @@ export default class Map extends React.Component<{
         stationMarkers: null | ReactNode,
         geofences: null | ReactNode,
 
+        rentedId: null | number,
         rentedPos: null | LatLng,
         rentedMarker: null | ReactNode,
 
@@ -55,7 +56,7 @@ export default class Map extends React.Component<{
         scanButton: null | ReactNode,
 
         centerPoint: LatLng,
-        radius: number
+        radius: number,
     }
 
     // -- ... and initialize them in in the constructor
@@ -68,8 +69,11 @@ export default class Map extends React.Component<{
             bikeMarkers: null,
             stations: null,
             stationMarkers: null,
+
+            rentedId: null,
             rentedPos: null,
             rentedMarker: null,
+
             geofences: null,
 
             panel: null,
@@ -82,7 +86,7 @@ export default class Map extends React.Component<{
             scanButton: this.getLoadingScanButton(),
 
             centerPoint: props.centerPoint,
-            radius: 0.01
+            radius: 0.01,
         };
 
     }
@@ -160,7 +164,6 @@ export default class Map extends React.Component<{
     }
 
     setDestination = (coordinates: LatLng | null) => {
-        // todo: if in simulation, get bike moving towards station
         this.setState({
             destination: coordinates,
         });
@@ -194,6 +197,7 @@ export default class Map extends React.Component<{
         await rentModel.stopRent();
         this.setState({
             rentedMarker: null,
+            rentedId: null,
             rentedPos: null,
             route: null,
             panel: <LoadingPanel />
@@ -224,6 +228,7 @@ export default class Map extends React.Component<{
         // stop tracking users location (the location marker will also stop rendering)
         this.setState({
             trackUsersLocation: false,
+            rentedId: bike.id,
             rentedPos: coordinates,
             rentedMarker: <RentedMarker
                 coordinates={coordinates}
@@ -282,18 +287,55 @@ export default class Map extends React.Component<{
         }, 1000);
     }
 
+    // TRACK RENTED MARKER
+    // ===================================
+    trackRentedMarker = () => {
+        // If rentedId exists - update coordinates and re-render marker
+        // Otherwise set marker to null
+        setInterval(async () => {
+            if (this.state.rentedId) {
+                const rentedBike = await mapModel.getBike(this.state.rentedId);
+                const coordinates = {
+                    latitude: parseFloat(rentedBike.Position.split(',')[0]),
+                    longitude: parseFloat(rentedBike.Position.split(',')[1])
+                }
+                // console.log(rentedBike.Position);
+                this.setState({
+                    rentedMarker: <RentedMarker
+                        bike={rentedBike}
+                        coordinates={coordinates}
+                        onpress={(bike: Bike) => {
+                            this.setState({
+                                panel: <RentedPanel
+                                    bike={bike}
+                                    onpress={async () => {
+                                        this.stopRent();
+                                        this.setDestinationMarker(null);
+                                    }} />
+                            });
+                        }}
+                    />
+                })
+            } else {
+                this.setState({
+                    rentedMarker: null
+                })
+            }
+        }, 1000)
+    }
 
-    // SCAN ARE (INSIDE RADIUS) FOR BIKES
+
+    // SCAN (INSIDE RADIUS) FOR BIKES
     // ===================================
     scanArea = async () => {
         // this.props.setNotTesting();
 
         // GET BIKES IF NO CURRENT RENT AND SET MARKERS
         // ===================================
-        // Checking if rentedMarker exists.
+        // Checking if current rent exists.
         // This makes so that one can only scan for bikes
         // if there is no current rent
-        if (this.state.rentedMarker === null) {
+        if (this.state.rentedId === null) {
             // Scan for bikes
             const bikesFromScan = await mapModel.getBikesInRadius(
                 this.state.centerPoint,
@@ -360,7 +402,6 @@ export default class Map extends React.Component<{
         });
         this.trackUserLocation();
 
-
         // INITAL CENTERPOINT FOR TESTING
         // ===================================
         // Initial centerpoint. Replace later
@@ -392,6 +433,7 @@ export default class Map extends React.Component<{
             const bike = await mapModel.getBike(bikeId);
             this.createRentedMarker(bike);
         }
+        this.trackRentedMarker();
     }
 
     // -- Class component has a render() function in which we can
@@ -430,6 +472,7 @@ export default class Map extends React.Component<{
                                     // set destination panel when pressing red spot
                                     this.setPanel(<SetDestinationPanel
                                         setRoute={this.setRoute}
+                                        // rentedId={this.state.rentedId}
                                         rentedPosition={this.state.rentedPos}
                                         coordinates={e.nativeEvent.coordinate}
                                         setDestination={this.setDestination}
@@ -443,6 +486,7 @@ export default class Map extends React.Component<{
                             // set destination panel when pressing map
                             this.setPanel(<SetDestinationPanel
                                 setRoute={this.setRoute}
+                                // rentedId={this.state.rentedId}
                                 rentedPosition={this.state.rentedPos}
                                 coordinates={e.nativeEvent.coordinate}
                                 setDestination={this.setDestination}

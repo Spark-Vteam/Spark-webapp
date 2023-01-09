@@ -25,7 +25,7 @@ export default class GeofenceGroup extends React.Component<{
             const name = e.Info;
             const type = e.Type;
 
-            if (type == 10) {
+            if (type == 14) {
                 return <Geofence
                     coordinates={coordinates}
                     key={index}

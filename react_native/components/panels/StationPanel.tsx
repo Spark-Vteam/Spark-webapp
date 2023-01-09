@@ -135,7 +135,9 @@ export default class StationPanel extends React.Component<{
                                 />)
                                 setDestination(stationCoordinates);
                                 setPanel(null);
-                                setDestinationMarker(null)
+                                setDestinationMarker(null);
+                                // todo: if in simulation, get bike moving towards station
+                                await mapModel.simulateRoute(rentedPosition, stationCoordinates);
                             }}
                     >
                         <Text style={ButtonStyle.buttonText as any}>PLOT ROUTE</Text>

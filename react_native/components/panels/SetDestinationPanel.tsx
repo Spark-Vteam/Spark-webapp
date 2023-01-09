@@ -12,6 +12,7 @@ import mapsModel from '../../models/mapModel';
 
 // Panel that lets user keep track of destination
 export default class SetDestinationPanel extends React.Component<{
+    // rentedId: number
     rentedPosition: LatLng | null,
     coordinates: LatLng,
     setDestination: (coordinates: LatLng | null) => void,
@@ -23,6 +24,7 @@ export default class SetDestinationPanel extends React.Component<{
     render() {
         const {
             rentedPosition,
+            // rentedId,
             coordinates,
             setDestination,
             setDestinationMarker,
@@ -61,6 +63,10 @@ export default class SetDestinationPanel extends React.Component<{
                         />)
                         setPanel(null);
                         setPreDestinationMarker(null);
+
+                        // todo: if in simulation, get bike moving towards station
+                        // const result = await mapsModel.simulateRoute(rentedId, rentedPosition, coordinates);
+
                     }}
                 >
                     <Text style={ButtonStyle.buttonText as any}>PLOT ROUTE</Text>
