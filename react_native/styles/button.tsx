@@ -132,6 +132,18 @@ export const scanButton = {
     paddingHorizontal: 20,
 }
 
+export const loginButton = {
+    position: 'absolute',
+    left: 30,
+    top: 40,
+    backgroundColor: '#9C9C9C',
+    borderRadius: 30,
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center'
+}
+
 export const scanButtonText = {
     fontWeight: 'bold',
     color: '#FFFF',

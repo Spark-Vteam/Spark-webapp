@@ -22,10 +22,9 @@ export default function AuthMenu(props: {
         if (auth.email && auth.password) {
             const result = await authModel.logIn(auth.email, auth.password);
             if (result?.msg === "No user found" || result?.errors?.message === "Password not correct") {
-                console.log("password failed");
                 showMessage({
-                    message: "Warning",
-                    description: `Incorrect e-mail or password`,
+                    message: "Incorrect e-mail or password",
+                    // description: `Incorrect e-mail or password`,
                     type: "warning",
                 });
                 return
@@ -36,8 +35,8 @@ export default function AuthMenu(props: {
                 return
             }
             showMessage({
-                message: "Error",
-                description: `Sorry, an unexpected error occured :(`,
+                message: "Sorry, an unexpected error occured :(",
+                // description: `Sorry, an unexpected error occured :(`,
                 type: "danger",
             });
             return
@@ -45,9 +44,9 @@ export default function AuthMenu(props: {
         }
 
         showMessage({
-            message: "Warning",
-            description: "One or more fields are not filled in",
-            type: "warning",
+            message: "One or more fields are not filled in",
+            // description: "One or more fields are not filled in",
+            type: "info",
         });
 
     }

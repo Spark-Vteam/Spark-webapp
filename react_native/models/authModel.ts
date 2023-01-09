@@ -4,9 +4,10 @@ import { IP } from '@env'
 import storageModel from './storageModel';
 
 const authModel = {
-    // getAuthStorage: async function getAuthStorage(){
-
-    // },
+    getUserId: async function getUserId() {
+        const authInfo = await storageModel.readAuthInfo();
+        return authInfo.userId;
+    },
     getAuthStorage: async function loggedIn() {
         const authInfo = await storageModel.readAuthInfo();
         if (authInfo) {
@@ -36,7 +37,7 @@ const authModel = {
 
         const result = await response.json();
 
-        if (result.data.token) {
+        if (result?.data?.token) {
             // store both token and userId
             await storageModel.storeToken(result.data.token, result.data.info.user.id);
         }
@@ -76,9 +77,9 @@ const authModel = {
     //     //     type: "success",
     //     // };
     // },
-    // logOut: async function logOut() {
-    //     // await storageModel.deleteToken();
-    // }
+    logOut: async function logOut() {
+        await storageModel.deleteToken();
+    }
 };
 
 export default authModel;

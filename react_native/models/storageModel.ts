@@ -25,7 +25,8 @@ const storage = {
         }
     },
     deleteToken: async function deleteToken() {
-        await AsyncStorage.removeItem('@token');
+        console.log("DELEEEEETE");
+        await AsyncStorage.removeItem('@authInfo');
     }
 };
 

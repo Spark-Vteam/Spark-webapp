@@ -77,7 +77,7 @@ export default class BikePanel extends React.Component<{
                     style={ButtonStyle.buttonGreen as any}
                     onPress={
                         async () => {
-                            await rentModel.startRent(1, bike.id);
+                            await rentModel.startRent(bike.id);
                             createRentedMarker(bike);
                             this.setState({
                                 bikeMarkers: null

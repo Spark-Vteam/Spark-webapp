@@ -3,8 +3,9 @@ export const base = {
 }
 
 export const title = {
-    paddingTop: 30,
-    fontSize: 25
+    paddingTop: 27,
+    fontSize: 17,
+    textAlign: 'center'
 }
 
 export const text = {

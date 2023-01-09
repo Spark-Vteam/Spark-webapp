@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { SafeAreaView, View } from 'react-native';
+// https://icons.expo.fyi/
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView, View, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import { Region } from 'react-native-maps';
 import FlashMessage from 'react-native-flash-message';
@@ -8,7 +10,7 @@ import FlashMessage from 'react-native-flash-message';
 // import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
 
-import { Base, FlashStyle } from './styles/index';
+import { Base, FlashStyle, ButtonStyle } from './styles/index';
 
 import Map from './components/Map';
 import AuthMenu from './components/login/AuthMenu';
@@ -102,18 +104,15 @@ export default class App extends Component {
       })
     }
 
-
-
-    // console.log(this.state.userLocation);
   }
 
   async componentDidMount() {
     this.setUserLocation();
 
     FlashMessage.setColorTheme({
-      success: "#36AA36",
-      info: "#3375D0",
-      warning: "#B64A06",
+      // success: "#36AA36",
+      info: "#F36A37",
+      warning: "#F36A37",
       danger: "#B62306",
     });
 
@@ -150,6 +149,18 @@ export default class App extends Component {
         {
           this.state.isLoggedIn && this.state.userLocation ?
             <View style={Base.base}>
+
+              <TouchableOpacity
+                style={ButtonStyle.loginButton as any}
+                onPress={async () => {
+                  this.setIsLoggedIn(false);
+                  this.setIsLoading(false);
+                  await authModel.logOut();
+                }}
+              >
+                <MaterialIcons name="logout" size={20} color="white" />
+              </TouchableOpacity>
+
               <Map
               userId={this.state.userId}
               userLocation={this.state.userLocation}
@@ -172,7 +183,7 @@ export default class App extends Component {
                 position="top"
                 duration={4000}
                 style={FlashStyle.base}
-                titleStyle={FlashStyle.title}
+                titleStyle={FlashStyle.title as any}
                 textStyle={FlashStyle.text}
               />
           </View>

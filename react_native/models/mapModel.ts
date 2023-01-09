@@ -95,7 +95,7 @@ const mapsModel = {
 
         return latLngArr;
     },
-    simulateRoute: async function simulateRoute(bikeId: number, rentedPosition: LatLng | null, destination: LatLng) {
+    simulateRoute: async function simulateRoute(userId: number, bikeId: number, rentedPosition: LatLng | null, destination: LatLng) {
         // todo: Connect to FLASK
         // const response = await fetch(`http://${IP}:8000/activate`);
 
@@ -104,7 +104,7 @@ const mapsModel = {
 
         const body = {
             bike_id: bikeId,
-            user_id: 1,
+            user_id: userId,
             position: pos,
             destination: dest
         };
@@ -133,7 +133,7 @@ const mapsModel = {
 
 
 
-        const response = await fetch(`http://${IP}:8000/activate/${bikeId}/1/${pos}/${dest}`);
+        const response = await fetch(`http://${IP}:8000/activate/${bikeId}/${userId}/${pos}/${dest}`);
 
         console.log(pos);
         console.log(dest);
