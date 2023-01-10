@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { useState } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import Auth from '../../interfaces/auth';
 
@@ -12,7 +12,7 @@ import AuthFields from './Authfields';
 export default function AuthMenu(props: {
     setUserId: (value: number) => void,
     setIsLoggedIn: (vale: boolean) => void,
-    isLoading: Boolean
+    isLoading: boolean
 }) {
 
     const [auth, setAuth] = useState<Partial<Auth>>({});
@@ -21,11 +21,11 @@ export default function AuthMenu(props: {
 
         if (auth.email && auth.password) {
             const result = await authModel.logIn(auth.email, auth.password);
-            if (result?.msg === "No user found" || result?.errors?.message === "Password not correct") {
+            if (result?.msg === 'No user found' || result?.errors?.message === 'Password not correct') {
                 showMessage({
-                    message: "Incorrect e-mail or password",
+                    message: 'Incorrect e-mail or password',
                     // description: `Incorrect e-mail or password`,
-                    type: "warning",
+                    type: 'warning',
                 });
                 return
             }
@@ -35,18 +35,18 @@ export default function AuthMenu(props: {
                 return
             }
             showMessage({
-                message: "Sorry, an unexpected error occured :(",
+                message: 'Sorry, an unexpected error occured :(',
                 // description: `Sorry, an unexpected error occured :(`,
-                type: "danger",
+                type: 'danger',
             });
             return
 
         }
 
         showMessage({
-            message: "One or more fields are not filled in",
+            message: 'One or more fields are not filled in',
             // description: "One or more fields are not filled in",
-            type: "info",
+            type: 'info',
         });
 
     }

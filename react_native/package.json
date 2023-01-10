@@ -11,7 +11,10 @@
     "test": "jest --coverage a"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jest/setup.js"
+    ]
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.2",

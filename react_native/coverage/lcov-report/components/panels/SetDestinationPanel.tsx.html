@@ -130,7 +130,18 @@
 <a name='L65'></a><a href='#L65'>65</a>
 <a name='L66'></a><a href='#L66'>66</a>
 <a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -168,28 +179,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -198,8 +216,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, {ReactNode} from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import { MapStyle, ButtonStyle } from '../../styles/index';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { MapStyle, ButtonStyle, Images } from '../../styles/index';
 &nbsp;
 import { LatLng } from 'react-native-maps';
 import CustomMarker from '../markers/CustomMarker';
@@ -211,6 +229,7 @@ import mapsModel from '../../models/mapModel';
 &nbsp;
 // Panel that lets user keep track of destination
 export default class SetDestinationPanel extends React.Component&lt;{
+    // rentedId: number
     rentedPosition: LatLng | null,
     coordinates: LatLng,
     setDestination: (coordinates: LatLng | null) =&gt; void,
@@ -222,6 +241,7 @@ export default class SetDestinationPanel extends React.Component&lt;{
     render() {
         const {
             rentedPosition,
+            // rentedId,
             coordinates,
             setDestination,
             setDestinationMarker,
@@ -231,7 +251,11 @@ export default class SetDestinationPanel extends React.Component&lt;{
         } = this.props;
         return (
             &lt;View style={MapStyle.panel as any}&gt;
-                {/* &lt;Text style={MapStyle.panelTitle as any}&gt;{ title }&lt;/Text&gt; */}
+                &lt;Image
+                    source={require('../../assets/logos/PreDestinationLogo.png')}
+                    style={Images.panelLogo as any}
+                /&gt;
+                &lt;Text style={MapStyle.panelTitleMoreMarginDown as any}&gt;Set destination&lt;/Text&gt;
                 &lt;TouchableOpacity
                     style={ButtonStyle.buttonBlue as any}
                     onPress={<span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {
@@ -253,10 +277,13 @@ export default class SetDestinationPanel extends React.Component&lt;{
                                     }}
                                 /&gt;)
                             }}
-                            trackViewChanges={true}
                         /&gt;)
 <span class="cstat-no" title="statement not covered" >                        setPanel(null);</span>
 <span class="cstat-no" title="statement not covered" >                        setPreDestinationMarker(null);</span>
+&nbsp;
+                        // todo: if in simulation, get bike moving towards station
+                        // const result = await mapsModel.simulateRoute(rentedId, rentedPosition, coordinates);
+&nbsp;
                     }}
                 &gt;
                     &lt;Text style={ButtonStyle.buttonText as any}&gt;PLOT ROUTE&lt;/Text&gt;
@@ -271,7 +298,7 @@ export default class SetDestinationPanel extends React.Component&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-04T16:53:50.754Z
+                at 2023-01-10T16:37:57.400Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

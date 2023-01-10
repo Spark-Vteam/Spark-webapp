@@ -161,7 +161,11 @@
 <a name='L96'></a><a href='#L96'>96</a>
 <a name='L97'></a><a href='#L97'>97</a>
 <a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -196,6 +200,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -216,6 +221,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,14 +236,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -286,7 +294,7 @@ export default class GeofenceGroup extends React.Component&lt;{
             const name = e.Info;
             const type = e.Type;
 &nbsp;
-            if (type == 10) {
+            if (type == 14) {
                 return &lt;Geofence
                     coordinates={coordinates}
                     key={index}
@@ -295,7 +303,8 @@ export default class GeofenceGroup extends React.Component&lt;{
                     onpress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                        setPanel(&lt;GeofencePanel</span>
                             name={name}
-                            info={'Your max speed will be reduced here.'}
+                            info={'Reduced speed area\nYour max speed will be reduced here.'}
+                            logo={require('../../assets/logos/ReducedSpeedLogo.png')}
                         /&gt;)
                     }}
                 /&gt;
@@ -309,7 +318,8 @@ export default class GeofenceGroup extends React.Component&lt;{
                     onpress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                        setPanel(&lt;GeofencePanel</span>
                             name={name}
-                            info={'You are not allowed to park here.'}
+                            info={'No parking area\nYou are not allowed to park here.'}
+                            logo={require('../../assets/logos/NoParkingLogo.png')}
                         /&gt;)
                     }}
                 /&gt;
@@ -323,7 +333,8 @@ export default class GeofenceGroup extends React.Component&lt;{
                     onpress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                        setPanel(&lt;GeofencePanel</span>
                             name={name}
-                            info={'No riding in this area. Your bike will stop if you try to drive here.'}
+                            info={'Off-limits area\nNo riding in this place. Your bike will stop if you try to drive here.'}
+                            logo={require('../../assets/logos/StopLogo.png')}
                         /&gt;)
                     }}
                 /&gt;
@@ -337,7 +348,8 @@ export default class GeofenceGroup extends React.Component&lt;{
                     onpress={<span class="fstat-no" title="function not covered" >()</span> =&gt; {
 <span class="cstat-no" title="statement not covered" >                        setPanel(&lt;GeofencePanel</span>
                             name={name}
-                            info={'Parking area.\n50% discount on Unlock fee if parked here or on a station.'}
+                            info={'Parking area\n50% discount on Unlock fee if parked here or on a station.'}
+                            logo={require('../../assets/logos/ParkingLogo.png')}
                         /&gt;)
                     }}
                 /&gt;
@@ -364,7 +376,7 @@ export default class GeofenceGroup extends React.Component&lt;{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-04T16:53:50.754Z
+                at 2023-01-10T16:37:57.400Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

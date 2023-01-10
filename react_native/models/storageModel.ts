@@ -1,4 +1,3 @@
-import { numberLiteralTypeAnnotation } from '@babel/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storage = {
@@ -25,7 +24,6 @@ const storage = {
         }
     },
     deleteToken: async function deleteToken() {
-        console.log("DELEEEEETE");
         await AsyncStorage.removeItem('@authInfo');
     }
 };
