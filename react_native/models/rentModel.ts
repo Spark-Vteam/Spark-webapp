@@ -9,17 +9,12 @@ const rentModel = {
 
         const userId = await authModel.getUserId()
 
-        console.log("================================")
-        console.log(userId);
-
         const body = {
             userId: userId,
             bikeId: bikeId
         }
 
-        // todo: TESTA SEN ATT TA BORT BODY
-        // från login när oAuth har implementerats.
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/${userId}`, {
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/create/${userId}`, {
             body: JSON.stringify(body),
             headers: {
                 'content-type': 'application/json'
@@ -28,8 +23,6 @@ const rentModel = {
         })
 
         const result = response.status;
-
-        console.log(result);
 
         return result;
     },
