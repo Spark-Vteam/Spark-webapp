@@ -1,51 +1,50 @@
-// import config from '../config/config.json';
+import config from '../config/config.json';
+import { IP } from '@env'
 
-// import storageModel from './storageModel';
+import storageModel from './storageModel';
 
 const authModel = {
-    // loggedIn: async function loggedIn() {
-    //     // const token = await storageModel.readToken();
-    //     // if (token) {
-    //     //     const twentyFourHours = 1000 * 60 * 60 * 24;
-    //     //     const notExpired = (new Date().getTime() - token.date) < twentyFourHours;
-    //     //     return token && notExpired;
-    //     // }
-    //     // return false;
-    // },
-    // logIn: async function logIn(email: string, password: string) {
-    //     // const data = {
-    //     //     api_key: config.api_key,
-    //     //     email: email,
-    //     //     password: password,
-    //     // };
-    //     // const response = await fetch(`${config.base_url}/auth/login`, {
-    //     //     method: "POST",
-    //     //     body: JSON.stringify(data),
-    //     //     headers: {
-    //     //         'content-type': 'application/json'
-    //     //     },
-    //     // });
+    getUserId: async function getUserId() {
+        const authInfo = await storageModel.readAuthInfo();
+        return authInfo.userId;
+    },
+    getAuthStorage: async function loggedIn() {
+        const authInfo = await storageModel.readAuthInfo();
+        if (authInfo) {
+            const twentyFourHours = 1000 * 60 * 60 * 24;
+            const notExpired = (new Date().getTime() - authInfo.date) < twentyFourHours;
+            if (notExpired) {
+                return authInfo;
+            }
+            return false;
+        }
+        return false;
+    },
+    logIn: async function logIn(email: string, password: string) {
+        const data = {
+            // api_key: config.api_key,
+            emailAdress: email,
+            password: password,
+        };
 
-    //     // const result = await response.json();
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/user/login`, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+        });
 
-    //     // // errors kommer med som property om login inte lyckas, då returner
-    //     // // vi istället ett flash meddelande.
-    //     // if (Object.prototype.hasOwnProperty.call(result, 'errors')) {
-    //     //     return {
-    //     //         title: "Misslyckat",
-    //     //         message: "Fel e-post eller lösenord",
-    //     //         type: "danger",
-    //     //     };
-    //     // }
+        const result = await response.json();
 
-    //     // await storageModel.storeToken(result.data.token);
+        if (result?.data?.token) {
+            // store both token and userId
+            await storageModel.storeToken(result.data.token, result.data.info.user.id);
+        }
 
-    //     // return {
-    //     //     title: "Lyckat",
-    //     //     message: "Du är inloggad",
-    //     //     type: result.data.type,
-    //     // };
-    // },
+
+        return result;
+    },
     // register: async function register(email: string, password: string) {
     //     // const data = {
     //     //     api_key: config.api_key,
@@ -78,9 +77,9 @@ const authModel = {
     //     //     type: "success",
     //     // };
     // },
-    // logOut: async function logOut() {
-    //     // await storageModel.deleteToken();
-    // }
+    logOut: async function logOut() {
+        await storageModel.deleteToken();
+    }
 };
 
 export default authModel;

@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { SafeAreaView } from 'react-native';
+// https://icons.expo.fyi/
+import { MaterialIcons } from '@expo/vector-icons';
+import { SafeAreaView, View, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import { Region } from 'react-native-maps';
+import FlashMessage from 'react-native-flash-message';
 
 // import Test from './components/experiment/Test';
 // import TestMap from './components/experiment/TestMap';
 // import ClusterMap from './components/experiment/ClusterMap';
 
-import { Base } from './styles/index';
+import { Base, FlashStyle, ButtonStyle } from './styles/index';
 
 import Map from './components/Map';
 import AuthMenu from './components/login/AuthMenu';
+import authModel from './models/authModel';
 
 
 export default class App extends Component {
@@ -19,16 +23,20 @@ export default class App extends Component {
   state: {
     isLoggedIn: boolean,
     userLocation: Region | null,
-    TESTING: Boolean
+    TESTING: Boolean,
+    isLoading: Boolean,
+    userId: number
   }
 
   // -- ... and initialize them in in the constructor
   constructor(props: Record<string, unknown>) {
     super(props);
     this.state = {
+      isLoading: true,
       isLoggedIn: false,  // <-- todo: check if valid token exists
       userLocation: null,
-      TESTING: true
+      TESTING: true,
+      userId: -1
     };
   }
 
@@ -37,6 +45,12 @@ export default class App extends Component {
   //     userLocation: coordinates
   //   })
   // }
+
+  setIsLoading = (value: Boolean) => {
+    this.setState ({
+      isLoading: value
+    })
+  }
 
   setNotTesting = () => {
     this.setState({
@@ -49,6 +63,13 @@ export default class App extends Component {
       isLoggedIn: value
     });
   }
+
+  setUserId = (newUserId: number) => {
+    this.setState({
+      userId: newUserId
+    });
+  }
+
 
   setUserLocation = async () => {
     // GET USERS LOCATION AND SET LOCATIONMARKER
@@ -83,11 +104,38 @@ export default class App extends Component {
       })
     }
 
-    // console.log(this.state.userLocation);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.setUserLocation();
+
+    FlashMessage.setColorTheme({
+      // success: "#36AA36",
+      info: "#F36A37",
+      warning: "#F36A37",
+      danger: "#B62306",
+    });
+
+    const authStorage = await authModel.getAuthStorage();
+
+    if (authStorage) {
+      // Log in automatically if valid token is in storage
+      this.setState({
+        isLoggedIn: true,
+        userId: authStorage.userId,
+      })
+    } else {
+      this.setIsLoading(false);
+    }
+
+
+
+    // // Prevents loading from popping up if valid token is found
+    // // instead keep showing loading bar
+    // this.setIsLoading(isLoggedIn);
+
+    // ONLY FOR TESTING!!
+    // this.setIsLoading(false);
   }
 
   render() {
@@ -100,7 +148,21 @@ export default class App extends Component {
         {/* <Test /> */}
         {
           this.state.isLoggedIn && this.state.userLocation ?
-            <Map
+            <View style={Base.base}>
+
+              <TouchableOpacity
+                style={ButtonStyle.loginButton as any}
+                onPress={async () => {
+                  this.setIsLoggedIn(false);
+                  this.setIsLoading(false);
+                  await authModel.logOut();
+                }}
+              >
+                <MaterialIcons name="logout" size={20} color="white" />
+              </TouchableOpacity>
+
+              <Map
+              userId={this.state.userId}
               userLocation={this.state.userLocation}
               updateUserLocation={this.setUserLocation}
               centerPoint={{
@@ -108,13 +170,24 @@ export default class App extends Component {
                 longitude: this.state.userLocation.longitude
               }}
               setNotTesting={this.setNotTesting}
-            />
+              />
+            </View>
             :
-          <AuthMenu
-              setIsLoggedIn={this.setIsLoggedIn}
-            />
+          <View style={Base.base}>
+              <AuthMenu
+                setUserId={this.setUserId}
+                isLoading={this.state.isLoading}
+                setIsLoggedIn={this.setIsLoggedIn}
+                />
+              <FlashMessage
+                position="top"
+                duration={4000}
+                style={FlashStyle.base}
+                titleStyle={FlashStyle.title as any}
+                textStyle={FlashStyle.text}
+              />
+          </View>
         }
-
       </SafeAreaView>
     );
   }

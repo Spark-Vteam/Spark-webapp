@@ -2,18 +2,19 @@ import config from '../config/config.json';
 import { IP } from '@env'
 
 import Rent from '../interfaces/rent';
+import authModel from './authModel';
 
 const rentModel = {
-    startRent: async function startRent(userId: number, bikeId: number) {
+    startRent: async function startRent(bikeId: number) {
+
+        const userId = await authModel.getUserId()
 
         const body = {
             userId: userId,
             bikeId: bikeId
         }
 
-        // todo: Lägg in userId
-        // från login när oAuth har implementerats.
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/1`, {
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/create/${userId}`, {
             body: JSON.stringify(body),
             headers: {
                 'content-type': 'application/json'
@@ -26,9 +27,10 @@ const rentModel = {
         return result;
     },
     getRentsOnUser: async function getRentOnUser(): Promise<Rent[]> {
-        // Is used by method getOngoingRent below
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/1`);
+        const userId = await authModel.getUserId()
+
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/${userId}`);
 
         const result = await response.json();
 
@@ -39,7 +41,9 @@ const rentModel = {
     },
     getOngoingRents: async function getOngoingRents() {
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/active/1`);
+        const userId = await authModel.getUserId()
+
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/active/${userId}`);
 
         const result = await response.json();
 
@@ -49,7 +53,9 @@ const rentModel = {
     },
     getInvoices: async function getInvoices() {
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/invoice/user/1`);
+        const userId = await authModel.getUserId()
+
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/invoice/user/${userId}`);
 
         const result = await response.json();
 
