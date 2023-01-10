@@ -19,13 +19,15 @@ Create two files .env
 Add your IP address as a variable in both .env files:
 `IP="xxx.xxx.x.xx"`
 
-## Docker
-Start up Docker desktop.
-In the project directory, you can then run:
+## Using the application
 
-### `docker compose -f docker-compose_react_native.yml up`
-Docker will start up container with the react-native app only.
-Open App in Expo Go by scanning the QR code or manually enter URL `<your IP>`:19000.
+In Spark-webapp you can log into your account. From there you will be able to view avaiable bikes to rent as well as stations and different kind of zones (for example parking zones and no-driving zones). You can rent a bike and stop the rent when you are finished. Finally, you can plot routes while renting a bike by selecting stations or different positions on the map.
 
-### `docker compose -f docker-compose_react_native.yml down`
-Docker will stop the container.
+### `npm start`
+Starts up the application. Open App in Expo Go by scanning the QR code or manually enter URL `<your IP>`:19000.
+
+### `npm test`
+Performs unit tests with jest and creates coverage report that can be viewed in file `react_native/coverage/Icov-report/index.html`.
+
+### `npm lint`
+Performs linter test.
