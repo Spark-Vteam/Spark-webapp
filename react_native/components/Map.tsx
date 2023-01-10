@@ -36,7 +36,7 @@ export default class Map extends React.Component<{
     // -- In class component we keep all states in one object...
     state: {
         locationmarker: null | ReactNode,
-        trackUsersLocation: Boolean,
+        trackUsersLocation: boolean,
         bikes: null | Bike[],
         bikeMarkers: null | ReactNode,
         stations: null | Station[],
@@ -377,7 +377,7 @@ export default class Map extends React.Component<{
 
         // GET STATIONS AND SET STATION MARKERS
         // ===================================
-        let stations: Station[] = await mapModel.getStations();
+        const stations: Station[] = await mapModel.getStations();
 
         this.setState({
             stations: stations,

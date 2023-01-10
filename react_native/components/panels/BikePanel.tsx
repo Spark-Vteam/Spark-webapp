@@ -78,7 +78,7 @@ export default class BikePanel extends React.Component<{
                     onPress={
 
                         async () => {
-                            console.log("YIPIIIIII")
+                            console.log('YIPIIIIII')
                             await rentModel.startRent(bike.id);
                             createRentedMarker(bike);
                             this.setState({

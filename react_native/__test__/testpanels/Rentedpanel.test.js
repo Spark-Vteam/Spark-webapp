@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import RentedPanel from '../../components/panels/RentedPanel';
 
-import Bike from '../../interfaces/bike';
 
 describe('PricePanel', () => {
     it('renders the PricePanel component with the correct props', () => {

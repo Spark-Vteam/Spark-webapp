@@ -28,7 +28,7 @@ const authModel = {
         };
 
         const response = await fetch(`http://${IP}:${config.port}${config.version}/user/login`, {
-            method: "POST",
+            method: 'POST',
             body: JSON.stringify(data),
             headers: {
                 'content-type': 'application/json'

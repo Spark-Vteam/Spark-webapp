@@ -102,12 +102,12 @@ const mapsModel = {
         const pos = `${rentedPosition?.latitude},${destination.longitude}`;
         const dest = `${destination.latitude},${destination.longitude}`;
 
-        const body = {
-            bike_id: bikeId,
-            user_id: userId,
-            position: pos,
-            destination: dest
-        };
+        // const body = {
+        //     bike_id: bikeId,
+        //     user_id: userId,
+        //     position: pos,
+        //     destination: dest
+        // };
 
         // console.log(typeof(body.bike_id))
         // console.log(typeof(body.user_id))

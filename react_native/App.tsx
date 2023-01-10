@@ -23,8 +23,8 @@ export default class App extends Component {
   state: {
     isLoggedIn: boolean,
     userLocation: Region | null,
-    TESTING: Boolean,
-    isLoading: Boolean,
+    TESTING: boolean,
+    isLoading: boolean,
     userId: number
   }
 
@@ -46,7 +46,7 @@ export default class App extends Component {
   //   })
   // }
 
-  setIsLoading = (value: Boolean) => {
+  setIsLoading = (value: boolean) => {
     this.setState ({
       isLoading: value
     })
@@ -111,9 +111,9 @@ export default class App extends Component {
 
     FlashMessage.setColorTheme({
       // success: "#36AA36",
-      info: "#F36A37",
-      warning: "#F36A37",
-      danger: "#B62306",
+      info: '#F36A37',
+      warning: '#F36A37',
+      danger: '#B62306',
     });
 
     const authStorage = await authModel.getAuthStorage();

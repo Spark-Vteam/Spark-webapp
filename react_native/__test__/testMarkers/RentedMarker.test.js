@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react-native';
 import RentedMarker from '../../components/markers/RentedMarker';
 import { act, create } from 'react-test-renderer';
 import { Marker } from 'react-native-maps';
-import { Image } from 'react-native';
+// import { Image } from 'react-native';
 
 describe('RentedMarker', () => {
     it('renders a Marker element', () => {

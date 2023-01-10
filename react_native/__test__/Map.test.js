@@ -1,7 +1,7 @@
 // import { render } from '@testing-library/react-native';
 
 import Map from '../components/Map';
-import { render } from '@testing-library/react-native';
+// import { render } from '@testing-library/react-native';
 import { act, create } from 'react-test-renderer';
 import { Marker, Polygon } from 'react-native-maps';
 import { View } from 'react-native';
