@@ -14,6 +14,9 @@ const rentModel = {
             bikeId: bikeId
         }
 
+        // console.log(userId);
+        console.log(body);
+
         const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/create/${userId}`, {
             body: JSON.stringify(body),
             headers: {
