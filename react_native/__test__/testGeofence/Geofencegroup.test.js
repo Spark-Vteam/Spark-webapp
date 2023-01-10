@@ -5,7 +5,7 @@ import { act, create } from 'react-test-renderer';
 describe('GeofenceGroup', () => {
     it('renders geofences correctly', () => {
         const geofences = [
-            { Coordinates: '[[123, 456], [789, 112]]', Info: 'Geofence 1', Type: 10 },
+            { Coordinates: '[[123, 456], [789, 112]]', Info: 'Geofence 1', Type: 14 },
             { Coordinates: '[[123, 456], [789, 112]]', Info: 'Geofence 2', Type: 20 },
             { Coordinates: '[[123, 456], [789, 112]]', Info: 'Geofence 3', Type: 30 },
         ];

@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/polyline/Polyline.tsx</title>
+    <title>Code coverage report for components/panels/UserPanel.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/polyline</a> Polyline.tsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/panels</a> UserPanel.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -84,7 +84,10 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -95,9 +98,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -106,24 +112,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
-import { LatLng, Polyline } from 'react-native-maps';
+import { View, Text, Image } from 'react-native';
+&nbsp;
+import { MapStyle, Images } from '../../styles';
 &nbsp;
 &nbsp;
-// Creates a Polyline using arays of cooridates
-export default class Pline extends React.Component
-    &lt;{
-        coordinates: LatLng[], // array of arrays of numbers
-    }&gt;{
 &nbsp;
-    render() {
-        const { coordinates } = this.props;
+export default class UserPanel extends React.Component {
 &nbsp;
-        return (
-            &lt;Polyline
-                coordinates={coordinates}
-                strokeWidth={8}
-                strokeColor={'#00B0FF'}
-            /&gt;
+<span class="fstat-no" title="function not covered" >    re</span>nder() {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        return (</span>
+&nbsp;
+            &lt;View style={MapStyle.panelShort as any}&gt;
+                &lt;Image
+                    style={Images.panelLogo as any}
+                    source={require('../../assets/logos/UserLogo.png')}
+                /&gt;
+                &lt;Text style={MapStyle.panelTitle as any}&gt;Your position&lt;/Text&gt;
+                &lt;Text style={MapStyle.panelTextMiddle as any}&gt;You look really good from here :)&lt;/Text&gt;
+                &lt;Text&gt;&lt;/Text&gt;
+            &lt;/View&gt;
         );
     }
 }</pre></td></tr></table></pre>

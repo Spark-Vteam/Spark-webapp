@@ -10,6 +10,6 @@ describe('DestinationPanel', () => {
             <DestinationPanel onpressButton={onPressMock} />
         );
 
-        expect(getByText('CANCEL ROUTE')).toBeDefined();
+        expect(getByText('CANCEL')).toBeDefined();
     });
 });

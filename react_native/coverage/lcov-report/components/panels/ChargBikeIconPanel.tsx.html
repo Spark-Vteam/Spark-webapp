@@ -109,7 +109,14 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -122,6 +129,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -132,17 +153,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,14 +170,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { ReactNode } from 'react';
-import { View, ScrollView, Text } from 'react-native';
+import { View, ScrollView, Text, Image } from 'react-native';
 &nbsp;
 import ChargingBike from '../../interfaces/chargingbike';
 import ChargBikeIcon from './ChargBikeIcon';
 &nbsp;
 import Bike from '../../interfaces/bike';
 &nbsp;
-import { MapStyle } from '../../styles';
+import { MapStyle, Images } from '../../styles';
+import Station from '../../interfaces/station';
 &nbsp;
 &nbsp;
 &nbsp;
@@ -172,11 +187,12 @@ export default class ChargBikeIconPanel extends React.Component
         chargingBikes: ChargingBike[]
         createRentedMarker: (bike: Bike) =&gt; void,
         setPanel: (newpanel: ReactNode) =&gt; void,
+        station: Station
     }&gt; {
 &nbsp;
 <span class="fstat-no" title="function not covered" >    re</span>nder() {
 &nbsp;
-        const { chargingBikes } = <span class="cstat-no" title="statement not covered" >this.props;</span>
+        const { chargingBikes, station } = <span class="cstat-no" title="statement not covered" >this.props;</span>
 &nbsp;
         const chargGroup = <span class="cstat-no" title="statement not covered" >chargingBikes.map(<span class="fstat-no" title="function not covered" >(e</span>, index) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >            return &lt;ChargBikeIcon</span>
@@ -193,10 +209,15 @@ export default class ChargBikeIconPanel extends React.Component
             //     {chargGroup}
             // &lt;/View&gt;
 &nbsp;
-            &lt;View style={MapStyle.panel as any}&gt;
+            &lt;View style={MapStyle.panelLong as any}&gt;
+                &lt;Image
+                    style={Images.panelLogo as any}
+                    source={require('../../assets/logos/StationLogo.png')}
+                /&gt;
+                &lt;Text style={MapStyle.panelTitle as any}&gt;Station {station.Name}&lt;/Text&gt;
                 &lt;ScrollView&gt;
+                    &lt;Text&gt;&lt;/Text&gt;
                     {chargGroup}
-                    &lt;Text /&gt;
                 &lt;/ScrollView&gt;
             &lt;/View&gt;
         );
@@ -208,7 +229,7 @@ export default class ChargBikeIconPanel extends React.Component
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-04T16:53:50.754Z
+                at 2023-01-10T16:37:57.400Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

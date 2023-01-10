@@ -26,7 +26,8 @@ import StationMarkers from './markers/StationMarkers';
 
 
 export default class Map extends React.Component<{
-    userLocation: Region, centerPoint: LatLng,
+    userLocation: Region,
+    centerPoint: LatLng,
     updateUserLocation: () => void,
     setNotTesting: () => void,
     userId: number
