@@ -1,5 +1,5 @@
 import config from '../config/config.json';
-import { IP } from '@env'
+import { IP, API_KEY } from '@env'
 import Bike from '../interfaces/bike';
 import ChargingBike from '../interfaces/chargingbike';
 import { LatLng } from 'react-native-maps/lib/sharedTypes';
@@ -10,7 +10,11 @@ import polyDecoder from '@mapbox/polyline';
 
 const mapsModel = {
     getStations: async function getStations() {
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/station`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/station`, {
+            headers: {
+                key: API_KEY
+            }
+        });
 
         const result = await response.json();
 
@@ -28,7 +32,11 @@ const mapsModel = {
         const longitude = centerPoint.longitude;
         const radius = radiusDegrees * 111 * 1000 / 2;
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${longitude}/${latitude}/${radius}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${longitude}/${latitude}/${radius}`, {
+            headers: {
+                key: API_KEY
+            }
+        });
 
         const result = await response.json();
 
@@ -37,7 +45,11 @@ const mapsModel = {
         return bikes;
     },
     getBikes: async function getBikes(): Promise<Bike[]> {
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike`, {
+            headers: {
+                key: API_KEY
+            }
+        });
 
         const result = await response.json();
 
@@ -46,7 +58,11 @@ const mapsModel = {
         return bikes;
     },
     getChargingBikes: async function getBikes(): Promise<ChargingBike[]> {
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/charging`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/charging`, {
+            headers: {
+                key: API_KEY
+            }
+        });
         const result = await response.json();
 
         const chargingBikes = result.data;
@@ -54,7 +70,11 @@ const mapsModel = {
         return chargingBikes;
     },
     getBike: async function getBike(bikeId: number): Promise<Bike> {
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${bikeId}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/bike/${bikeId}`, {
+                headers: {
+                key: API_KEY
+            }
+        });
 
         const result = await response.json();
 
@@ -63,7 +83,11 @@ const mapsModel = {
         return bike[0];
     },
     getGeofences: async function getGeofences() {
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/geofence`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/geofence`, {
+                headers: {
+                key: API_KEY
+            }
+        });
 
         const result = await response.json();
 

@@ -1,5 +1,5 @@
 import config from '../config/config.json';
-import { IP } from '@env'
+import { IP, API_KEY } from '@env'
 
 import Rent from '../interfaces/rent';
 import authModel from './authModel';
@@ -20,7 +20,8 @@ const rentModel = {
         const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/create/${userId}`, {
             body: JSON.stringify(body),
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                key: API_KEY
             },
             method: 'POST'
         })
@@ -33,7 +34,12 @@ const rentModel = {
 
         const userId = await authModel.getUserId()
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/${userId}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/user/${userId}`, {
+            headers: {
+                'content-type': 'application/json',
+                'key': API_KEY
+            },
+        });
 
         const result = await response.json();
 
@@ -46,7 +52,12 @@ const rentModel = {
 
         const userId = await authModel.getUserId()
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/active/${userId}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/active/${userId}`, {
+            headers: {
+                'content-type': 'application/json',
+                'key': API_KEY
+            },
+        });
 
         const result = await response.json();
 
@@ -58,7 +69,12 @@ const rentModel = {
 
         const userId = await authModel.getUserId()
 
-        const response = await fetch(`http://${IP}:${config.port}${config.version}/invoice/user/${userId}`);
+        const response = await fetch(`http://${IP}:${config.port}${config.version}/invoice/user/${userId}`, {
+            headers: {
+                'content-type': 'application/json',
+                'key': API_KEY
+            },
+        });
 
         const result = await response.json();
 
@@ -74,7 +90,8 @@ const rentModel = {
             const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
             const response = await fetch(`http://${IP}:${config.port}${config.version}/rent/${lastOngoingRent.id}`, {
                 headers: {
-                    'content-type': 'application/json'
+                    'content-type': 'application/json',
+                    'key': API_KEY
                 },
                 method: 'PUT'
             })

@@ -1,5 +1,5 @@
 import config from '../config/config.json';
-import { IP } from '@env'
+import { IP, API_KEY } from '@env'
 
 import storageModel from './storageModel';
 
@@ -21,21 +21,29 @@ const authModel = {
         return false;
     },
     logIn: async function logIn(email: string, password: string) {
+
         const data = {
-            // api_key: config.api_key,
             emailAdress: email,
             password: password,
         };
+
+        // ENDAST ATT TESTA MED:
+        // const data = {
+        //     emailAdress: "A_Smith57@hotmail.com",
+        //     password: "password",
+        // };
 
         const response = await fetch(`http://${IP}:${config.port}${config.version}/user/login`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                'key': API_KEY
             },
         });
 
         const result = await response.json();
+
 
         if (result?.data?.token) {
             // store both token and userId
