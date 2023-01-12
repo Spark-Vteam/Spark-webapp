@@ -24,6 +24,7 @@ export default class ChargBikeIcon extends React.Component
             onPress={async () => {
                 const bike = await mapsModel.getBike(id);
                 setPanel(<BikePanel
+                    setPanel={setPanel}
                     bike={bike}
                     createRentedMarker={createRentedMarker}
                     discount={false}

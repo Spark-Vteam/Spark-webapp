@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { MapStyle, ButtonStyle, Typography, Base, Images } from '../../styles/index';
 
@@ -6,12 +6,15 @@ import priceModel from '../../models/priceModel';
 
 import Bike from '../../interfaces/bike';
 
+import mapModel from '../../models/mapModel'
 import rentModel from '../../models/rentModel';
+import ErrorPanel from './ErrorPanel';
 
 
 // Panel with info about available bike. Button to start ride, OnPress function is injected.
 export default class BikePanel extends React.Component<{
     bike: Bike,
+    setPanel: (newPanel: ReactNode) => void,
     createRentedMarker: (bike: Bike) => void,
     discount: boolean
 }> {
@@ -51,7 +54,7 @@ export default class BikePanel extends React.Component<{
 
 
     render() {
-        const { bike, createRentedMarker, discount } = this.props;
+        const { bike, setPanel, createRentedMarker, discount } = this.props;
 
 
         return (
@@ -78,12 +81,19 @@ export default class BikePanel extends React.Component<{
                     onPress={
 
                         async () => {
-                            console.log('YIPIIIIII')
-                            await rentModel.startRent(bike.id);
-                            createRentedMarker(bike);
-                            this.setState({
-                                bikeMarkers: null
-                            });
+                            const infoBike = await mapModel.getBike(bike.id);
+                            // console.log(infoBike.Status)
+                            if (infoBike.Status >= 10 && infoBike.Status < 20 || infoBike.Status == 40) {
+                                createRentedMarker(bike);
+                                await rentModel.startRent(bike.id);
+                                this.setState({
+                                    bikeMarkers: null
+                                });
+                            } else {
+                                setPanel(<ErrorPanel
+                                    message='Sorry, it seems like your bike has already been rented by someone else. :/'
+                                />)
+                            }
                         }
                     }
                 >
