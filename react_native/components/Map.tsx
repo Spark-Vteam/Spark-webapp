@@ -339,6 +339,11 @@ export default class Map extends React.Component<{
         // This makes so that one can only scan for bikes
         // if there is no current rent
         if (this.state.rentedId === null) {
+            // set loading scan button
+            this.setState({
+                scanButton: this.getLoadingScanButton()
+            })
+
             // Scan for bikes
             const bikesFromScan = await mapModel.getBikesInRadius(
                 this.state.centerPoint,
