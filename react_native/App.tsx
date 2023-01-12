@@ -35,7 +35,7 @@ export default class App extends Component {
       isLoading: true,
       isLoggedIn: false,  // <-- todo: check if valid token exists
       userLocation: null,
-      TESTING: true,
+      TESTING: false,
       userId: -1
     };
   }
@@ -111,7 +111,7 @@ export default class App extends Component {
 
     FlashMessage.setColorTheme({
       // success: "#36AA36",
-      info: '#F36A37',
+      info: '#0796D4',
       warning: '#F36A37',
       danger: '#B62306',
     });

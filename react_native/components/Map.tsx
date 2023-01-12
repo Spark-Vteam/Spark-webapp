@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 import MapView, { LatLng, Region } from 'react-native-maps';
 import { View, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 
-import { MapStyle, ButtonStyle } from '../styles/index';
+import { MapStyle, ButtonStyle, FlashStyle } from '../styles/index';
 
 import Bike from '../interfaces/bike';
 import Station from '../interfaces/station';
@@ -338,6 +339,11 @@ export default class Map extends React.Component<{
         // This makes so that one can only scan for bikes
         // if there is no current rent
         if (this.state.rentedId === null) {
+            // set loading scan button
+            this.setState({
+                scanButton: this.getLoadingScanButton()
+            })
+
             // Scan for bikes
             const bikesFromScan = await mapModel.getBikesInRadius(
                 this.state.centerPoint,
@@ -348,6 +354,15 @@ export default class Map extends React.Component<{
             const bikesAvailable = bikesFromScan.filter((e) => {
                 return e.Status >= 10 && e.Status < 20 && e.Battery > 50;
             })
+
+            if (bikesAvailable.length == 0) {
+                showMessage({
+
+                    message: 'No bikes found',
+                    description: `You may find available ones in cities Lund, Karlskrona and Stockholm.`,
+                    type: 'info',
+                });
+            }
 
             this.setState({
                 bikes: bikesAvailable,
@@ -370,6 +385,18 @@ export default class Map extends React.Component<{
     //      ...
     // }, []), (no dependencies)
     async componentDidMount() {
+
+        // GET USERS ONGOING RENT (IF THERE IS ANY)
+        // ===================================
+        const ongoingRents = await rentModel.getOngoingRents();
+        // hopefully there is just one...
+        if (ongoingRents && ongoingRents.length > 0) {
+            const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
+            const bikeId = lastOngoingRent.Bikes_id;
+            const bike = await mapModel.getBike(bikeId);
+            this.createRentedMarker(bike);
+        }
+        this.trackRentedMarker();
 
         // PERFORM FIRST SCAN (BIKES ONLY) RIGHT AWAY
         // ===================================
@@ -424,18 +451,6 @@ export default class Map extends React.Component<{
                 setPanel={this.setPanel}
             />
         })
-
-        // GET USERS ONGOING RENT (IF THERE IS ANY)
-        // ===================================
-        const ongoingRents = await rentModel.getOngoingRents();
-        // hopefully there is just one...
-        if (ongoingRents && ongoingRents.length > 0) {
-            const lastOngoingRent = ongoingRents[ongoingRents.length - 1];
-            const bikeId = lastOngoingRent.Bikes_id;
-            const bike = await mapModel.getBike(bikeId);
-            this.createRentedMarker(bike);
-        }
-        this.trackRentedMarker();
     }
 
     // -- Class component has a render() function in which we can
@@ -516,6 +531,13 @@ export default class Map extends React.Component<{
             </MapView>
             { this.state.scanButton }
             {this.state.panel}
+            <FlashMessage
+                position="top"
+                duration={6000}
+                style={FlashStyle.base}
+                titleStyle={FlashStyle.title as any}
+                textStyle={FlashStyle.text}
+            />
         </View>
     }
 }

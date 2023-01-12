@@ -9,5 +9,6 @@ export const title = {
 }
 
 export const text = {
-    fontSize: 14
+    fontSize: 14,
+    paddingHorizontal: 70
 }

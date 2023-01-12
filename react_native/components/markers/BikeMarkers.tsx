@@ -54,6 +54,7 @@ export default class BikeMarkers extends React.Component
                     onpress={() => {
                         setPanel(<BikePanel
                             bike={e}
+                            setPanel={setPanel}
                             createRentedMarker={createRentedMarker}
                             discount={discount}
                             // onpress={
